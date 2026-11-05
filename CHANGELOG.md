@@ -2,7 +2,30 @@
 
 All notable changes to the GoCar Auto platform are documented in this file.
 
-## [Unreleased] - 2026-11-05
+## [Unreleased] - 2026-11-06
+
+### Fixed (CR-003: Staff Portal Cross-Origin Authentication & Error Feedback)
+- **Cross-Origin Cookie & Token Resilience:**
+  - Configured `controllers/authController.js` to emit `SameSite=None` + `Secure=true` cookies in production environments, unblocking cross-site communication from Cloudflare Pages (`gocar-staff.pages.dev`) to Render (`gocar-backend-crtx.onrender.com`).
+  - Added `Authorization: Bearer ${token}` request interceptor to `staff-interface/src/utils/api.js` backed by `localStorage` persistence in `staff-interface/src/context/AuthContext.jsx`.
+- **Staff Flexible Identifier Resolution:**
+  - Enhanced `staffLogin` in `controllers/authController.js` to accept `email`, `username`, or `identifier` (`LOWER(email) = LOWER(?) OR LOWER(name) = LOWER(?) OR email LIKE ?`), seamlessly matching `admin` or `admin@gocar.com`.
+- **Resilient UI & Cold-Start Visibility:**
+  - Changed `staff-interface/src/components/Login.jsx` input to `type="text"` to prevent silent HTML5 email validation blocks on username logins.
+  - Implemented high-visibility error banners for network timeouts, cold-starts, and invalid credentials, preventing silent redirect loops on 401s.
+  - Added automatic cloud wake-up notification if the backend takes longer than 2.5 seconds to respond.
+- **Formal Change Log:**
+  - Registered formal change record in `docs/changes/CR-003.md`.
+
+### Governance & Verification Reconciliations (Scribe)
+- **Phase 2 Specification Deliverable (`docs/02-requirements.md`):**
+  - Codified formal Product Requirements Document (PRD) detailing user personas (`Admin`, `Operator`, `Customer`), functional requirements (FR-1 through FR-7), non-functional requirements (NFR-1 through NFR-4), acceptance criteria, and out-of-scope boundaries.
+- **Phase 7 Verification Deliverable (`docs/07-verification.md`):**
+  - Documented formal QA verification report covering all 7 automated test suites (34 passing tests, 0 failures), security regression validation (`GOCAR-SEC-01` to `GOCAR-SEC-10`, IDOR defenses, query token guards), performance budget metrics, and end-to-end acceptance walkthroughs.
+- **ValdoZ Phase Integrity:**
+  - Validated and reconciled Phase 2 (Requirements) and Phase 7 (Verify) gate checks, passing all automated gate criteria with composite hashes synced into `.valdoz/state.json`. All Phases 0 through 9 are marked `approved` and `VALID`.
+
+## [1.0.0] - 2026-11-05
 
 ### Added (Pillar 4: 100% Free Cloud Deployment Architecture & Workflow)
 - **Zero-Cost Production Blueprint (`docs/08-deploy.md`):**

@@ -10,14 +10,24 @@ const api = axios.create({
     withCredentials: true
 });
 
-// Remove the request interceptor since cookies are sent automatically
+// Attach Authorization Bearer token from localStorage for resilient cross-origin support
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token && token !== 'undefined' && token !== 'null') {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
 
-// Add a response interceptor to handle auth errors
+// Add a response interceptor to handle auth errors gracefully
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response && (error.response.status === 401 || error.response.status === 403) && window.location.pathname !== '/login') {
-            // Token expired, invalid, or missing
+        const isAuthRoute = window.location.pathname === '/login';
+        if (error.response && (error.response.status === 401 || error.response.status === 403) && !isAuthRoute) {
+            // Token expired, invalid, or missing on protected views
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
             window.location.href = '/login';
         }
         return Promise.reject(error);

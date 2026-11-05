@@ -5,10 +5,11 @@ import { motion } from 'framer-motion';
 import { Shield, Key, Mail, ArrowRight, Loader2 } from 'lucide-react';
 
 const Login = () => {
-    const [email, setEmail] = useState('');
+    const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [slowNotice, setSlowNotice] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -16,15 +17,30 @@ const Login = () => {
         e.preventDefault();
         setError('');
         setLoading(true);
+        setSlowNotice(false);
 
-        const result = await login(email, password);
+        // Show cold start notice if request takes longer than 2.5 seconds
+        const timer = setTimeout(() => {
+            setSlowNotice(true);
+        }, 2500);
 
-        if (result.success) {
-            navigate('/');
-        } else {
-            setError(result.error);
+        try {
+            const result = await login(identifier, password);
+            clearTimeout(timer);
+
+            if (result.success) {
+                navigate('/');
+            } else {
+                setError(result.error);
+            }
+        } catch (err) {
+            clearTimeout(timer);
+            setError(err.message || 'An unexpected connection error occurred');
+        } finally {
+            clearTimeout(timer);
+            setLoading(false);
+            setSlowNotice(false);
         }
-        setLoading(false);
     };
 
     return (
@@ -51,26 +67,41 @@ const Login = () => {
 
                     {error && (
                         <motion.div
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl text-xs font-bold mb-8 flex items-center justify-center text-center gap-2 uppercase tracking-wide"
+                            initial={{ opacity: 0, y: -6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-red-500/15 border border-red-500/40 text-red-300 p-4 rounded-xl text-xs font-semibold mb-6 flex flex-col gap-1 tracking-wide"
                         >
-                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                            {error}
+                            <div className="flex items-center gap-2 text-red-400 font-bold uppercase text-[11px]">
+                                <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                                Authentication Notice
+                            </div>
+                            <p className="text-gray-300 leading-relaxed">{error}</p>
+                        </motion.div>
+                    )}
+
+                    {slowNotice && loading && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-amber-500/10 border border-amber-500/30 text-amber-300 p-3 rounded-xl text-xs font-medium mb-6 flex items-center gap-2"
+                        >
+                            <Loader2 size={14} className="animate-spin text-amber-400 shrink-0" />
+                            <span>Contacting cloud service... Render instances may take 15–30s to wake up on first launch.</span>
                         </motion.div>
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4 flex items-center gap-2">
-                                <Mail size={12} /> Email Access
+                                <Shield size={12} /> Staff Username / Email
                             </label>
                             <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                type="text"
+                                value={identifier}
+                                onChange={(e) => setIdentifier(e.target.value)}
                                 required
-                                placeholder="admin@gocarauto.com"
+                                autoComplete="username"
+                                placeholder="admin or admin@gocar.com"
                                 className="w-full bg-black/40 border border-white/10 focus:border-primary focus:ring-1 focus:ring-primary/50 rounded-2xl py-4 px-5 text-sm outline-none transition-all text-white placeholder-gray-600 font-medium"
                             />
                         </div>
@@ -84,6 +115,7 @@ const Login = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
+                                autoComplete="current-password"
                                 placeholder="••••••••"
                                 className="w-full bg-black/40 border border-white/10 focus:border-primary focus:ring-1 focus:ring-primary/50 rounded-2xl py-4 px-5 text-sm outline-none transition-all text-white placeholder-gray-600 font-medium"
                             />
@@ -95,7 +127,10 @@ const Login = () => {
                             className="w-full bg-primary hover:bg-primary-dark text-black font-black py-4 rounded-2xl transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3 group active:scale-[0.98] disabled:opacity-50 mt-4 uppercase tracking-[0.2em] text-xs"
                         >
                             {loading ? (
-                                <Loader2 className="animate-spin" size={20} />
+                                <>
+                                    <Loader2 className="animate-spin" size={18} />
+                                    <span>Establishing Connection...</span>
+                                </>
                             ) : (
                                 <>
                                     Establish Connection
@@ -105,10 +140,10 @@ const Login = () => {
                         </button>
                     </form>
 
-                    <div className="mt-10 text-center opacity-50 hover:opacity-100 transition-opacity">
-                        <p className="text-[10px] font-black text-white uppercase tracking-widest leading-none mb-2">Demo Credentials</p>
+                    <div className="mt-10 text-center opacity-60 hover:opacity-100 transition-opacity">
+                        <p className="text-[10px] font-black text-white uppercase tracking-widest leading-none mb-2">Default Staff Credentials</p>
                         <p className="text-xs font-mono text-gray-400 bg-black/50 py-2 px-4 rounded-lg inline-block border border-white/5">
-                            admin@gocarauto.com / password123
+                            admin@gocar.com / password123
                         </p>
                     </div>
                 </div>

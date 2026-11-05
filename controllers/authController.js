@@ -12,15 +12,21 @@ const authController = {
      */
     staffLogin: async (req, res) => {
         try {
-            const { email, password } = req.body;
+            const { email, username, identifier, password } = req.body;
+            const userIdentifier = (email || username || identifier || '').trim();
 
-            if (!email || !password) {
-                return res.status(400).json({ error: 'Email and password are required' });
+            if (!userIdentifier || !password) {
+                return res.status(400).json({ error: 'Username/Email and password are required' });
             }
 
+            // Support exact email, case-insensitive email, name/username, or prefix (e.g. 'admin' -> 'admin@%')
             const staff = await database.get(
-                'SELECT * FROM users WHERE email = ?',
-                [email]
+                `SELECT * FROM users 
+                 WHERE LOWER(email) = LOWER(?) 
+                    OR LOWER(name) = LOWER(?) 
+                    OR email LIKE ? 
+                 LIMIT 1`,
+                [userIdentifier, userIdentifier, `${userIdentifier}@%`]
             );
 
             if (!staff) {
@@ -46,10 +52,12 @@ const authController = {
                 { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
             );
 
+            // In production with cross-origin deployments (Cloudflare Pages -> Render), SameSite=None + Secure is mandatory
+            const isProd = process.env.NODE_ENV === 'production';
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax', // Lax is better for local dev with different ports
+                secure: isProd,
+                sameSite: isProd ? 'none' : 'lax',
                 maxAge: 7 * 24 * 60 * 60 * 1000
             });
 
@@ -113,10 +121,11 @@ const authController = {
                 { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
             );
 
+            const isProd = process.env.NODE_ENV === 'production';
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
+                secure: isProd,
+                sameSite: isProd ? 'none' : 'lax',
                 maxAge: 7 * 24 * 60 * 60 * 1000
             });
 
@@ -255,10 +264,11 @@ const authController = {
      * Logout
      */
     logout: async (req, res) => {
+        const isProd = process.env.NODE_ENV === 'production';
         res.clearCookie('token', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax'
+            secure: isProd,
+            sameSite: isProd ? 'none' : 'lax'
         });
         res.json({ success: true });
     }

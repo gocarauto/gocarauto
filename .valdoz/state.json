@@ -29,11 +29,13 @@
     },
     "2": {
       "name": "Requirements",
-      "status": "pending",
-      "approved_by": null,
-      "approved_at": null,
+      "status": "approved",
+      "approved_by": "akhalil",
+      "approved_at": "2026-11-06T01:43:23+00:00",
       "approval_hash": null,
-      "deliverable_hashes": {}
+      "deliverable_hashes": {
+        "docs/02-requirements.md": "cd2c98a778892450c6541e61a4ec0f78107d47496bf882186dc75cd84819ea8a"
+      }
     },
     "3": {
       "name": "Stack Decision",
@@ -49,7 +51,10 @@
       "approved_by": "auto-scanner",
       "approved_at": "2026-11-02T00:03:56.742623+00:00",
       "approval_hash": null,
-      "deliverable_hashes": {}
+      "deliverable_hashes": {
+        "docs/04-architecture.md": "8d56d892a5e105c8443c6525e538537a4bcfdfe81849a1e05bbfe11f4efa9dee",
+        "docs/04-plan.md": "71c763e54322b4fa9783352ef0b450c7b410f2d6b01dc2b61093ab5794f0bd7a"
+      }
     },
     "5": {
       "name": "Project Setup",
@@ -57,7 +62,9 @@
       "approved_by": "auto-scanner",
       "approved_at": "2026-11-02T00:03:56.742628+00:00",
       "approval_hash": null,
-      "deliverable_hashes": {}
+      "deliverable_hashes": {
+        "README.md": "a0fd5fc61c682882c93b2019f3554ed79154e47f6d1638a3e752469a15b1fd8c"
+      }
     },
     "6": {
       "name": "Build",
@@ -69,11 +76,13 @@
     },
     "7": {
       "name": "Verify",
-      "status": "pending",
-      "approved_by": null,
-      "approved_at": null,
+      "status": "approved",
+      "approved_by": "akhalil",
+      "approved_at": "2026-11-06T01:43:50+00:00",
       "approval_hash": null,
-      "deliverable_hashes": {}
+      "deliverable_hashes": {
+        "docs/07-verification.md": "974922daeb7b263d27854e3df97d736a7512e92b85a2e7c9a86d46d1f1fb2396"
+      }
     },
     "8": {
       "name": "Deploy",
@@ -81,7 +90,9 @@
       "approved_by": "auto-scanner",
       "approved_at": "2026-11-02T00:03:56.742638+00:00",
       "approval_hash": null,
-      "deliverable_hashes": {}
+      "deliverable_hashes": {
+        "docs/08-deploy.md": "710279170da33848fb548919f4205b3bb97bc5c28b3f0225adadc5a32ec135dc"
+      }
     },
     "9": {
       "name": "Handover",
