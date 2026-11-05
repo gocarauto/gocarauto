@@ -21,6 +21,7 @@ All notable changes to the GoCar Auto platform are documented in this file.
   - Formally logged architectural decision `DEC-002` in `.valdoz/decisions.jsonl` and `.valdoz/decisions.md`.
   - Passed ValdoZ Phase 8 verification gate with pre-logged research citations (`RES-001` to `RES-005`).
   - Generated live interactive ValdoZ dashboard at `.valdoz/dashboard.html`.
+  - Configured project-isolated Git identity (`gocarauto <go2carauto@gmail.com>`) and successfully published initial production release to `https://github.com/gocarauto/gocarauto`.
 - **Customer Portal Hook Purity & Render Loops:**
   - Resolved `react-hooks/set-state-in-effect` in `customer-portal/src/context/AuthContext.jsx` by converting synchronous `setState` in `useEffect` to lazy state initialization `useState(() => ...)`.
   - Resolved `react-hooks/purity` in `customer-portal/src/components/AIAdvisor.jsx` by replacing impure `Date.now()` calls with a sequential ref-based message ID counter (`msgIdRef`).
