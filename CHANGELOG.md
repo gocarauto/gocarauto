@@ -19,6 +19,8 @@ All notable changes to the GoCar Auto platform are documented in this file.
   - Added `.github/workflows/ci.yml` verifying backend test suite (Node 20), frontend ESLint checks, and Vite production builds on every push/PR.
   - Added `.github/workflows/valdoz.yml` for automated CI phase gate verification and strict static security auditing.
   - Formally logged architectural decision `DEC-002` in `.valdoz/decisions.jsonl` and `.valdoz/decisions.md`.
+  - Formally logged architectural decision `DEC-003`: Established mandatory 3-stage lifecycle hierarchy (Local Antigravity -> GitHub Version Control -> Live Production Cloud).
+  - Codified non-bypassable workflow invariants in `.agent/rules/04-environment-workflow.md` and operational guide in `docs/WORKFLOW.md`.
   - Passed ValdoZ Phase 8 verification gate with pre-logged research citations (`RES-001` to `RES-005`).
   - Generated live interactive ValdoZ dashboard at `.valdoz/dashboard.html`.
   - Configured project-isolated Git identity (`gocarauto <go2carauto@gmail.com>`) and successfully published initial production release to `https://github.com/gocarauto/gocarauto`.
