@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Maintenance Invoices History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#111111", // Deep black for luxury feel, same as 'Design' button
+              "primary-hover": "#333333",
+              "background-light": "#FFFFFF",
+              "background-dark": "#0F0F0F", // Very dark gray for dark mode
+              "surface-light": "#F5F5F7", // Light gray background for cards
+              "surface-dark": "#1C1C1E", // Dark gray background for cards
+              "accent-gold": "#EAB308", // Golden accent from the car
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+              sans: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              'xl': '1rem',
+              '2xl': '1.5rem',
+            },
+            boxShadow: {
+              'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+            }
+          },
+        },
+      };
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
+<div class="flex min-h-screen">
+<aside class="w-64 hidden lg:block p-8 border-r border-gray-100 dark:border-gray-800 bg-background-light dark:bg-background-dark flex-shrink-0">
+<div class="mb-12">
+<div class="text-2xl font-extrabold tracking-tight mb-2">Mercedes-Benz</div>
+<div class="text-sm text-gray-500 dark:text-gray-400">Owner Dashboard</div>
+</div>
+<nav class="space-y-4">
+<a class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-surface-light dark:hover:bg-surface-dark rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+                    Overview
+                </a>
+<a class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-surface-light dark:hover:bg-surface-dark rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">directions_car</span>
+                    My Garage
+                </a>
+<a class="flex items-center px-4 py-3 bg-primary text-white rounded-full shadow-lg transition-transform transform scale-105" href="#">
+<span class="material-symbols-outlined mr-3">receipt_long</span>
+                    Invoices
+                </a>
+<a class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-surface-light dark:hover:bg-surface-dark rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">calendar_month</span>
+                    Appointments
+                </a>
+<a class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-surface-light dark:hover:bg-surface-dark rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+                    Settings
+                </a>
+</nav>
+</aside>
+<main class="flex-1 p-6 lg:p-12 overflow-y-auto">
+<header class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10">
+<div>
+<h1 class="text-4xl md:text-5xl font-extrabold mb-2 text-gray-900 dark:text-white">Invoices History</h1>
+<p class="text-gray-500 dark:text-gray-400 text-lg">AMG C 63 S Coupe - 2023</p>
+</div>
+<div class="mt-6 md:mt-0 p-6 bg-surface-light dark:bg-surface-dark rounded-2xl flex items-center shadow-soft border border-gray-100 dark:border-gray-800">
+<div class="bg-primary p-3 rounded-full text-white mr-4">
+<span class="material-symbols-outlined text-2xl">account_balance_wallet</span>
+</div>
+<div>
+<div class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Outstanding Balance</div>
+<div class="text-2xl font-bold text-gray-900 dark:text-white">$0.00</div>
+</div>
+<div class="ml-6 pl-6 border-l border-gray-200 dark:border-gray-700">
+<span class="flex items-center text-green-600 dark:text-green-400 text-sm font-semibold">
+<span class="material-symbols-outlined text-sm mr-1">check_circle</span>
+                            All Paid
+                        </span>
+</div>
+</div>
+</header>
+<div class="flex flex-col sm:flex-row gap-4 mb-8">
+<div class="relative flex-grow max-w-md">
+<span class="material-symbols-outlined absolute left-4 top-3.5 text-gray-400">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-light dark:bg-surface-dark border-none rounded-xl focus:ring-2 focus:ring-primary dark:focus:ring-white text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 shadow-sm transition-all" placeholder="Search invoice ID or service center..." type="text"/>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+<button class="px-6 py-3 bg-primary text-white rounded-xl font-medium shadow-md whitespace-nowrap">
+                        All Invoices
+                    </button>
+<button class="px-6 py-3 bg-surface-light dark:bg-surface-dark text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors whitespace-nowrap">
+                        Paid
+                    </button>
+<button class="px-6 py-3 bg-surface-light dark:bg-surface-dark text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors whitespace-nowrap">
+                        Pending
+                    </button>
+<button class="px-6 py-3 bg-surface-light dark:bg-surface-dark text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors whitespace-nowrap">
+                        Service Plans
+                    </button>
+</div>
+</div>
+<div class="bg-white dark:bg-surface-dark rounded-3xl shadow-soft overflow-hidden border border-gray-100 dark:border-gray-800">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-gray-100 dark:border-gray-700">
+<th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Invoice ID</th>
+<th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Date</th>
+<th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Service Description</th>
+<th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Service Center</th>
+<th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+<th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Amount</th>
+<th class="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Action</th>
+</tr>
+</thead>
+<tbody class="text-sm">
+<tr class="group hover:bg-surface-light dark:hover:bg-gray-800/50 transition-colors border-b border-gray-50 dark:border-gray-800 last:border-0">
+<td class="p-6 font-semibold text-gray-900 dark:text-white">#INV-2023-089</td>
+<td class="p-6 text-gray-600 dark:text-gray-400">Oct 24, 2023</td>
+<td class="p-6">
+<div class="font-medium text-gray-900 dark:text-white">Annual Maintenance Service A</div>
+<div class="text-xs text-gray-500 mt-1">Oil change, Filter replacement</div>
+</td>
+<td class="p-6 text-gray-600 dark:text-gray-400">Mercedes-Benz of Downtown</td>
+<td class="p-6">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                        Paid
+                                    </span>
+</td>
+<td class="p-6 font-bold text-gray-900 dark:text-white text-right">$450.00</td>
+<td class="p-6 text-center">
+<button class="p-2 text-gray-400 hover:text-primary dark:hover:text-white transition-colors" title="Download PDF">
+<span class="material-symbols-outlined">download</span>
+</button>
+</td>
+</tr>
+<tr class="group hover:bg-surface-light dark:hover:bg-gray-800/50 transition-colors border-b border-gray-50 dark:border-gray-800 last:border-0">
+<td class="p-6 font-semibold text-gray-900 dark:text-white">#INV-2023-042</td>
+<td class="p-6 text-gray-600 dark:text-gray-400">May 12, 2023</td>
+<td class="p-6">
+<div class="font-medium text-gray-900 dark:text-white">Brake Pad Replacement</div>
+<div class="text-xs text-gray-500 mt-1">Front and Rear ceramic pads</div>
+</td>
+<td class="p-6 text-gray-600 dark:text-gray-400">AMG Performance Center</td>
+<td class="p-6">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                        Paid
+                                    </span>
+</td>
+<td class="p-6 font-bold text-gray-900 dark:text-white text-right">$1,250.00</td>
+<td class="p-6 text-center">
+<button class="p-2 text-gray-400 hover:text-primary dark:hover:text-white transition-colors" title="Download PDF">
+<span class="material-symbols-outlined">download</span>
+</button>
+</td>
+</tr>
+<tr class="group hover:bg-surface-light dark:hover:bg-gray-800/50 transition-colors border-b border-gray-50 dark:border-gray-800 last:border-0">
+<td class="p-6 font-semibold text-gray-900 dark:text-white">#INV-2022-115</td>
+<td class="p-6 text-gray-600 dark:text-gray-400">Dec 05, 2022</td>
+<td class="p-6">
+<div class="font-medium text-gray-900 dark:text-white">Winter Tire Package</div>
+<div class="text-xs text-gray-500 mt-1">Includes installation and balancing</div>
+</td>
+<td class="p-6 text-gray-600 dark:text-gray-400">Mercedes-Benz North</td>
+<td class="p-6">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                        Paid
+                                    </span>
+</td>
+<td class="p-6 font-bold text-gray-900 dark:text-white text-right">$2,100.00</td>
+<td class="p-6 text-center">
+<button class="p-2 text-gray-400 hover:text-primary dark:hover:text-white transition-colors" title="Download PDF">
+<span class="material-symbols-outlined">download</span>
+</button>
+</td>
+</tr>
+<tr class="group hover:bg-surface-light dark:hover:bg-gray-800/50 transition-colors border-b border-gray-50 dark:border-gray-800 last:border-0">
+<td class="p-6 font-semibold text-gray-900 dark:text-white">#INV-2022-092</td>
+<td class="p-6 text-gray-600 dark:text-gray-400">Sep 18, 2022</td>
+<td class="p-6">
+<div class="font-medium text-gray-900 dark:text-white">Detailing - Platinum Package</div>
+<div class="text-xs text-gray-500 mt-1">Interior deep clean &amp; Exterior ceramic coating</div>
+</td>
+<td class="p-6 text-gray-600 dark:text-gray-400">Luxury Auto Spa</td>
+<td class="p-6">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                        Paid
+                                    </span>
+</td>
+<td class="p-6 font-bold text-gray-900 dark:text-white text-right">$850.00</td>
+<td class="p-6 text-center">
+<button class="p-2 text-gray-400 hover:text-primary dark:hover:text-white transition-colors" title="Download PDF">
+<span class="material-symbols-outlined">download</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center">
+<div class="text-sm text-gray-500 dark:text-gray-400">
+                        Showing <span class="font-medium text-gray-900 dark:text-white">1</span> to <span class="font-medium text-gray-900 dark:text-white">4</span> of <span class="font-medium text-gray-900 dark:text-white">12</span> results
+                    </div>
+<div class="flex space-x-2">
+<button class="w-10 h-10 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-700 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-700 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-12">
+<div class="flex items-center mb-6">
+<h2 class="text-2xl font-bold text-gray-900 dark:text-white">Upcoming Recommended Service</h2>
+<span class="material-symbols-outlined text-gray-400 ml-2 text-sm cursor-help" title="Based on mileage">info</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 flex flex-col justify-between h-full hover:shadow-lg transition-shadow">
+<div>
+<div class="flex items-start justify-between mb-4">
+<div class="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-gray-700 dark:text-gray-200">oil_barrel</span>
+</div>
+</div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Service B</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Due in 1,200 miles</p>
+<ul class="text-xs text-gray-600 dark:text-gray-300 space-y-2 mb-4">
+<li class="flex items-center"><span class="w-1 h-1 bg-gray-400 rounded-full mr-2"></span>Oil filter replacement</li>
+<li class="flex items-center"><span class="w-1 h-1 bg-gray-400 rounded-full mr-2"></span>Brake fluid exchange</li>
+<li class="flex items-center"><span class="w-1 h-1 bg-gray-400 rounded-full mr-2"></span>Cabin dust filter</li>
+</ul>
+</div>
+<button class="w-full py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-colors">
+                            Book Now
+                        </button>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 flex flex-col justify-between h-full hover:shadow-lg transition-shadow opacity-60">
+<div>
+<div class="flex items-start justify-between mb-4">
+<div class="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-gray-700 dark:text-gray-200">tire_repair</span>
+</div>
+</div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Tire Rotation</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400">Completed recently</p>
+</div>
+<div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+<span class="text-xs text-green-600 dark:text-green-400 font-semibold flex items-center">
+<span class="material-symbols-outlined text-sm mr-1">check</span> Good condition
+                             </span>
+</div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 flex flex-col justify-center items-center text-center">
+<div class="text-4xl font-extrabold text-gray-900 dark:text-white mb-2">$4,650</div>
+<div class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total Spend (YTD)</div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 flex flex-col justify-center items-center text-center">
+<div class="text-4xl font-extrabold text-gray-900 dark:text-white mb-2">4</div>
+<div class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Service Visits</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

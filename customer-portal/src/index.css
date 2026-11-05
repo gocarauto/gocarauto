@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #fbbf24;
+    --color-primary-dark: #d97706;
+    --color-primary-light: #fde68a;
+
+    --color-obsidian: #070709;
+    --color-obsidian-surface: #101116;
+    --color-obsidian-card: #15161d;
+    --color-gold-champagne: #d4af37;
+
+    --color-nordic-slate: #0b0f17;
+    --color-nordic-surface: #151c28;
+    --color-lime-accent: #10b981;
+
+    --color-alabaster-bg: #faf7f2;
+    --color-terracotta: #c0673f;
+
+    --color-background-light: #f9fafb;
+    --color-background-dark: #070709;
+
+    --color-surface-light: #ffffff;
+    --color-surface-dark: #121318;
+
+    --color-text-primary-light: #111827;
+    --color-text-primary-dark: #f8fafc;
+
+    --color-text-secondary-light: #64748b;
+    --color-text-secondary-dark: #94a3b8;
+
+    --font-sans: "Plus Jakarta Sans", "Outfit", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Outfit", "Plus Jakarta Sans", sans-serif;
+    --font-tech: "Space Grotesk", "JetBrains Mono", monospace;
+    --font-arabic: "Cairo", sans-serif;
+
+    --radius-default: 1rem;
+}
+
+@layer base {
+    body {
+        @apply antialiased transition-colors duration-300;
+        font-family: var(--font-sans);
+    }
+
+    h1, h2, h3, h4, .font-display {
+        font-family: var(--font-display);
+    }
+
+    [dir="rtl"] {
+        @apply text-right;
+        font-family: var(--font-arabic) !important;
+    }
+
+    [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4 {
+        font-family: var(--font-arabic) !important;
+    }
+
+    [dir="ltr"] {
+        font-family: var(--font-sans) !important;
+    }
+}
+
+@layer components {
+    .glass-noir {
+        background: rgba(14, 15, 19, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    .glass-gold-glow {
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.12) 0%, rgba(217, 119, 6, 0.04) 100%);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(251, 191, 36, 0.25);
+        box-shadow: 0 20px 40px rgba(251, 191, 36, 0.08);
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .dark .glass-card {
+        background: rgba(18, 19, 24, 0.7);
+        border-color: rgba(255, 255, 255, 0.07);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .glass-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 45px rgba(0, 0, 0, 0.08);
+    }
+    
+    .dark .glass-card:hover {
+        border-color: rgba(251, 191, 36, 0.35);
+        box-shadow: 0 16px 45px rgba(251, 191, 36, 0.12);
+    }
+
+    .btn-vip-primary {
+        @apply bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-black py-4 px-8 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-50 tracking-wider shadow-lg shadow-yellow-500/20 uppercase text-xs;
+    }
+
+    .telemetry-gauge-track {
+        @apply w-full bg-white/10 dark:bg-white/5 rounded-full h-2 overflow-hidden relative;
+    }
+
+    .telemetry-gauge-fill {
+        @apply h-full rounded-full transition-all duration-700 ease-out;
+    }
+}
+
+/* Custom Ultra-Slim Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.3);
+    border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(251, 191, 36, 0.5);
+}
+
+/* Mirrored Layout Support */
+.rtl-flip {
+    @apply rtl:rotate-180;
+}

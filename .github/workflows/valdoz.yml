@@ -1,0 +1,31 @@
+name: ValdoZ Gate Verification
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  valdoz-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install ValdoZ Protocol
+        run: |
+          curl -Lsf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          # Install from PyPI or local source during preview:
+          uv tool install valdoz-protocol@3.0.0 || {
+            echo "::error::ValdoZ package not published on PyPI. Configure repo token."
+            exit 1
+          }
+          valdoz --version
+
+      - name: Verify Phase Gate
+        run: valdoz gate check --ci
+
+      - name: Run ValdoZ Audit
+        run: valdoz audit --strict --no-network

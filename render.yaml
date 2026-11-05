@@ -1,0 +1,48 @@
+# Render Blueprint Specification for GoCar Auto (SFMS)
+# Free Tier Web Service Configuration
+
+services:
+  - type: web
+    name: gocar-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: frankfurt # Low-latency for MENA / Egypt
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: DB_TYPE
+        value: mysql
+      - key: DB_HOST
+        sync: false # Set in Render Dashboard from TiDB Cloud Serverless
+      - key: DB_PORT
+        value: "4000"
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        value: gocar_auto
+      - key: DB_SSL
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true # Render auto-generates a secure 32+ char secret
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CORS_ORIGIN
+        sync: false # Set comma-separated Cloudflare Pages URLs
+      - key: CUSTOMER_PORTAL_URL
+        sync: false # Set your customer portal Cloudflare Pages URL
+      - key: PUPPETEER_EXECUTABLE_PATH
+        value: /usr/bin/chromium
+      - key: COMPANY_NAME
+        value: "GoCar Auto"
+      - key: COMPANY_ADDRESS
+        value: "Cairo, Egypt"
+      - key: COMPANY_PHONE
+        value: "+20 106 661 5092"
+      - key: COMPANY_EMAIL
+        value: "go2carauto@gmail.com"

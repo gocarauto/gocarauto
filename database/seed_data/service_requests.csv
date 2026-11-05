@@ -1,0 +1,51 @@
+RequestID,CustomerID,VehicleID,RequestDate,ServiceType,Status,CustomerName,VehicleInfo,DaysOpen
+REQ001,BY5170523,PNGen13332,15/05/2023,تصليح أعطال,Completed,Baher Badawy,Proton Gen 2,990
+REQ002,SZ6710524,NNSun11000,21/05/2024,تصليح أعطال,Completed,Sawsan Hafez,Nissan Sunny N16,618
+REQ003,SR0050724,VNJet07000,04/07/2024,طلب قطع غيار,Completed,Sohair,VolksWagen Jetta,574
+REQ004,SZ6710524,NNSun11000,16/07/2024,تصليح أعطال,Completed,Sawsan Hafez,Nissan Sunny N16,562
+REQ005,BY5170523,PNGen13332,19/07/2024,تصليح أعطال,Completed,Baher Badawy,Proton Gen 2,559
+REQ006,AL5500724,HITuc16771,21/07/2024,تصليح أعطال,Completed,Amr Nabeel,Hyundai Tucson IX35,557
+REQ007,MD7400824,GYPan15000,03/08/2024,تصليح أعطال,Completed,Myriam Riad,Geely Pandino,544
+REQ008,AA9130824,HIEla13000,24/08/2024,تصليح أعطال,Completed,Ahmad Shata,Hyundai Elantra,523
+REQ009,NA6790924,HIRB15000,21/09/2024,تصليح أعطال,Completed,Nagwa,Hyundai RB,495
+REQ010,HL5000924,VNJet08000,21/09/2024,تصليح أعطال,Completed,Haytham Zagloul,VolksWagen Jetta,495
+REQ011,HM6871024,HIVer10000,16/10/2024,تصليح أعطال,Completed,Husam Salem,Hyundai Verna,470
+REQ012,BY5170523,PNGen13332,19/11/2024,تصليح أعطال,Completed,Baher Badawy,Proton Gen 2,436
+REQ013,AY4651224,DUTer07000,02/12/2024,تصليح أعطال,Completed,Abdelaziz Hassaby,Daihatsu Terrios,423
+REQ014,AA9130824,HIEla13000,04/12/2024,تصليح أعطال,Completed,Ahmad Shata,Hyundai Elantra,421
+REQ015,BY5170523,PNGen13332,09/01/2025,تصليح أعطال,Completed,Baher Badawy,Proton Gen 2,385
+REQ016,MH3990125,PNWag07000,29/01/2025,تصليح أعطال,Completed,Mohsen Moftah,Proton Waga,365
+REQ017,AN8960325,HISol15000,19/03/2025,تصليح أعطال,Completed,AbdelRahman,Hyundai Solaris,316
+REQ018,SR0050724,VNJet07000,21/03/2025,تصليح أعطال,Completed,Sohair,VolksWagen Jetta,314
+REQ019,RA6090325,HACiv08000,31/03/2025,تصليح أعطال,Completed,Rafa,Honda Civic,304
+REQ020,AY1670725,MA315000,19/07/2025,تصليح أعطال,Completed,Ahmad Shalaby,Mazda 3,194
+REQ021,MF5860725,FDFoc12778,20/07/2025,تصليح أعطال,Completed,Mohammad Yousef,Ford Focus,193
+REQ022,AY5600725,TACor08000,22/07/2025,تصليح أعطال,Completed,Ayman Hanafy,Toyota Corolla,191
+REQ023,KA6840825,TACor19000,10/08/2025,تصليح أعطال,Completed,Kareem Shata,Toyota Corolla,172
+REQ024,MY7080625,RTFlu15000,14/08/2025,تصليح أعطال,Completed,Mohammad Abdelshafy,Renault Fluence,168
+REQ025,AY9060825,MICol00000,15/08/2025,تصليح أعطال,Completed,Ahmad Mohy,Mitsubishi Colt,167
+REQ026,OG6360825,RTMeg21272,16/08/2025,تصليح أعطال,Completed,Omar Serag,Renault Megane 4,166
+REQ027,MM3960825,MILan08000,01/09/2025,تصليح أعطال,Completed,Madeeha Ibrahim,Mitsubishi Lancer,150
+REQ028,MN6680925,CNC-E16607,01/09/2025,تصليح أعطال,Completed,Maha Hasanean,Citroen C-Elysee,150
+REQ029,SR0050724,VNJet07000,01/09/2025,تصليح أعطال,Completed,Sohair,VolksWagen Jetta,150
+REQ030,AL0080523,FDFoc09000,25/08/2025,تصليح أعطال,Completed,Ahmad Khalil,Ford Focus,157
+REQ031,MY8770825,RTLog13000,27/08/2025,تصليح أعطال,Completed,Mohammad Fathy,Renault Logan,155
+REQ032,AY9060825,MICol00000,06/09/2025,تصليح أعطال,Completed,Ahmad Mohy,Mitsubishi Colt,145
+REQ033,AY3770925,HIEla11000,10/09/2025,تصليح أعطال,Completed,Ahmad Sobhy,Hyundai Elantra,141
+REQ034,AY9060825,MICol00000,11/09/2025,تصليح أعطال,Completed,Ahmad Mohy,Mitsubishi Colt,140
+REQ035,AY9180925,RTLog10000,17/09/2025,تصليح أعطال,Completed,Ahmad Nagy,Renault Logan,134
+REQ036,AL0080523,FDFoc09000,19/09/2025,تصليح أعطال,Completed,Ahmad Khalil,Ford Focus,132
+REQ037,HD2440925,NNBlu11000,28/09/2025,تصليح أعطال,Completed,Hesham Mohammad,Nissan Blue Bird,123
+REQ038,AL5500724,HITuc16771,29/09/2025,تصليح أعطال,Completed,Amr Nabeel,Hyundai Tucson IX35,122
+REQ039,HD2440925,NNBlu11000,,,,Hesham Mohammad,Nissan Blue Bird,46051
+REQ040,ID8251025,TAYar08614,09/10/2025,تصليح أعطال,Completed,Islam Ahmad,Toyota Yaris,112
+REQ041,AZ9701025,MSC2002000,30/09/2025,تصليح أعطال,In Progress,Ahmad Hafez,Mercedes C200,121
+REQ042,AL5500724,HITuc16771,22/10/2025,تصليح أعطال,Completed,Amr Nabeel,Hyundai Tucson IX35,99
+REQ043,RD9861125,HIMat05000,06/11/2025,تصليح أعطال,Completed,Ramadan Ahmad,Hyundai Matrix,84
+REQ044,HA0501125,CTAve13000,14/11/2025,تصليح أعطال,Completed,Hasanean Hamza,Chevrolet Aveo,76
+REQ045,AA9130824,HIEla13000,14/11/2025,تصليح أعطال,Completed,Ahmad Shata,Hyundai Elantra,76
+REQ046,AN8960325,HISol15000,17/11/2025,تصليح أعطال,Completed,AbdelRahman,Hyundai Solaris,73
+REQ047,TD4401125,MILan15000,18/11/2025,تصليح أعطال,Completed,Tarek Ahmad,Mitsubishi Lancer,72
+REQ048,AY5600725,TACor08000,20/11/2025,تصليح أعطال,Completed,Ayman Hanafy,Toyota Corolla,70
+REQ049,MN1191225,TACor13000,23/12/2025,تصليح أعطال,Completed,Marwa Shaheen,Toyota Corolla,37
+REQ050,AZ9701025,MSC2002000,08/01/2026,تصليح أعطال,Completed,Ahmad Hafez,Mercedes C200,21

@@ -1,0 +1,57 @@
+name: CI Build & Test Verification
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend-test:
+    name: Backend Test Suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Test Suite
+        run: npm test
+
+  frontend-build:
+    name: Frontend Lint & Build (Customer & Staff)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Customer Portal Dependencies
+        run: cd customer-portal && npm ci
+
+      - name: Lint Customer Portal
+        run: cd customer-portal && npm run lint
+
+      - name: Build Customer Portal
+        run: cd customer-portal && npm run build
+
+      - name: Install Staff Interface Dependencies
+        run: cd staff-interface && npm ci
+
+      - name: Lint Staff Interface
+        run: cd staff-interface && npm run lint
+
+      - name: Build Staff Interface
+        run: cd staff-interface && npm run build

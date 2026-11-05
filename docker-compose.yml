@@ -1,0 +1,64 @@
+services:
+  # Backend API
+  backend:
+    build: .
+    container_name: gocar-backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./database:/app/database
+      - ./public:/app/public
+      - ./.env:/app/.env
+      - ./routes:/app/routes
+      - ./utils:/app/utils
+      - ./middleware:/app/middleware
+      - ./controllers:/app/controllers
+      - ./config:/app/config
+      - ./server.js:/app/server.js
+      - ./package.json:/app/package.json
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    networks:
+      - gocar-network
+    restart: unless-stopped
+
+  # Staff Interface
+  staff-interface:
+    build: ./staff-interface
+    container_name: gocar-staff-interface
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./staff-interface/src:/app/src
+      - ./staff-interface/public:/app/public
+      - ./staff-interface/index.html:/app/index.html
+    environment:
+      - VITE_API_URL=http://localhost:3000/api
+    networks:
+      - gocar-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # Customer Portal
+  customer-portal:
+    build: ./customer-portal
+    container_name: gocar-customer-portal
+    ports:
+      - "5174:5174"
+    volumes:
+      - ./customer-portal/src:/app/src
+      - ./customer-portal/public:/app/public
+      - ./customer-portal/index.html:/app/index.html
+    environment:
+      - VITE_API_URL=http://localhost:3000/api
+    networks:
+      - gocar-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+networks:
+  gocar-network:
+    driver: bridge

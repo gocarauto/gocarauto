@@ -1,0 +1,421 @@
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { useLanguage } from '../context/LanguageContext';
+import api from '../utils/api';
+import { formatDate } from '../utils/dateUtils';
+import {
+    Search,
+    Download,
+    Eye,
+    FileText,
+    Droplet,
+    Hexagon,
+    Wind,
+    ChevronLeft,
+    ChevronRight,
+    ArrowUpDown,
+    CheckCircle2,
+    Calendar,
+    Wrench,
+    Clock,
+    Sparkles
+} from 'lucide-react';
+
+const ServiceHistory = () => {
+    const { lang } = useLanguage();
+    const isAr = lang === 'ar';
+
+    const [history, setHistory] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [activeTab, setActiveTab] = useState('All');
+    const [sortField, setSortField] = useState('service_date');
+    const [sortDir, setSortDir] = useState('desc');
+    const PAGE_SIZE = 10;
+    const [page, setPage] = useState(1);
+
+    useEffect(() => {
+        const fetchHistory = async () => {
+            try {
+                const response = await api.get('/customer-portal/service-history');
+                setHistory(response.data?.data || []);
+            } catch (error) {
+                console.error('Failed to fetch history:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchHistory();
+    }, []);
+
+    // Support both direct view columns and bilingual aliases
+    const getItemTitle = (item) => {
+        if (isAr) {
+            return item.item_name_ar || item.item_name || item.service_type || 'صيانة عامة';
+        }
+        return item.item_name || item.item_name_ar || item.service_type || 'Maintenance';
+    };
+
+    const getItemVehicle = (item) => item.vehicle_info || item.vehicle_name || 'Vehicle';
+    const getItemCost = (item) => parseFloat(item.total_price ?? item.total_cost ?? 0);
+    const getItemStatus = (item) => {
+        const raw = item.request_status || item.payment_status || item.status || 'Completed';
+        if (isAr) {
+            if (raw === 'Completed' || raw === 'Complete' || raw === 'Paid') return 'مكتمل';
+            if (raw === 'Pending') return 'قيد المراجعة';
+            if (raw === 'In Progress') return 'قيد العمل';
+            return raw;
+        }
+        return raw;
+    };
+
+    const handleViewInvoice = async (invoiceId) => {
+        if (!invoiceId) {
+            alert(isAr ? 'لم تصدر فاتورة لهذا السجل بعد.' : 'No invoice generated for this record yet.');
+            return;
+        }
+        try {
+            const response = await api.get(`/financial/${invoiceId}/view`);
+            const newWindow = window.open('', '_blank');
+            if (newWindow) {
+                newWindow.document.write(response.data);
+                newWindow.document.close();
+            }
+        } catch {
+            const token = localStorage.getItem('token');
+            const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+            window.open(`${baseUrl}/financial/${invoiceId}/view${token ? `?token=${token}` : ''}`, '_blank');
+        }
+    };
+
+    const handleDownloadPDF = async (invoiceId, invoiceNumber) => {
+        if (!invoiceId) {
+            alert(isAr ? 'لم تصدر فاتورة لهذا السجل بعد.' : 'No invoice generated for this record yet.');
+            return;
+        }
+        try {
+            const response = await api.get(`/financial/${invoiceId}/pdf`, { responseType: 'blob' });
+            const blob = new Blob([response.data], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${invoiceNumber || 'invoice'}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch {
+            const token = localStorage.getItem('token');
+            const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+            window.open(`${baseUrl}/financial/${invoiceId}/pdf${token ? `?token=${token}` : ''}`, '_blank');
+        }
+    };
+
+    const TAB_KEYWORDS = { All: '', Oil: 'oil', Brakes: 'brake', Tires: 'tire' };
+
+    const filteredHistory = history
+        .filter(item => {
+            const kw = TAB_KEYWORDS[activeTab];
+            const title = (item.item_name || item.item_name_ar || '').toLowerCase();
+            const vehicle = getItemVehicle(item).toLowerCase();
+            const matchesTab = !kw || title.includes(kw);
+            const matchesSearch = title.includes(searchTerm.toLowerCase()) || vehicle.includes(searchTerm.toLowerCase());
+            return matchesTab && matchesSearch;
+        })
+        .sort((a, b) => {
+            const aVal = a[sortField] ?? '';
+            const bVal = b[sortField] ?? '';
+            const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+            return sortDir === 'asc' ? cmp : -cmp;
+        });
+
+    const totalPages = Math.max(1, Math.ceil(filteredHistory.length / PAGE_SIZE));
+    const paginatedHistory = filteredHistory.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+    const toggleSort = (field) => {
+        if (sortField === field) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+        else { setSortField(field); setSortDir('asc'); }
+        setPage(1);
+    };
+
+    const handleTabChange = (tab) => { setActiveTab(tab); setPage(1); };
+
+    const exportCSV = () => {
+        const headers = ['Service Type', 'Date', 'Vehicle', 'Mileage (km)', 'Cost (EGP)', 'Status'];
+        const rows = filteredHistory.map(item => [
+            getItemTitle(item),
+            item.service_date ? formatDate(item.service_date) : '',
+            getItemVehicle(item),
+            item.mileage || '0',
+            getItemCost(item),
+            item.request_status || item.payment_status || 'Completed'
+        ]);
+        const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; 
+        a.download = `service_history_${new Date().toISOString().split('T')[0]}.csv`; 
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
+    const totalSpent = history.reduce((s, i) => s + getItemCost(i), 0);
+    const uniqueVehicles = new Set(history.map(i => getItemVehicle(i))).size;
+
+    const getIcon = (type) => {
+        const t = (type || '').toLowerCase();
+        if (t.includes('oil') || t.includes('زيت')) return { icon: Droplet, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/10' };
+        if (t.includes('brake') || t.includes('فرامل')) return { icon: Hexagon, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/10' };
+        if (t.includes('filter') || t.includes('فلتر')) return { icon: Wind, color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-900/10' };
+        return { icon: FileText, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-900/10' };
+    };
+
+    if (loading) {
+        return (
+            <div className="space-y-8 animate-pulse">
+                <div className="h-28 bg-gray-100 dark:bg-white/5 rounded-[2.5rem]"></div>
+                <div className="h-[460px] bg-gray-100 dark:bg-white/5 rounded-[2.5rem]"></div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-8 pb-20">
+            {/* ── Top Header Section ── */}
+            <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl md:text-4xl font-black text-black dark:text-white uppercase tracking-tighter">
+                        {isAr ? 'سجلات الصيانة ودفتر الخدمة' : 'Service Logbook & History'}
+                    </h1>
+                    <p className="text-xs md:text-sm text-gray-400 font-bold uppercase tracking-widest mt-1">
+                        {isAr ? 'سجل رقمي موثق لكل زيارة وقطعة غيار وفاتورة' : 'Official digital service ledger with verified invoices'}
+                    </p>
+                </div>
+            </header>
+
+            {/* Stat Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                    { 
+                        label: isAr ? 'إجمالي السجلات' : 'Total Records', 
+                        value: history.length, 
+                        suffix: isAr ? 'عملية' : 'Entries' 
+                    },
+                    { 
+                        label: isAr ? 'إجمالي المدفوعات' : 'YTD Maintenance', 
+                        value: `${totalSpent.toLocaleString(undefined, { maximumFractionDigits: 2 })}`, 
+                        suffix: isAr ? 'ج.م' : 'EGP' 
+                    },
+                    { 
+                        label: isAr ? 'السيارات المشمولة' : 'Vehicles Serviced', 
+                        value: uniqueVehicles, 
+                        suffix: isAr ? 'سيارات' : 'Cars' 
+                    },
+                ].map((stat, i) => (
+                    <div key={i} className="p-6 rounded-[2.2rem] border bg-white dark:bg-[#0c0d12] border-gray-100 dark:border-white/5 text-black dark:text-white shadow-xl flex items-center justify-between">
+                        <div>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1 block">{stat.label}</span>
+                            <div className="flex items-baseline gap-2">
+                                <span className="text-3xl font-black tracking-tighter">{stat.value}</span>
+                                <span className="text-xs font-bold text-gray-400 uppercase">{stat.suffix}</span>
+                            </div>
+                        </div>
+                        <div className="w-12 h-12 rounded-2xl bg-[#fbbf24]/10 text-[#fbbf24] flex items-center justify-center font-black">
+                            <Sparkles size={20} />
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* ── Table Container ── */}
+            <div className="bg-white dark:bg-[#0c0d12] rounded-[2.8rem] border border-gray-100 dark:border-white/5 shadow-2xl overflow-hidden transition-colors duration-500">
+                {/* Table Header / Toolbar */}
+                <div className="p-6 md:p-8 border-b border-gray-100 dark:border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="relative flex-1 max-w-md">
+                        <Search className="absolute ltr:left-5 rtl:right-5 top-1/2 -translate-y-1/2 text-gray-400" size={17} />
+                        <input 
+                            type="text" 
+                            placeholder={isAr ? 'البحث بالخدمة، السيارة، أو الفاتورة...' : 'Search by service, vehicle, or ID...'} 
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-full py-3.5 ltr:pl-12 rtl:pr-12 px-6 text-xs font-medium outline-none focus:ring-2 focus:ring-[#fbbf24] transition-all text-black dark:text-white"
+                        />
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        <div className="flex bg-gray-50 dark:bg-white/5 p-1 rounded-full border border-gray-100 dark:border-white/5">
+                            {[
+                                { id: 'All', en: 'All', ar: 'الكل' },
+                                { id: 'Oil', en: 'Oil', ar: 'زيوت' },
+                                { id: 'Brakes', en: 'Brakes', ar: 'فرامل' },
+                                { id: 'Tires', en: 'Tires', ar: 'إطارات' }
+                            ].map(tab => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => handleTabChange(tab.id)}
+                                    className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all ${
+                                        tab.id === activeTab
+                                            ? 'bg-black dark:bg-white text-white dark:text-black shadow-md'
+                                            : 'text-gray-400 hover:text-black dark:hover:text-white'
+                                    }`}>
+                                    {isAr ? tab.ar : tab.en}
+                                </button>
+                            ))}
+                        </div>
+                        <button
+                            onClick={exportCSV}
+                            className="h-11 px-5 rounded-full bg-black dark:bg-white text-white dark:text-black flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:opacity-85 transition-all shadow-md shrink-0">
+                            <Download size={15} />
+                            <span>{isAr ? 'تصدير CSV' : 'Export CSV'}</span>
+                        </button>
+                    </div>
+                </div>
+
+                {/* Table Layout */}
+                <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                        <thead>
+                            <tr className="border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+                                <th onClick={() => toggleSort('service_type')} className="px-8 py-5 ltr:text-left rtl:text-right text-[10px] font-black uppercase tracking-widest text-gray-400 cursor-pointer hover:text-black dark:hover:text-white">
+                                    <div className="flex items-center gap-2">{isAr ? 'نوع الخدمة' : 'Service Type'} <ArrowUpDown size={12} /></div>
+                                </th>
+                                <th onClick={() => toggleSort('service_date')} className="px-8 py-5 ltr:text-left rtl:text-right text-[10px] font-black uppercase tracking-widest text-gray-400 cursor-pointer hover:text-black dark:hover:text-white">
+                                    <div className="flex items-center gap-2">{isAr ? 'التاريخ' : 'Date'} <ArrowUpDown size={12} /></div>
+                                </th>
+                                <th onClick={() => toggleSort('vehicle_name')} className="px-8 py-5 ltr:text-left rtl:text-right text-[10px] font-black uppercase tracking-widest text-gray-400 cursor-pointer hover:text-black dark:hover:text-white">
+                                    <div className="flex items-center gap-2">{isAr ? 'السيارة' : 'Vehicle'} <ArrowUpDown size={12} /></div>
+                                </th>
+                                <th className="px-8 py-5 ltr:text-left rtl:text-right text-[10px] font-black uppercase tracking-widest text-gray-400">{isAr ? 'العداد' : 'Mileage'}</th>
+                                <th className="px-8 py-5 ltr:text-left rtl:text-right text-[10px] font-black uppercase tracking-widest text-gray-400">{isAr ? 'التكلفة' : 'Cost'}</th>
+                                <th className="px-8 py-5 ltr:text-left rtl:text-right text-[10px] font-black uppercase tracking-widest text-gray-400">{isAr ? 'الحالة' : 'Status'}</th>
+                                <th className="px-8 py-5 ltr:text-right rtl:text-left text-[10px] font-black uppercase tracking-widest text-gray-400">{isAr ? 'الإجراءات' : 'Actions'}</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                            {paginatedHistory.length > 0 ? paginatedHistory.map((item, idx) => {
+                                const title = getItemTitle(item);
+                                const vehicle = getItemVehicle(item);
+                                const cost = getItemCost(item);
+                                const statusLabel = getItemStatus(item);
+                                const rawStatus = item.request_status || item.payment_status || item.status || 'Completed';
+                                const style = getIcon(title);
+                                const vinDisplay = item.vin ? `VIN: ...${item.vin.slice(-4)}` : (item.license_plate ? `Plate: ${item.license_plate}` : '');
+                                return (
+                                    <tr key={item.record_id || item.id || idx} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors group">
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`w-10 h-10 rounded-xl ${style.bg} ${style.color} flex items-center justify-center transition-transform group-hover:scale-110 shrink-0`}>
+                                                    <style.icon size={18} />
+                                                </div>
+                                                <span className="font-black text-sm text-black dark:text-white uppercase tracking-tight">{title}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            <span className="text-xs font-mono font-bold text-gray-500 uppercase">
+                                                {formatDate(item.service_date)}
+                                            </span>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            <div className="flex flex-col">
+                                                <span className="font-black text-xs text-black dark:text-white tracking-tight uppercase">{vehicle}</span>
+                                                {vinDisplay && (
+                                                    <span className="text-[10px] font-mono text-gray-400 tracking-wider uppercase mt-0.5">{vinDisplay}</span>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-baseline gap-1">
+                                                <span className="text-xs font-mono font-black text-black dark:text-white uppercase">{(item.mileage || 0).toLocaleString()}</span>
+                                                <span className="text-[9px] font-bold text-gray-400 uppercase">km</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            <span className="text-xs font-mono font-black text-black dark:text-white uppercase">{cost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} EGP</span>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                                                ['Completed', 'Complete', 'Paid'].includes(rawStatus) 
+                                                    ? 'bg-green-500/10 text-green-500 border border-green-500/20' 
+                                                    : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                                            }`}>
+                                                {statusLabel}
+                                            </span>
+                                        </td>
+                                        <td className="px-8 py-5 ltr:text-right rtl:text-left">
+                                            <div className="flex items-center ltr:justify-end rtl:justify-start gap-1">
+                                                <button 
+                                                    onClick={() => handleViewInvoice(item.invoice_id)}
+                                                    className="p-2 text-gray-400 hover:text-[#fbbf24] transition-colors rounded-lg hover:bg-white/5"
+                                                    title={item.invoice_id ? (isAr ? 'عرض الفاتورة' : 'View Invoice') : (isAr ? 'لا توجد فاتورة' : 'No Invoice Available')}
+                                                >
+                                                    <Eye size={17} />
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleDownloadPDF(item.invoice_id, item.invoice_number)}
+                                                    className="p-2 text-gray-400 hover:text-blue-400 transition-colors rounded-lg hover:bg-white/5"
+                                                    title={item.invoice_id ? (isAr ? 'تحميل PDF' : 'Download Invoice PDF') : (isAr ? 'لا توجد فاتورة' : 'No Invoice Available')}
+                                                >
+                                                    <Download size={17} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            }) : (
+                                <tr>
+                                    <td colSpan="7" className="px-8 py-16 text-center">
+                                        <div className="flex flex-col items-center gap-3">
+                                            <div className="w-14 h-14 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center text-gray-400">
+                                                <FileText size={26} />
+                                            </div>
+                                            <p className="font-black text-gray-400 uppercase tracking-widest text-xs">
+                                                {isAr ? 'لم يتم العثور على سجلات صيانة مطابقة' : 'No maintenance records found'}
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Pagination */}
+                <div className="p-6 md:p-8 border-t border-gray-100 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                        {isAr ? `عرض ${filteredHistory.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1} إلى ${Math.min(page * PAGE_SIZE, filteredHistory.length)} من ${filteredHistory.length} سجل`
+                              : `Showing ${filteredHistory.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, filteredHistory.length)} of ${filteredHistory.length} records`}
+                    </span>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                            disabled={page === 1}
+                            className="w-9 h-9 rounded-xl border border-gray-100 dark:border-white/10 flex items-center justify-center text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-all disabled:opacity-30">
+                            <ChevronLeft size={18} className={isAr ? 'rotate-180' : ''} />
+                        </button>
+                        <div className="flex gap-1">
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).slice(0, 5).map(p => (
+                                <button
+                                    key={p}
+                                    onClick={() => setPage(p)}
+                                    className={`w-9 h-9 rounded-xl text-xs font-black transition-all ${
+                                        p === page
+                                            ? 'bg-black dark:bg-white text-white dark:text-black shadow-md'
+                                            : 'hover:bg-gray-50 dark:hover:bg-white/10 text-gray-400'
+                                    }`}>{p}</button>
+                            ))}
+                        </div>
+                        <button
+                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                            disabled={page === totalPages}
+                            className="w-9 h-9 rounded-xl border border-gray-100 dark:border-white/10 flex items-center justify-center text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-all disabled:opacity-30">
+                            <ChevronRight size={18} className={isAr ? 'rotate-180' : ''} />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ServiceHistory;

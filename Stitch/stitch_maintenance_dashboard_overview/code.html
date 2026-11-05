@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Maintenance Dashboard - My Garage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FBBF24", // Using an amber/gold shade inspired by the car in the reference
+                        "primary-dark": "#D97706",
+                        "background-light": "#F9FAFB",
+                        "background-dark": "#111827",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1F2937",
+                        "text-light": "#111827",
+                        "text-dark": "#F3F4F6",
+                        "text-muted-light": "#6B7280",
+                        "text-muted-dark": "#9CA3AF",
+                        "border-light": "#E5E7EB",
+                        "border-dark": "#374151",
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.75rem", // Consistent rounded corners
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans transition-colors duration-200 min-h-screen">
+<header class="bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark py-4 px-6 md:px-12 flex justify-between items-center sticky top-0 z-50">
+<div class="flex items-center gap-2">
+<span class="material-icons text-primary text-3xl">garage</span>
+<h1 class="text-2xl font-bold tracking-tight">My Garage</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-text-muted-light dark:text-text-muted-dark transition-colors" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-icons block dark:hidden">dark_mode</span>
+<span class="material-icons hidden dark:block">light_mode</span>
+</button>
+<button class="flex items-center gap-2 bg-primary hover:bg-yellow-500 text-black font-semibold py-2.5 px-5 rounded-DEFAULT shadow-md hover:shadow-lg transition-all transform active:scale-95">
+<span class="material-icons text-sm">add_circle</span>
+                New Service Request
+            </button>
+</div>
+</header>
+<main class="container mx-auto px-6 md:px-12 py-8 space-y-8">
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-DEFAULT border border-border-light dark:border-border-dark shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-2">
+<h3 class="text-text-muted-light dark:text-text-muted-dark font-medium text-sm uppercase tracking-wider">Total Visits</h3>
+<div class="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full">
+<span class="material-icons text-blue-600 dark:text-blue-400 text-xl">history</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold">14</span>
+<span class="text-xs text-green-500 font-medium flex items-center">
+<span class="material-icons text-xs mr-0.5">trending_up</span> +2 this year
+                    </span>
+</div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-DEFAULT border border-border-light dark:border-border-dark shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-2">
+<h3 class="text-text-muted-light dark:text-text-muted-dark font-medium text-sm uppercase tracking-wider">Registered Vehicles</h3>
+<div class="bg-primary/20 p-2 rounded-full">
+<span class="material-icons text-yellow-700 dark:text-yellow-400 text-xl">directions_car</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold">2</span>
+<span class="text-xs text-text-muted-light dark:text-text-muted-dark">Active</span>
+</div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-DEFAULT border border-border-light dark:border-border-dark shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-2">
+<h3 class="text-text-muted-light dark:text-text-muted-dark font-medium text-sm uppercase tracking-wider">Total Paid (Lifetime)</h3>
+<div class="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
+<span class="material-icons text-green-600 dark:text-green-400 text-xl">payments</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold">$4,850.00</span>
+<span class="text-xs text-text-muted-light dark:text-text-muted-dark">USD</span>
+</div>
+</div>
+</section>
+<section class="bg-surface-light dark:bg-surface-dark rounded-DEFAULT shadow-lg border border-border-light dark:border-border-dark overflow-hidden relative">
+<div class="hidden lg:flex flex-col absolute left-6 top-8 gap-3 z-10">
+<button class="bg-black text-white dark:bg-white dark:text-black py-2 px-6 rounded-full text-sm font-medium shadow-lg">Overview</button>
+<button class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md text-text-muted-light dark:text-text-muted-dark py-2 px-6 rounded-full text-sm font-medium hover:bg-white dark:hover:bg-gray-700 transition-colors border border-border-light dark:border-border-dark">Service History</button>
+<button class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md text-text-muted-light dark:text-text-muted-dark py-2 px-6 rounded-full text-sm font-medium hover:bg-white dark:hover:bg-gray-700 transition-colors border border-border-light dark:border-border-dark">Docs &amp; Manuals</button>
+</div>
+<div class="absolute right-6 top-8 z-10 flex gap-2">
+<div class="flex items-center gap-2 bg-black/90 dark:bg-white/10 backdrop-blur-md text-white px-4 py-3 rounded-lg max-w-xs shadow-xl">
+<span class="material-icons text-green-400">check_circle</span>
+<div>
+<p class="text-xs font-bold uppercase text-gray-400">Status</p>
+<p class="text-sm font-semibold">Maintenance Up-to-Date</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 min-h-[500px]">
+<div class="lg:col-span-4 p-8 lg:pt-32 lg:pl-32 flex flex-col justify-center lg:justify-start">
+<h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-2">Mercedes-Benz</h2>
+<p class="text-xl text-text-muted-light dark:text-text-muted-dark font-light mb-8">AMG C 63 S Coupe - 2023</p>
+<div class="space-y-6 mt-4">
+<div class="flex items-center gap-4">
+<div class="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+<span class="material-icons text-text-muted-light dark:text-text-muted-dark">calendar_today</span>
+</div>
+<div>
+<p class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase font-semibold tracking-wider">Last Service</p>
+<p class="font-medium text-lg">Oct 12, 2023</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+<span class="material-icons text-text-muted-light dark:text-text-muted-dark">speed</span>
+</div>
+<div>
+<p class="text-xs text-text-muted-light dark:text-text-muted-dark uppercase font-semibold tracking-wider">Odometer</p>
+<p class="font-medium text-lg">12,450 mi</p>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-8 relative flex items-center justify-center lg:justify-end p-4">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] bg-gradient-to-br from-yellow-200/20 to-transparent dark:from-yellow-500/10 dark:to-transparent rounded-full blur-3xl -z-0"></div>
+<img alt="Gold Mercedes-Benz Coupe side profile" class="relative z-10 w-full max-w-4xl object-contain drop-shadow-2xl transform hover:scale-105 transition-transform duration-500 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvwilaINsfLO-UfgPLISLYBMgZDli8yc-P1M10L48Hk7R-U5wLjxDjkTel6P10O6jCUUarssLrwjdw0mhgz3yRQxzpchPfbuHlfnpwsTb_l15_NBii5mGxEeWfvOnPfr7fTRbIwpCZVFCqU3DacR-9n_I_MSnTtftldBsd_Kvldl3pm-pgEKzu5rtz1ZRTk09SUjSd3ARKOH0wXp0PoR4i6JvAhtJK32cJ4J7iFBZMbkfi-i_IJ5_h-RrYNaiWTVRZheoigsS1j2o"/>
+<div class="absolute top-1/3 left-1/4 z-20 hidden md:flex items-center gap-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur px-3 py-1 rounded-full shadow-lg border border-white/20">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-xs font-semibold">Tire Check Due</span>
+</div>
+<div class="absolute bottom-1/4 right-1/3 z-20 hidden md:flex items-center gap-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur px-3 py-1 rounded-full shadow-lg border border-white/20">
+<div class="w-2 h-2 rounded-full bg-green-500"></div>
+<span class="text-xs font-semibold">Brakes Good</span>
+</div>
+</div>
+</div>
+<div class="border-t border-border-light dark:border-border-dark p-6 bg-gray-50/50 dark:bg-gray-800/20 backdrop-blur-sm">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 text-sm">
+<div class="flex flex-col">
+<span class="text-xs text-text-muted-light dark:text-text-muted-dark mb-1">VIN</span>
+<span class="font-mono font-medium text-text-light dark:text-text-dark tracking-wide">WDB1234567890XK</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-text-muted-light dark:text-text-muted-dark mb-1">Color</span>
+<div class="flex items-center gap-2">
+<div class="w-4 h-4 rounded-full bg-primary border border-gray-300 shadow-sm"></div>
+<span class="font-medium text-text-light dark:text-text-dark">Solar Beam Yellow</span>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-text-muted-light dark:text-text-muted-dark mb-1">Engine</span>
+<span class="font-medium text-text-light dark:text-text-dark">4.0L V8 Biturbo</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-text-muted-light dark:text-text-muted-dark mb-1">Transmission</span>
+<span class="font-medium text-text-light dark:text-text-dark">9-Speed Auto</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-text-muted-light dark:text-text-muted-dark mb-1">Warranty</span>
+<span class="font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+<span class="material-icons text-[14px]">verified</span> Active
+                        </span>
+</div>
+<div class="flex items-center justify-end">
+<a class="text-primary hover:text-primary-dark dark:hover:text-yellow-300 font-semibold text-sm flex items-center gap-1 transition-colors" href="#">
+                            View Full Details <span class="material-icons text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-bold flex items-center gap-2">
+                    Recommended Services
+                    <span class="material-icons text-text-muted-light dark:text-text-muted-dark text-lg cursor-help" title="Based on manufacturer schedule">info</span>
+</h3>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded-full border border-border-light dark:border-border-dark flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-icons text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-full border border-border-light dark:border-border-dark flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-icons text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="bg-surface-light dark:bg-surface-dark p-5 rounded-DEFAULT border border-border-light dark:border-border-dark hover:border-primary/50 dark:hover:border-primary/50 transition-colors group cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg group-hover:bg-primary/20 transition-colors">
+<span class="material-icons text-gray-600 dark:text-gray-300 group-hover:text-primary-dark dark:group-hover:text-primary">water_drop</span>
+</div>
+<span class="text-xs font-semibold bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-300 px-2 py-1 rounded">Urgent</span>
+</div>
+<h4 class="font-bold text-lg mb-1">Oil Change</h4>
+<p class="text-sm text-text-muted-light dark:text-text-muted-dark mb-4">Recommended every 10,000 miles or 12 months.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-bold text-lg">$120.00</span>
+<button class="text-sm font-medium text-primary hover:text-primary-dark dark:hover:text-yellow-300">Schedule</button>
+</div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-5 rounded-DEFAULT border border-border-light dark:border-border-dark hover:border-primary/50 dark:hover:border-primary/50 transition-colors group cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg group-hover:bg-primary/20 transition-colors">
+<span class="material-icons text-gray-600 dark:text-gray-300 group-hover:text-primary-dark dark:group-hover:text-primary">settings</span>
+</div>
+</div>
+<h4 class="font-bold text-lg mb-1">Brake Fluid</h4>
+<p class="text-sm text-text-muted-light dark:text-text-muted-dark mb-4">Check fluid levels and quality.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-bold text-lg">$85.00</span>
+<button class="text-sm font-medium text-primary hover:text-primary-dark dark:hover:text-yellow-300">Schedule</button>
+</div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-5 rounded-DEFAULT border border-border-light dark:border-border-dark hover:border-primary/50 dark:hover:border-primary/50 transition-colors group cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg group-hover:bg-primary/20 transition-colors">
+<span class="material-icons text-gray-600 dark:text-gray-300 group-hover:text-primary-dark dark:group-hover:text-primary">air</span>
+</div>
+</div>
+<h4 class="font-bold text-lg mb-1">Cabin Filter</h4>
+<p class="text-sm text-text-muted-light dark:text-text-muted-dark mb-4">Replace to ensure clean air circulation.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-bold text-lg">$45.00</span>
+<button class="text-sm font-medium text-primary hover:text-primary-dark dark:hover:text-yellow-300">Schedule</button>
+</div>
+</div>
+<div class="bg-black dark:bg-white text-white dark:text-black p-5 rounded-DEFAULT border border-black dark:border-white shadow-lg cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-3">
+<span class="material-icons">bolt</span>
+<span class="text-xs font-bold uppercase tracking-widest">Upgrade</span>
+</div>
+<h4 class="font-bold text-xl mb-2">Full Detail Package</h4>
+<p class="text-sm text-gray-300 dark:text-gray-600 leading-relaxed">Restore your vehicle's shine with our comprehensive interior and exterior detailing service.</p>
+</div>
+<div class="mt-4 pt-4 border-t border-gray-700 dark:border-gray-300 flex items-center justify-between">
+<span class="font-bold text-lg">$250.00</span>
+<span class="material-icons">arrow_forward</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+</body></html>

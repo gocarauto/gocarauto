@@ -1,0 +1,17 @@
+{
+    "ltr_properties": {
+        "margin-left": "margin-start",
+        "margin-right": "margin-end",
+        "padding-left": "padding-start",
+        "padding-right": "padding-end",
+        "left": "inset-inline-start",
+        "right": "inset-inline-end",
+        "text-align: left": "text-align: start",
+        "text-align: right": "text-align: end"
+    },
+    "best_practices": [
+        "Use logical properties (margin-inline-start instead of margin-left) whenever possible.",
+        "Ensure fonts have both English and Arabic glyphs (e.g., Cairo, Almarai).",
+        "Handle RTL icons: some icons (like directional arrows) should be mirrored in RTL mode."
+    ]
+}

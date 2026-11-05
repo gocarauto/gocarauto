@@ -1,0 +1,4 @@
+/* Cleared default Vite styles that cause resolution misalignment */
+#root {
+  width: 100%;
+}

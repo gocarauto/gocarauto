@@ -1,0 +1,8 @@
+repositories:
+  taste-skill:
+    url: https://github.com/Leonxlnx/taste-skill
+    version: v2.1.5
+    commit: 12af471f627f866411b4bd785b19646d3672784c
+    license: MIT
+    description: "Anti-slop frontend skill for intentional web design and art direction"
+    imported_at: "2026-11-04T16:58:36+02:00"
