@@ -33,9 +33,9 @@ services:
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: CORS_ORIGIN
-        sync: false # Set comma-separated Cloudflare Pages URLs
+        sync: false # Set comma-separated Vercel URLs (e.g. https://gocarauto.vercel.app,https://gocarauto-3kpg.vercel.app)
       - key: CUSTOMER_PORTAL_URL
-        sync: false # Set your customer portal Cloudflare Pages URL
+        sync: false # Set customer portal Vercel URL (e.g. https://gocarauto.vercel.app)
       - key: PUPPETEER_EXECUTABLE_PATH
         value: /usr/bin/chromium
       - key: COMPANY_NAME

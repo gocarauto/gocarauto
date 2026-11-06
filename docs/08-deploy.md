@@ -13,8 +13,8 @@
 | Tier | Environment | Provider | Hardware / Quota | Purpose |
 | :--- | :--- | :--- | :--- | :--- |
 | **Edge DNS & CDN** | Production / Staging | Cloudflare | Unlimited bandwidth, Anycast edge, SSL | DDoS protection, SSL termination, global caching |
-| **Customer Portal** | Production | Cloudflare Pages | Unlimited bandwidth, 500 builds/month | Client-side React 19 SPA (`customer-portal/dist`) |
-| **Staff Interface** | Production | Cloudflare Pages | Unlimited bandwidth, 500 builds/month | Staff dashboard React 19 SPA (`staff-interface/dist`) |
+| **Customer Portal** | Production | Vercel | 100GB bandwidth, Global Edge Network | Client-side React 19 SPA (`customer-portal/dist`) |
+| **Staff Interface** | Production | Vercel | 100GB bandwidth, Global Edge Network | Staff dashboard React 19 SPA (`staff-interface/dist`) |
 | **Backend API** | Production | Render.com | 512MB RAM, 0.1 vCPU, 750 free hrs/mo | Express Node.js API with Puppeteer Chromium Docker container |
 | **Primary Database** | Production | TiDB Cloud Serverless | 5GB storage, 50M RU/mo, TLS 1.2+ | Managed MySQL 8.0 wire-compatible relational database |
 | **Asset Storage** | Production | Cloudflare R2 | 10GB storage, 1M writes/mo, $0 egress | Invoices, customer uploaded documents, inspection photos |
@@ -34,7 +34,7 @@
 - `DB_SSL`: `true` (enforces TLS 1.2+ encryption with TiDB)
 - `JWT_SECRET`: Minimum 64-character random hex string for authentication sessions
 - `JWT_EXPIRES_IN`: `7d`
-- `CORS_ORIGIN`: Comma-separated list of frontends (e.g. `gocar-portal.pages.dev,gocar-staff.pages.dev`)
+- `CORS_ORIGIN`: Comma-separated list of frontends (e.g. `https://gocarauto.vercel.app,https://gocarauto-3kpg.vercel.app`)
 - `CUSTOMER_PORTAL_URL`: Base customer portal origin for magic link generation
 - `PUPPETEER_EXECUTABLE_PATH`: `/usr/bin/chromium`
 
@@ -74,31 +74,31 @@
 3. Set the interval to **every 10 minutes**.
 4. This ensures Render's free tier remains permanently warm with 0 cold-start delays for end users.
 
-### Phase D: Customer Portal Frontend (Cloudflare Pages)
-1. Sign in to [Cloudflare Dashboard](https://dash.cloudflare.com) -> **Workers & Pages** -> **Create application** -> **Pages**.
+### Phase D: Customer Portal Frontend (Vercel)
+1. Sign in to [Vercel Dashboard](https://vercel.com) -> **Add New...** -> **Project**.
 2. Connect your Git repository.
 3. Configure the build parameters:
-   - **Project Name:** `gocar-portal`
+   - **Project Name:** `gocarauto` (e.g. `https://gocarauto.vercel.app`)
    - **Framework Preset:** `Vite`
    - **Root Directory:** `customer-portal`
    - **Build Command:** `npm run build`
-   - **Build Output Directory:** `dist`
+   - **Output Directory:** `dist`
 4. In Environment Variables:
-   - Set `VITE_API_URL` to `BACKEND_URL/api`.
-5. Deploy. SPA client routing is preserved via `customer-portal/public/_redirects`.
+   - Set `VITE_API_URL` to `BACKEND_URL/api` (e.g. `https://gocar-backend-crtx.onrender.com/api`).
+5. Deploy. SPA client routing is preserved via `customer-portal/vercel.json`.
 
-### Phase E: Staff Interface Frontend (Cloudflare Pages)
-1. In Cloudflare Pages, click **Create application** -> **Pages**.
+### Phase E: Staff Interface Frontend (Vercel)
+1. In Vercel, click **Add New...** -> **Project**.
 2. Connect the same Git repository.
 3. Configure the build parameters:
-   - **Project Name:** `gocar-staff`
+   - **Project Name:** `gocarauto-3kpg` (or your chosen project name)
    - **Framework Preset:** `Vite`
    - **Root Directory:** `staff-interface`
    - **Build Command:** `npm run build`
-   - **Build Output Directory:** `dist`
+   - **Output Directory:** `dist`
 4. In Environment Variables:
-   - Set `VITE_API_URL` to `BACKEND_URL/api`.
-5. Deploy. SPA client routing is preserved via `staff-interface/public/_redirects`.
+   - Set `VITE_API_URL` to `BACKEND_URL/api` (e.g. `https://gocar-backend-crtx.onrender.com/api`).
+5. Deploy. SPA client routing is preserved via `staff-interface/vercel.json`.
 
 ---
 
@@ -138,7 +138,7 @@ curl -sI "$PORTAL_ORIGIN/login"
 ```
 HTTP/2 200
 ```
-*(Verifies `_redirects` rule rewrote non-static route to `/index.html` instead of HTTP 404)*
+*(Verifies `vercel.json` rewrote non-static route to `/index.html` instead of HTTP 404)*
 
 ### 4. Staff Interface SPA Hard Refresh Test
 ```bash
@@ -154,9 +154,9 @@ HTTP/2 200
 ## Rollback Plan
 
 ### Instant Edge Frontend Rollback
-1. If a frontend regression occurs, open the Cloudflare Pages dashboard for `gocar-portal` or `gocar-staff`.
+1. If a frontend regression occurs, open the Vercel dashboard for `gocarauto` or `gocarauto-3kpg`.
 2. Navigate to the **Deployments** tab.
-3. Identify the last verified stable build and click **Rollback to this deployment**.
+3. Identify the last verified stable build and click **Instant Rollback**.
 4. The edge CDN instantly routes all traffic to the prior build with zero downtime (< 3 seconds propagation).
 
 ### Backend API Rollback

@@ -28,8 +28,8 @@ All work on GoCar Auto must follow this unidirectional promotion pipeline withou
                 │ Automated trigger from verified commits on `main`
                 ▼
 ┌────────────────────────────────┐
-│    STAGE 3: LIVE PRODUCTION    │  • Cloudflare Pages (gocar-portal, gocar-staff)
-│ (Cloudflare + Render + TiDB)   │  • Render.com Docker API (gocar-backend)
+│    STAGE 3: LIVE PRODUCTION    │  • Vercel Edge Network (customer & staff frontends)
+│   (Vercel + Render + TiDB)     │  • Render.com Docker API (gocar-backend)
 │                                │  • TiDB Cloud Serverless MySQL
 │                                │  • cron-job.org 10-minute Keep-Alive Ping
 └────────────────────────────────┘
@@ -54,4 +54,4 @@ All work on GoCar Auto must follow this unidirectional promotion pipeline withou
    - Every functional delta, API modification, or architectural change must be accompanied by updates to `CHANGELOG.md` and relevant documentation under the ValdoZ Scribe role in the same session.
 
 4. **Human Gate Approval Required for Live Promotion:**
-   - Pushing code to `main` on GitHub triggers automatic edge deployments on Cloudflare Pages and Render. Therefore, no push to `main` may occur without explicit human approval in Antigravity chat.
+   - Pushing code to `main` on GitHub triggers automatic edge deployments on Vercel and Render. Therefore, no push to `main` may occur without explicit human approval in Antigravity chat.

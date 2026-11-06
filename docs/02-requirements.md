@@ -83,7 +83,7 @@ GoCar Auto is a dual-interface Service & Financial Management System (SFMS) engi
 
 ### NFR-3: Cost Efficiency & High Availability
 - 100% Free Tier Cloud Architecture ($0/month target).
-- Edge-hosted SPAs on Cloudflare Pages.
+- Edge-hosted SPAs on Vercel.
 - Containerized backend on Render.com paired with TiDB Serverless MySQL.
 
 ### NFR-4: Accessibility & Localization

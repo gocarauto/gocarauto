@@ -38,9 +38,15 @@
 }
 
 @layer base {
+    ::selection {
+        background-color: #fbbf24;
+        color: #070709;
+    }
+
     body {
         @apply antialiased transition-colors duration-300;
         font-family: var(--font-sans);
+        caret-color: #fbbf24;
     }
 
     h1, h2, h3, h4, .font-display {
@@ -50,10 +56,12 @@
     [dir="rtl"] {
         @apply text-right;
         font-family: var(--font-arabic) !important;
+        letter-spacing: normal !important;
     }
 
     [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4 {
         font-family: var(--font-arabic) !important;
+        letter-spacing: normal !important;
     }
 
     [dir="ltr"] {

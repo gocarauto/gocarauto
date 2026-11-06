@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
-import { useUIDirection } from './DirectionSwitcher';
 import { getVehicleSketch } from '../utils/sketchHelper';
 import api from '../utils/api';
 import { Link } from 'react-router-dom';
@@ -9,7 +8,6 @@ import {
     History,
     Car,
     TrendingUp,
-    ChevronRight,
     Calendar,
     FolderLock,
     Bot,
@@ -22,17 +20,22 @@ import {
     Gauge,
     AlertCircle,
     ArrowUpRight,
-    Tag
+    Tag,
+    Clock,
+    ChevronRight,
+    Plus,
+    AlertTriangle,
+    ShieldCheck
 } from 'lucide-react';
 import SellCarModal from './SellCarModal';
 
 const Dashboard = () => {
     const { t, lang } = useLanguage();
     const isAr = lang === 'ar';
-    const { direction } = useUIDirection();
 
     const [data, setData] = useState(null);
     const [vehicles, setVehicles] = useState([]);
+    const [appointments, setAppointments] = useState([]);
     const [selectedVehicleId, setSelectedVehicleId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [sellModalOpen, setSellModalOpen] = useState(false);
@@ -40,10 +43,11 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const [dashRes, remRes, vehRes] = await Promise.all([
+                const [dashRes, remRes, vehRes, apptRes] = await Promise.all([
                     api.get('/customer-portal/dashboard'),
                     api.get('/customer-portal/reminders').catch(() => ({ data: { data: [] } })),
-                    api.get('/customer-portal/vehicles').catch(() => ({ data: { data: [] } }))
+                    api.get('/customer-portal/vehicles').catch(() => ({ data: { data: [] } })),
+                    api.get('/customer-portal/appointments').catch(() => ({ data: { data: [] } }))
                 ]);
 
                 const fleet = vehRes.data?.data || [];
@@ -54,6 +58,7 @@ const Dashboard = () => {
                 const initialCarId = upcoming[0]?.id || fleet[0]?.id || null;
                 setSelectedVehicleId(initialCarId);
 
+                setAppointments(apptRes.data?.data || []);
                 setData({
                     ...dashData,
                     reminders: remRes.data?.data || []
@@ -69,16 +74,17 @@ const Dashboard = () => {
 
     if (loading) {
         return (
-            <div className="h-full flex flex-col space-y-6 animate-pulse">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 shrink-0">
-                    {[1, 2, 3].map(i => <div key={i} className="h-28 bg-gray-100 dark:bg-white/5 rounded-[2rem]"></div>)}
+            <div className="space-y-6 animate-pulse">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {[1, 2, 3].map(i => (
+                        <div key={i} className="h-24 bg-slate-200 dark:bg-white/[0.04] rounded-2xl" />
+                    ))}
                 </div>
-                <div className="flex-1 min-h-[460px] bg-gray-100 dark:bg-white/5 rounded-[3.5rem]"></div>
+                <div className="h-96 bg-slate-200 dark:bg-white/[0.04] rounded-3xl" />
             </div>
         );
     }
 
-    // Active vehicle selection
     const activeVehicle = vehicles.find(v => v.id === selectedVehicleId) 
         || data?.upcomingService?.[0] 
         || vehicles[0] 
@@ -88,109 +94,134 @@ const Dashboard = () => {
     const sketch = activeVehicle ? getVehicleSketch(activeVehicle.make, activeVehicle.model, activeVehicle.year) : null;
     const mileage = activeVehicle?.current_mileage || activeVehicle?.mileage || 0;
 
-    // Derived telemetry metrics based on odometer cycles
+    // Derived telemetry metrics
     const oilCycle = mileage % 10000;
     const oilLifePercent = Math.max(12, Math.min(100, Math.round(100 - (oilCycle / 100))));
     const brakeCycle = mileage % 25000;
     const brakeLifePercent = Math.max(20, Math.min(100, Math.round(100 - (brakeCycle / 250))));
     const kmUntilService = Math.max(250, 10000 - oilCycle);
 
-    // Direction-specific theme styling tokens
-    const isDir1 = direction === '1'; // Obsidian Apex (Gold & Noir)
-    const isDir2 = direction === '2'; // Nordic Slate (Electric Lime & Tech)
-    const isDir3 = direction === '3'; // Alabaster Atelier (Terracotta Warmth)
+    // Filter appointments for the active vehicle or latest scheduled
+    const activeAppointment = appointments.find(a => 
+        (activeVehicle && a.vehicle_id === activeVehicle.id) || a.status === 'In Progress' || a.status === 'Scheduled'
+    ) || appointments[0];
 
-    const accentColor = isDir2 ? '#10b981' : isDir3 ? '#c0673f' : '#fbbf24';
-    const accentBg = isDir2 ? 'bg-emerald-500' : isDir3 ? 'bg-[#c0673f]' : 'bg-[#fbbf24]';
-    const accentText = isDir2 ? 'text-emerald-400' : isDir3 ? 'text-[#c0673f]' : 'text-[#fbbf24]';
+    const reminders = data?.reminders || [];
+
+    // Service workflow pipeline definition
+    const serviceStages = [
+        { key: 'Scheduled', label: t('scheduled') || 'Scheduled' },
+        { key: 'Inspection', label: t('inspection') || 'Inspection' },
+        { key: 'In Progress', label: t('in_repair') || 'In Repair' },
+        { key: 'Quality Check', label: t('quality_check') || 'Quality Check' },
+        { key: 'Completed', label: t('ready_pickup') || 'Ready' }
+    ];
+
+    const getCurrentStageIndex = (status) => {
+        if (!status) return 0;
+        const normalized = status.toLowerCase();
+        if (normalized.includes('sched')) return 0;
+        if (normalized.includes('inspect')) return 1;
+        if (normalized.includes('prog') || normalized.includes('repair')) return 2;
+        if (normalized.includes('check') || normalized.includes('qual')) return 3;
+        if (normalized.includes('ready') || normalized.includes('comp')) return 4;
+        return 0;
+    };
+
+    const currentStageIdx = activeAppointment ? getCurrentStageIndex(activeAppointment.status) : -1;
 
     return (
-        <div className="space-y-8 pb-16">
+        <div className="space-y-6 pb-12">
             
-            {/* ── Top Summary Header (Interactive Stat Pods) ── */}
-            <section className="grid grid-cols-1 md:grid-cols-3 gap-6 shrink-0">
-                {[
-                    { 
-                        label: isAr ? 'إجمالي الزيارات والخدمات' : t('total_visits'), 
-                        value: stats.totalServices, 
-                        suffix: isAr ? 'زيارة' : 'Visits',
-                        icon: History, 
-                        color: isDir2 ? 'text-emerald-400' : 'text-blue-500',
-                        bg: isDir2 ? 'bg-emerald-500/10' : 'bg-blue-500/10',
-                        link: '/history'
-                    },
-                    { 
-                        label: isAr ? 'استثمار الصيانة السنوي' : 'YTD Maintenance Invested', 
-                        value: `${stats.totalSpent?.toLocaleString() || 0}`, 
-                        suffix: isAr ? 'ج.م' : 'EGP',
-                        icon: TrendingUp, 
-                        color: 'text-green-500',
-                        bg: 'bg-green-500/10',
-                        link: '/invoices'
-                    },
-                    { 
-                        label: isAr ? 'سيارات الأسطول المسجلة' : t('registered_vehicles'), 
-                        value: stats.totalVehicles || vehicles.length, 
-                        suffix: isAr ? 'سيارات' : 'Vehicles',
-                        icon: Car, 
-                        color: isDir1 ? 'text-[#fbbf24]' : isDir2 ? 'text-emerald-400' : 'text-[#c0673f]',
-                        bg: isDir1 ? 'bg-[#fbbf24]/10' : isDir2 ? 'bg-emerald-500/10' : 'bg-[#c0673f]/10',
-                        link: '/vehicles'
-                    }
-                ].map((stat, i) => (
-                    <Link
-                        key={i}
-                        to={stat.link}
-                        className="bg-white dark:bg-[#0c0d12] p-6 rounded-[2.2rem] border border-gray-100 dark:border-white/5 text-black dark:text-white flex items-center justify-between shadow-xl hover:border-primary/40 dark:hover:border-white/20 transition-all duration-300 group"
-                    >
-                        <div className="space-y-1">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 block">{stat.label}</span>
-                            <div className="flex items-baseline gap-2">
-                                <span className="text-3xl font-black tracking-tighter">{stat.value}</span>
-                                <span className="text-xs font-bold text-gray-400 uppercase">{stat.suffix}</span>
-                            </div>
+            {/* ── Key Metrics Overview ── */}
+            <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Link
+                    to="/vehicles"
+                    className="p-5 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm hover:border-slate-300 dark:hover:border-white/20 transition-all flex items-center justify-between group"
+                >
+                    <div className="space-y-1">
+                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                            {t('registered_vehicles')}
+                        </span>
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-2xl font-black text-slate-950 dark:text-white tabular-nums">
+                                {stats.totalVehicles || vehicles.length}
+                            </span>
+                            <span className="text-xs text-slate-500 font-medium">{isAr ? 'سيارات' : 'Cars'}</span>
                         </div>
-                        <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform`}>
-                            <stat.icon size={24} />
+                    </div>
+                    <div className="w-11 h-11 rounded-xl bg-amber-400/10 text-amber-500 dark:text-amber-400 border border-amber-400/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <Car size={20} />
+                    </div>
+                </Link>
+
+                <Link
+                    to="/history"
+                    className="p-5 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm hover:border-slate-300 dark:hover:border-white/20 transition-all flex items-center justify-between group"
+                >
+                    <div className="space-y-1">
+                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                            {t('total_visits')}
+                        </span>
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-2xl font-black text-slate-950 dark:text-white tabular-nums">
+                                {stats.totalServices}
+                            </span>
+                            <span className="text-xs text-slate-500 font-medium">{isAr ? 'زيارة صيانة' : 'Visits'}</span>
                         </div>
-                    </Link>
-                ))}
+                    </div>
+                    <div className="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <History size={20} />
+                    </div>
+                </Link>
+
+                <Link
+                    to="/invoices"
+                    className="p-5 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm hover:border-slate-300 dark:hover:border-white/20 transition-all flex items-center justify-between group"
+                >
+                    <div className="space-y-1">
+                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                            {t('egp_invested') || 'Maintenance Invested'}
+                        </span>
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-2xl font-black text-slate-950 dark:text-white tabular-nums">
+                                {stats.totalSpent?.toLocaleString() || 0}
+                            </span>
+                            <span className="text-xs text-slate-500 font-medium">{isAr ? 'ج.م' : 'EGP'}</span>
+                        </div>
+                    </div>
+                    <div className="w-11 h-11 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <TrendingUp size={20} />
+                    </div>
+                </Link>
             </section>
 
-            {/* ── High-Fidelity Hero Showcase ── */}
-            <section className={`rounded-[3.5rem] overflow-hidden flex flex-col border shadow-2xl relative transition-colors duration-500
-                ${isDir1 ? 'bg-[#070709] border-white/10' : isDir2 ? 'bg-[#0b0f17] border-emerald-500/20' : 'bg-[#faf7f2] dark:bg-[#12100e] border-[#c0673f]/20'}
-            `}>
+            {/* ── Cockpit Vehicle Stage ── */}
+            <section className="bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] rounded-3xl overflow-hidden shadow-sm">
                 
-                {/* Ambient Radial Backlight Glow */}
-                <div 
-                    className="absolute -top-32 -left-32 w-[650px] h-[650px] rounded-full blur-[140px] pointer-events-none opacity-30"
-                    style={{ backgroundColor: accentColor }}
-                />
-
-                {/* ── Fleet Selector Tabs (Top Bar) ── */}
-                <div className="p-6 md:px-12 border-b border-white/5 flex items-center justify-between gap-4 overflow-x-auto relative z-20">
-                    <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold uppercase tracking-wider text-gray-400 shrink-0">
-                            {isAr ? 'أسطولك:' : 'Garage Fleet:'}
+                {/* Fleet Switcher Tab Bar */}
+                <div className="px-6 py-3.5 border-b border-slate-100 dark:border-white/[0.06] bg-slate-50/70 dark:bg-white/[0.02] flex items-center justify-between gap-4 overflow-x-auto">
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider shrink-0">
+                            {t('garage_fleet')}:
                         </span>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
                             {vehicles.map((v) => {
                                 const isSelected = v.id === selectedVehicleId;
                                 return (
                                     <button
                                         key={v.id}
                                         onClick={() => setSelectedVehicleId(v.id)}
-                                        className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-300 flex items-center gap-2 shrink-0 ${
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
                                             isSelected
-                                                ? `${accentBg} text-black shadow-lg scale-105`
-                                                : 'bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border border-white/5'
+                                                ? 'bg-amber-400 text-slate-950 shadow-sm'
+                                                : 'bg-white dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.1] border border-slate-200 dark:border-white/[0.08]'
                                         }`}
                                     >
                                         <Car size={13} />
                                         <span>{v.make} {v.model}</span>
-                                        {isSelected && (
-                                            <span className="w-1.5 h-1.5 rounded-full bg-black animate-ping" />
+                                        {v.license_plate && (
+                                            <span className="text-[10px] opacity-75 font-mono">({v.license_plate})</span>
                                         )}
                                     </button>
                                 );
@@ -200,205 +231,328 @@ const Dashboard = () => {
 
                     <Link
                         to="/vehicles"
-                        className="text-xs font-bold text-gray-400 hover:text-white flex items-center gap-1 shrink-0 uppercase tracking-widest"
+                        className="text-xs font-semibold text-amber-500 hover:text-amber-600 dark:text-amber-400 flex items-center gap-1 shrink-0"
                     >
-                        <span>{isAr ? 'إدارة الأسطول' : 'Manage All'}</span>
-                        <ArrowUpRight size={14} />
+                        <span>{t('manage_fleet')}</span>
+                        <ArrowUpRight size={13} />
                     </Link>
                 </div>
 
-                {/* ── Main Showcase Body ── */}
-                <div className="flex flex-col lg:flex-row min-h-[480px]">
-                    
-                    {/* Left Telemetry & Controls Area */}
-                    <div className="lg:w-[48%] p-8 md:p-12 flex flex-col justify-between relative z-10 text-white border-b lg:border-b-0 ltr:lg:border-r rtl:lg:border-l border-white/5">
+                {/* Main Vehicle Cockpit Content */}
+                {activeVehicle ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[420px]">
                         
-                        {activeVehicle ? (
-                            <div className="space-y-6">
-                                <div>
-                                    <div 
-                                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border"
-                                        style={{ backgroundColor: `${accentColor}18`, borderColor: `${accentColor}30`, color: accentColor }}
-                                    >
-                                        <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: accentColor }}></span>
-                                        {isAr ? 'السيارة النشطة' : 'ACTIVE CONCIERGE ASSET'}
+                        {/* Left Details & Telemetry Gauges */}
+                        <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between border-b lg:border-b-0 ltr:lg:border-r rtl:lg:border-l border-slate-100 dark:border-white/[0.06] space-y-6">
+                            
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-400/10 text-amber-600 dark:text-amber-400 border border-amber-400/20 mb-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                                    <span>{t('active_vehicle')}</span>
+                                </div>
+
+                                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white">
+                                    {activeVehicle.make} {activeVehicle.model}
+                                </h2>
+
+                                <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                                        {activeVehicle.year}
+                                    </span>
+                                    <span>•</span>
+                                    <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-white/[0.06] font-mono text-slate-800 dark:text-slate-200">
+                                        {activeVehicle.license_plate || (isAr ? 'بدون لوحة' : 'No Plate')}
+                                    </span>
+                                    <span>•</span>
+                                    <span className="font-mono text-[11px]">
+                                        VIN: {activeVehicle.vin || '—'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Telemetry Indicator Dials */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06] space-y-2.5">
+                                    <div className="flex items-center justify-between text-xs">
+                                        <span className="font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                                            <Fuel size={14} className="text-amber-500" />
+                                            {t('oil_life')}
+                                        </span>
+                                        <span className="font-bold tabular-nums text-slate-950 dark:text-white">{oilLifePercent}%</span>
                                     </div>
-                                    
-                                    <h2 className="text-4xl md:text-5xl font-black tracking-tighter uppercase leading-none font-display">
-                                        {activeVehicle.make}
-                                    </h2>
-                                    <p className="text-xl md:text-2xl text-gray-400 font-medium tracking-tight mt-1">
-                                        {activeVehicle.model} • {activeVehicle.year}
+                                    <div className="w-full bg-slate-200 dark:bg-white/[0.08] rounded-full h-2 overflow-hidden">
+                                        <div 
+                                            className={`h-full rounded-full transition-all duration-500 ${
+                                                oilLifePercent > 30 ? 'bg-emerald-500' : 'bg-rose-500'
+                                            }`}
+                                            style={{ width: `${oilLifePercent}%` }}
+                                        />
+                                    </div>
+                                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                        {isAr ? `الصيانة القادمة خلال ~${kmUntilService.toLocaleString()} كم` : `Next due in ~${kmUntilService.toLocaleString()} km`}
                                     </p>
-                                    <div className="flex items-center gap-3 mt-3">
-                                        <span className="px-3 py-1 bg-white/10 rounded-lg text-xs font-mono font-bold text-gray-300">
-                                            {activeVehicle.license_plate || 'No Plate'}
-                                        </span>
-                                        <span className="text-xs text-gray-400 font-mono">
-                                            VIN: {activeVehicle.vin || '—'}
-                                        </span>
-                                    </div>
                                 </div>
 
-                                {/* Live Health Telemetry Grid */}
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-2">
-                                        <div className="flex items-center justify-between text-xs">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
-                                                <Fuel size={12} className={accentText} />
-                                                {isAr ? 'صلاحية الزيت' : 'Oil Integrity'}
-                                            </span>
-                                            <span className="font-black text-xs text-emerald-400">{oilLifePercent}%</span>
-                                        </div>
-                                        <div className="telemetry-gauge-track">
-                                            <div 
-                                                className="telemetry-gauge-fill bg-emerald-400"
-                                                style={{ width: `${oilLifePercent}%` }}
-                                            />
-                                        </div>
-                                        <span className="text-[10px] text-gray-400 block font-medium">
-                                            {isAr ? `الصيانة بعد: ${kmUntilService.toLocaleString()} كم` : `Next due: ~${kmUntilService.toLocaleString()} km`}
+                                <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06] space-y-2.5">
+                                    <div className="flex items-center justify-between text-xs">
+                                        <span className="font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                                            <Activity size={14} className="text-amber-500" />
+                                            {t('brake_health')}
                                         </span>
+                                        <span className="font-bold tabular-nums text-slate-950 dark:text-white">{brakeLifePercent}%</span>
                                     </div>
-
-                                    <div className="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-2">
-                                        <div className="flex items-center justify-between text-xs">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
-                                                <Activity size={12} className={accentText} />
-                                                {isAr ? 'حالة الفرامل' : 'Brake Health'}
-                                            </span>
-                                            <span className="font-black text-xs text-amber-400">{brakeLifePercent}%</span>
-                                        </div>
-                                        <div className="telemetry-gauge-track">
-                                            <div 
-                                                className="telemetry-gauge-fill bg-amber-400"
-                                                style={{ width: `${brakeLifePercent}%` }}
-                                            />
-                                        </div>
-                                        <span className="text-[10px] text-gray-400 block font-medium">
-                                            {isAr ? 'الطنابير والتيل بحالة جيدة' : 'Pads & rotors verified'}
-                                        </span>
+                                    <div className="w-full bg-slate-200 dark:bg-white/[0.08] rounded-full h-2 overflow-hidden">
+                                        <div 
+                                            className="h-full rounded-full bg-amber-400 transition-all duration-500"
+                                            style={{ width: `${brakeLifePercent}%` }}
+                                        />
                                     </div>
-                                </div>
-
-                                {/* Odometer Bar */}
-                                <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-gray-300">
-                                            <Gauge size={18} />
-                                        </div>
-                                        <div>
-                                            <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest">
-                                                {isAr ? 'عداد المسافة المسجل' : 'Current Odometer'}
-                                            </p>
-                                            <p className="text-xl font-black tracking-tight text-white font-mono">
-                                                {mileage ? mileage.toLocaleString() : '—'} <span className="text-xs text-gray-400 uppercase font-sans">km</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest">
-                                            {isAr ? 'إجمالي الخدمات' : 'Total Visits'}
-                                        </p>
-                                        <p className="text-lg font-black text-white">
-                                            {activeVehicle.services_count || 0}
-                                        </p>
-                                    </div>
+                                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                        {isAr ? 'فحص البطانات وتيل الفرامل معتمد' : 'Pads & hydraulic system verified'}
+                                    </p>
                                 </div>
                             </div>
-                        ) : (
-                            <div className="space-y-4">
-                                <h2 className="text-4xl font-black tracking-tighter">Welcome to GoCar Auto</h2>
-                                <p className="text-gray-400 text-sm">Register a vehicle with our concierge to access automated telemetry, service tracking, and VIP bookings.</p>
+
+                            {/* Odometer Strip */}
+                            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06] flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-slate-200 dark:bg-white/[0.08] flex items-center justify-center text-slate-700 dark:text-slate-200">
+                                        <Gauge size={16} />
+                                    </div>
+                                    <div>
+                                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block leading-none">
+                                            {t('odometer')}
+                                        </span>
+                                        <span className="text-lg font-bold text-slate-950 dark:text-white font-mono tabular-nums">
+                                            {mileage ? mileage.toLocaleString() : '—'} <span className="text-xs font-sans text-slate-500">km</span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="text-right rtl:text-left">
+                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block leading-none">
+                                        {t('services_logged')}
+                                    </span>
+                                    <span className="text-base font-bold text-slate-950 dark:text-white tabular-nums">
+                                        {activeVehicle.services_count || 0}
+                                    </span>
+                                </div>
                             </div>
-                        )}
 
-                        {/* Quick VIP Actions Bar */}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-6 mt-6 border-t border-white/5">
-                            <Link 
-                                to={activeVehicle ? `/book-service?vehicleId=${activeVehicle.id}` : '/book-service'}
-                                className={`p-3.5 rounded-2xl flex flex-col items-center justify-center gap-1.5 transition-all group ${accentBg} text-black hover:opacity-90 shadow-xl`}
-                            >
-                                <Calendar size={18} className="group-hover:scale-110 transition-transform" />
-                                <span className="text-[10px] font-black uppercase tracking-widest text-center truncate w-full">
-                                    {isAr ? 'حجز صيانة' : 'Book VIP'}
-                                </span>
-                            </Link>
+                            {/* Fast Actions Bar */}
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
+                                <Link
+                                    to={`/book-service?vehicleId=${activeVehicle.id}`}
+                                    className="p-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs flex flex-col items-center justify-center gap-1.5 transition-colors shadow-sm"
+                                >
+                                    <Calendar size={16} />
+                                    <span>{t('booking')}</span>
+                                </Link>
 
-                            <button 
-                                type="button"
-                                onClick={() => setSellModalOpen(true)}
-                                disabled={!activeVehicle}
-                                className="bg-[#fbbf24]/10 hover:bg-[#fbbf24]/20 text-[#fbbf24] border border-[#fbbf24]/30 p-3.5 rounded-2xl flex flex-col items-center justify-center gap-1.5 transition-all group disabled:opacity-40"
-                            >
-                                <Tag size={18} className="group-hover:scale-110 transition-transform text-[#fbbf24]" />
-                                <span className="text-[10px] font-black uppercase tracking-widest text-center truncate w-full">
-                                    {isAr ? 'بيع عبر جوكار' : 'Sell Car'}
-                                </span>
-                            </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setSellModalOpen(true)}
+                                    className="p-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-800 dark:text-white font-semibold text-xs border border-slate-200 dark:border-white/[0.08] flex flex-col items-center justify-center gap-1.5 transition-colors"
+                                >
+                                    <Tag size={16} className="text-amber-500" />
+                                    <span>{t('sell_car')}</span>
+                                </button>
 
-                            <Link 
-                                to="/glovebox"
-                                className="bg-white/5 hover:bg-white/10 text-white border border-white/5 p-3.5 rounded-2xl flex flex-col items-center justify-center gap-1.5 transition-all group"
-                            >
-                                <FolderLock size={18} className="text-gray-400 group-hover:text-white transition-colors" />
-                                <span className="text-[10px] font-black uppercase tracking-widest text-center truncate w-full">
-                                    {isAr ? 'الدرج الرقمي' : 'Glovebox'}
-                                </span>
-                            </Link>
+                                <Link
+                                    to="/glovebox"
+                                    className="p-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-800 dark:text-white font-semibold text-xs border border-slate-200 dark:border-white/[0.08] flex flex-col items-center justify-center gap-1.5 transition-colors"
+                                >
+                                    <FolderLock size={16} className="text-slate-500 dark:text-slate-400" />
+                                    <span>{t('digital_glovebox')}</span>
+                                </Link>
 
-                            <Link 
-                                to="/ai-advisor"
-                                className="bg-white/5 hover:bg-white/10 text-white border border-white/5 p-3.5 rounded-2xl flex flex-col items-center justify-center gap-1.5 transition-all group"
-                            >
-                                <Bot size={18} className="group-hover:scale-110 transition-transform" style={{ color: accentColor }} />
-                                <span className="text-[10px] font-black uppercase tracking-widest text-center truncate w-full">
-                                    {isAr ? 'المستشار الذكي' : 'AI Advisor'}
-                                </span>
-                            </Link>
+                                <Link
+                                    to="/ai-advisor"
+                                    className="p-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-800 dark:text-white font-semibold text-xs border border-slate-200 dark:border-white/[0.08] flex flex-col items-center justify-center gap-1.5 transition-colors"
+                                >
+                                    <Bot size={16} className="text-amber-500" />
+                                    <span>{t('ai_advisor')}</span>
+                                </Link>
+                            </div>
+
+                        </div>
+
+                        {/* Right Vehicle Visualizer Stage */}
+                        <div className="lg:col-span-5 p-6 sm:p-8 flex flex-col items-center justify-center bg-slate-50/50 dark:bg-[#090a0f] relative overflow-hidden">
+                            <AnimatePresence mode="wait">
+                                {sketch ? (
+                                    <motion.div
+                                        key={activeVehicle.id}
+                                        initial={{ opacity: 0, scale: 0.94 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.94 }}
+                                        transition={{ duration: 0.25 }}
+                                        className="w-full flex flex-col items-center justify-center space-y-4"
+                                    >
+                                        <img 
+                                            src={sketch} 
+                                            alt={`${activeVehicle.make} ${activeVehicle.model}`}
+                                            className="w-full max-h-[260px] object-contain drop-shadow-md filter contrast-105"
+                                        />
+                                        <div className="px-3 py-1 rounded-full bg-slate-200/80 dark:bg-white/[0.06] text-[10px] font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-widest">
+                                            {activeVehicle.make} {activeVehicle.model} • {isAr ? 'رسم هندسي معتمد' : 'Verified Blueprint'}
+                                        </div>
+                                    </motion.div>
+                                ) : (
+                                    <div className="text-center py-12 text-slate-400 text-xs">
+                                        <Car size={32} className="mx-auto mb-2 opacity-40" />
+                                        <span>{isAr ? 'الرسم الهندسي قيد الإعداد' : 'Blueprint representation unavailable'}</span>
+                                    </div>
+                                )}
+                            </AnimatePresence>
                         </div>
 
                     </div>
+                ) : (
+                    <div className="p-12 text-center space-y-3">
+                        <Car size={36} className="mx-auto text-amber-500" />
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                            {t('no_vehicles')}
+                        </h3>
+                        <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                            {isAr 
+                                ? 'سجل سيارتك مع خدمة العملاء لتمكين العدادات الرقمية وتتبع الصيانات الدورية.' 
+                                : 'Add your first vehicle with our concierge to enable automated telemetry and digital service records.'}
+                        </p>
+                        <Link
+                            to="/vehicles"
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-400 text-slate-950 font-bold text-xs"
+                        >
+                            <Plus size={15} />
+                            <span>{isAr ? 'إضافة مركبة' : 'Register Vehicle'}</span>
+                        </Link>
+                    </div>
+                )}
+            </section>
 
-                    {/* Sell Car Modal */}
-                    <SellCarModal
-                        isOpen={sellModalOpen}
-                        vehicle={activeVehicle}
-                        onClose={() => setSellModalOpen(false)}
-                        onSuccess={() => setSellModalOpen(false)}
-                    />
+            {/* ── Live Service Status Pipeline (if active appointment) ── */}
+            {activeAppointment && (
+                <section className="bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-white/[0.06] pb-4">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-500 flex items-center justify-center shrink-0">
+                                <Clock size={20} />
+                            </div>
+                            <div>
+                                <h3 className="text-base font-bold text-slate-950 dark:text-white flex items-center gap-2">
+                                    <span>{t('service_pipeline')}</span>
+                                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-700 dark:text-amber-300 font-semibold">
+                                        {activeAppointment.status || 'Active'}
+                                    </span>
+                                </h3>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                    {activeAppointment.service_type || 'General Maintenance'} • {activeAppointment.make} {activeAppointment.model}
+                                </p>
+                            </div>
+                        </div>
 
-                    {/* Right Vehicle Technical Blueprint Stage */}
-                    <div className="lg:w-[52%] relative flex items-center justify-center p-8 md:p-12 overflow-hidden bg-gradient-to-tr from-black/20 via-transparent to-white/[0.02]">
-                        <AnimatePresence mode="wait">
-                            {sketch ? (
-                                <motion.div
-                                    key={activeVehicle?.id || 'sketch'}
-                                    initial={{ opacity: 0, scale: 0.9, x: isAr ? -30 : 30 }}
-                                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                                    exit={{ opacity: 0, scale: 0.9, x: isAr ? 30 : -30 }}
-                                    transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                                    className="w-full h-full flex flex-col items-center justify-center relative z-10"
-                                >
-                                    <img
-                                        src={sketch}
-                                        alt={`${activeVehicle.make} ${activeVehicle.model}`}
-                                        className="w-full max-h-[320px] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)] filter contrast-110 brightness-105"
-                                    />
-                                    <div className="mt-4 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-gray-400 uppercase tracking-widest">
-                                        TECHNICAL CHASSIS BLUEPRINT • {activeVehicle.make.toUpperCase()} {activeVehicle.model.toUpperCase()}
-                                    </div>
-                                </motion.div>
-                            ) : (
-                                <div className="text-gray-500 font-bold uppercase tracking-widest text-xs z-10">
-                                    {isAr ? 'لم يتم تحميل رسم فني' : 'No Blueprint Available'}
-                                </div>
-                            )}
-                        </AnimatePresence>
+                        <Link
+                            to="/appointments"
+                            className="text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-amber-500 flex items-center gap-1 shrink-0"
+                        >
+                            <span>{isAr ? 'عرض تفاصيل الحجز' : 'View Appointment Details'}</span>
+                            <ChevronRight size={14} className={isAr ? 'rotate-180' : ''} />
+                        </Link>
                     </div>
 
+                    {/* Stage Stepper */}
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
+                        {serviceStages.map((stage, idx) => {
+                            const isCompleted = idx < currentStageIdx;
+                            const isCurrent = idx === currentStageIdx;
+                            return (
+                                <div 
+                                    key={stage.key}
+                                    className={`p-3.5 rounded-xl border text-center transition-all ${
+                                        isCurrent 
+                                            ? 'bg-amber-400/10 border-amber-400 text-amber-700 dark:text-amber-300 ring-2 ring-amber-400/20' 
+                                            : isCompleted
+                                                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
+                                                : 'bg-slate-50 dark:bg-white/[0.02] border-slate-200/60 dark:border-white/[0.06] text-slate-400'
+                                    }`}
+                                >
+                                    <div className="flex items-center justify-center mb-1.5">
+                                        {isCompleted ? (
+                                            <CheckCircle size={16} className="text-emerald-500" />
+                                        ) : isCurrent ? (
+                                            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
+                                        ) : (
+                                            <span className="text-[11px] font-mono font-bold text-slate-400">{idx + 1}</span>
+                                        )}
+                                    </div>
+                                    <span className="text-xs font-bold block">{stage.label}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
+            )}
+
+            {/* ── Maintenance Alerts & Reminders ── */}
+            <section className="bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.06] pb-3">
+                    <h3 className="text-base font-bold text-slate-950 dark:text-white flex items-center gap-2">
+                        <AlertTriangle size={17} className="text-amber-500" />
+                        <span>{t('reminders_alerts')}</span>
+                    </h3>
+                    <span className="text-xs text-slate-400 font-medium">
+                        {reminders.length} {isAr ? 'تنبيه' : 'pending'}
+                    </span>
                 </div>
+
+                {reminders.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                        {reminders.map((rem) => (
+                            <div 
+                                key={rem.id}
+                                className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06] flex items-center justify-between gap-3"
+                            >
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs font-bold text-slate-900 dark:text-white">
+                                            {rem.service_type}
+                                        </span>
+                                        <span className="text-[10px] px-2 py-0.5 rounded bg-amber-400/20 text-amber-700 dark:text-amber-300 font-medium">
+                                            {rem.due_date ? new Date(rem.due_date).toLocaleDateString() : (isAr ? 'مستحق قريباً' : 'Due Soon')}
+                                        </span>
+                                    </div>
+                                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                        {rem.make} {rem.model} {rem.license_plate && `(${rem.license_plate})`}
+                                    </p>
+                                </div>
+
+                                <Link
+                                    to={`/book-service?vehicleId=${rem.vehicle_id || ''}&serviceType=${encodeURIComponent(rem.service_type || '')}`}
+                                    className="px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs shrink-0 transition-colors"
+                                >
+                                    {isAr ? 'حجز الآن' : 'Schedule'}
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="py-6 flex items-center gap-3 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl">
+                        <ShieldCheck size={20} className="shrink-0" />
+                        <p className="text-xs font-semibold">
+                            {t('no_reminders')}
+                        </p>
+                    </div>
+                )}
             </section>
+
+            {/* Sell Car Modal */}
+            <SellCarModal
+                isOpen={sellModalOpen}
+                vehicle={activeVehicle}
+                onClose={() => setSellModalOpen(false)}
+                onSuccess={() => setSellModalOpen(false)}
+            />
+
         </div>
     );
 };

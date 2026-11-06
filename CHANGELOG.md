@@ -4,6 +4,53 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-06
 
+### Changed (DEC-005: Edge Frontend Migration to Vercel & Cloudflare Pages Purge)
+- **Vercel Edge Network Migration:**
+  - Migrated both customer and staff SPAs to Vercel to bypass regional ISP Anycast routing blocks in Egypt:
+    - Customer Portal: `https://gocarauto.vercel.app`
+    - Staff Interface: `https://gocarauto-3kpg.vercel.app`
+  - Added `customer-portal/vercel.json` and `staff-interface/vercel.json` specifying single-page app rewrite rules (`"source": "/(.*)", "destination": "/"`) for clean client-side routing on page refresh.
+  - Purged obsolete Cloudflare `_redirects` files from `customer-portal/public/` and `staff-interface/public/`.
+- **Backend CORS & Origin Hardening:**
+  - Updated `server.js` CORS policy to whitelist `.vercel.app` origins (`https://gocarauto.vercel.app`, `https://gocarauto-3kpg.vercel.app`) and removed `pages.dev`.
+  - Updated API client fallback hosts in `customer-portal/src/utils/api.js` and `staff-interface/src/utils/api.js`.
+  - Updated `render.yaml` environment variable documentation for `CORS_ORIGIN` and `CUSTOMER_PORTAL_URL`.
+- **Documentation & Runbook Alignment:**
+  - Fully updated `docs/08-deploy.md`, `docs/WORKFLOW.md`, `docs/02-requirements.md`, and `.agent/rules/04-environment-workflow.md` to reflect the Vercel architecture and instant rollback steps.
+  - Logged architectural decision **DEC-005** in `.valdoz/decisions.jsonl` and `.valdoz/decisions.md`.
+
+### Added (CR-005: Customer Portal Redesign - Slices 1 & 2: Layout, Cockpit, Booking & History)
+- **Impeccable Design Toolkit Integration:**
+  - Audited and installed `pbakaus/impeccable` into `.agent/skills/impeccable/`.
+  - Pinned commit `c3bb418` (Apache-2.0) in `.valdoz/repos.yaml` and recorded architectural decision **DEC-004** in `.valdoz/decisions.md`.
+  - Configured sandboxed native engine binary for local design quality audits and anti-slop scans.
+- **Layout Shell & Navigation Overhaul (`Layout.jsx`):**
+  - Re-architected sidebar navigation into a clean, task-oriented cockpit shell adhering to Impeccable Operate-mode standards.
+  - Enhanced top bar with contextual title/subtitle hierarchy, `⌘K` search shortcut styling, dark/light toggle, bilingual switcher, and primary booking CTA.
+  - Enforced bidirectional alignment (RTL for Arabic, LTR for English) with tailored typographic metrics (`Plus Jakarta Sans` / `Cairo`).
+- **Vehicle Cockpit Dashboard (`Dashboard.jsx`):**
+  - Rebuilt dashboard around a unified vehicle cockpit with segmented fleet switcher tabs.
+  - Re-engineered active vehicle vitals with real odometer telemetry (oil life, brake pad integrity, and blueprint visualizer).
+  - Added live 5-stage service pipeline stepper (`Scheduled` → `Inspection` → `In Progress` → `Quality Check` → `Ready for Pickup`).
+  - Added actionable maintenance reminders feed with instant booking shortcuts.
+- **Service Booking Intake Wizard (`ServiceBooking.jsx`):**
+  - Rebuilt into a 3-step structured wizard (Vehicle & Package Selection → Date & Bay Window Reservation → Technical Notes & Confirmation).
+  - Streamlined service packages with transparent descriptions and clear active focus indicators.
+  - Added clear intake confirmation voucher with direct navigation shortcuts.
+- **Appointments Schedule (`Appointments.jsx`):**
+  - Restructured into a high-scanability card grid with semantic state badges (`Scheduled`, `In Workshop`, `Pending Review`, `Completed`).
+  - Formatted dates and intake arrival times with tabular numerals.
+- **Digital Service History & Ledger (`ServiceHistory.jsx`):**
+  - Redesigned data table with 1px border hierarchy, sortable column headers, and category quick-filter tabs (All, Oil, Brakes, Tires).
+  - Provided instant one-click actions for viewing online invoice statements and downloading PDFs.
+  - Added top KPI metrics summary (Total Records, Maintenance Invested, Vehicles Serviced).
+- **Design Hygiene & Anti-Slop Fixes:**
+  - Replaced dated `animate-bounce` in `AIAdvisor.jsx` with exponential easing (`animate-pulse`).
+  - Added browser surface styling (themed `::selection`, custom caret, tabular numerals) in `customer-portal/src/index.css`.
+  - Achieved a clean bill of health on `impeccable detect` with 0 anti-patterns and 0 advisories across all 23 components.
+- **Formal Change Log:**
+  - Registered formal change record in `docs/changes/CR-005.md`.
+
 ### Fixed (CR-004: MySQL Cross-Dialect Telemetry & UI Streamlining)
 - **Resolved "CRITICAL: TELEMETRY LINK OFFLINE" in Production:**
   - Diagnosed MySQL/TiDB database error `ER_WRONG_PARAMCOUNT_TO_NATIVE_FCT` caused by SQLite-specific `date('now', 'start of month')` and `date('now', '+7 days')` function syntax in `reportController.js`, `notificationController.js`, and `vehicleController.js`.

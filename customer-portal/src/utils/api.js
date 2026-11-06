@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const DEFAULT_API = typeof window !== 'undefined' && (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('pages.dev'))
+const DEFAULT_API = typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
     ? 'https://gocar-backend-crtx.onrender.com/api'
     : 'http://localhost:3000/api';
 

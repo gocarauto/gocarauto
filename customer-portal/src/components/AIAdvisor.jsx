@@ -312,9 +312,9 @@ const AIAdvisor = () => {
                     {isTyping && (
                         <div className={`flex ${isAr ? 'justify-end' : 'justify-start'}`}>
                             <div className="bg-gray-100 dark:bg-white/5 rounded-2xl p-4 border border-gray-200 dark:border-white/5 flex gap-1.5 items-center">
-                                <span className="w-2 h-2 rounded-full bg-[#fbbf24] animate-bounce"></span>
-                                <span className="w-2 h-2 rounded-full bg-[#fbbf24] animate-bounce" style={{ animationDelay: '0.2s' }}></span>
-                                <span className="w-2 h-2 rounded-full bg-[#fbbf24] animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                                <span className="w-2 h-2 rounded-full bg-[#fbbf24] animate-pulse"></span>
+                                <span className="w-2 h-2 rounded-full bg-[#fbbf24] animate-pulse" style={{ animationDelay: '0.2s' }}></span>
+                                <span className="w-2 h-2 rounded-full bg-[#fbbf24] animate-pulse" style={{ animationDelay: '0.4s' }}></span>
                             </div>
                         </div>
                     )}

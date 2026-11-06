@@ -49,7 +49,7 @@ No code, schema alteration, or environment configuration may jump directly to Gi
 ### Stage 3: Live Production Cloud Environment
 - **Role:** High-availability, zero-cost production hosting serving real customers and workshop staff.
 - **Infrastructure Topology:**
-  - **Edge Frontends:** Cloudflare Pages auto-deploys `customer-portal` (`gocar-portal.pages.dev`) and `staff-interface` (`gocar-staff.pages.dev`) from commits on `main`.
+  - **Edge Frontends:** Vercel Edge Network auto-deploys `customer-portal` (`https://gocarauto.vercel.app`) and `staff-interface` (`https://gocarauto-3kpg.vercel.app`) from commits on `main`.
   - **Backend API:** Render.com Docker Web Service (`gocar-backend-crtx.onrender.com`) auto-builds container with headless Chromium for PDF invoices.
   - **Primary Relational Database:** TiDB Cloud Serverless MySQL (`gateway01.eu-central-1.prod.aws.tidbcloud.com:4000`) with automated daily backups.
   - **Availability Guard:** Free 10-minute cron ping (`cron-job.org`) to `/api/health` preventing backend container cold starts.

@@ -6,3 +6,11 @@ repositories:
     license: MIT
     description: "Anti-slop frontend skill for intentional web design and art direction"
     imported_at: "2026-11-04T16:58:36+02:00"
+  impeccable:
+    url: https://github.com/pbakaus/impeccable
+    version: v4.8.0
+    commit: c3bb418ee38ee49a6b999b7752c1368f3123a2bd
+    license: Apache-2.0
+    description: "Design vocabulary, critique, anti-slop rules, and precision UI craft"
+    imported_at: "2026-11-06T20:07:00+02:00"
+
