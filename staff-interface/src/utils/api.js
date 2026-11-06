@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const DEFAULT_API = typeof window !== 'undefined' && (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('pages.dev'))
+    ? 'https://gocar-backend-crtx.onrender.com/api'
+    : 'http://localhost:3000/api';
+
+const API_URL = import.meta.env.VITE_API_URL || DEFAULT_API;
 
 const api = axios.create({
     baseURL: API_URL,

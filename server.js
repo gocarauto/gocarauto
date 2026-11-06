@@ -32,6 +32,8 @@ app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
             callback(null, origin || true);
+        } else if (origin.endsWith('.vercel.app') || origin.endsWith('.pages.dev')) {
+            callback(null, origin);
         } else {
             callback(new Error('CORS: Origin not permitted'));
         }
