@@ -9,6 +9,11 @@ All notable changes to the GoCar Auto platform are documented in this file.
   - Diagnosed MySQL/TiDB database error `ER_WRONG_PARAMCOUNT_TO_NATIVE_FCT` caused by SQLite-specific `date('now', 'start of month')` and `date('now', '+7 days')` function syntax in `reportController.js`, `notificationController.js`, and `vehicleController.js`.
   - Replaced native database date math with cross-dialect JavaScript ISO date boundaries passed safely via parameterized query bindings (`?`), fully harmonizing SQLite local dev with TiDB Cloud production.
   - Upgraded `staff-interface/src/components/Dashboard.jsx` with non-blocking error handling, fallback summary metrics, and an active "Retry Sync" banner, eliminating full-page blackouts.
+- **Resolved Local Blank Screen on Staff Login:**
+  - Eliminated lingering `isDir2` and `isDir3` references in `staff-interface/src/components/Layout.jsx` that triggered uncaught `ReferenceError` during initial render in development mode.
+  - Unlocked `AuthContext.jsx` route rendering to always deliver `{children}` seamlessly.
+- **Enforced Unified ValdoZ Verification Script:**
+  - Added `npm run verify` to root `package.json` chaining backend test suite, staff ESLint, customer ESLint, and both production Vite builds into a single non-bypassable pre-completion gate.
 - **Removed Login Helper Credentials:**
   - Removed demo credential text block from `staff-interface/src/components/Login.jsx`.
 - **Removed 3-Option Staff Direction Switcher:**
