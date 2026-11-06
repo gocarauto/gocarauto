@@ -8,7 +8,10 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "init-db": "node scripts/init-db.js",
-    "test": "node --test"
+    "test": "node --test",
+    "lint:all": "npm --prefix staff-interface run lint && npm --prefix customer-portal run lint",
+    "build:all": "npm --prefix staff-interface run build && npm --prefix customer-portal run build",
+    "verify": "node --test && npm --prefix staff-interface run lint && npm --prefix customer-portal run lint && npm --prefix staff-interface run build && npm --prefix customer-portal run build"
   },
   "keywords": [
     "automotive",
