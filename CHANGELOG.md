@@ -4,6 +4,18 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-06
 
+### Fixed (CR-004: MySQL Cross-Dialect Telemetry & UI Streamlining)
+- **Resolved "CRITICAL: TELEMETRY LINK OFFLINE" in Production:**
+  - Diagnosed MySQL/TiDB database error `ER_WRONG_PARAMCOUNT_TO_NATIVE_FCT` caused by SQLite-specific `date('now', 'start of month')` and `date('now', '+7 days')` function syntax in `reportController.js`, `notificationController.js`, and `vehicleController.js`.
+  - Replaced native database date math with cross-dialect JavaScript ISO date boundaries passed safely via parameterized query bindings (`?`), fully harmonizing SQLite local dev with TiDB Cloud production.
+  - Upgraded `staff-interface/src/components/Dashboard.jsx` with non-blocking error handling, fallback summary metrics, and an active "Retry Sync" banner, eliminating full-page blackouts.
+- **Removed Login Helper Credentials:**
+  - Removed demo credential text block from `staff-interface/src/components/Login.jsx`.
+- **Removed 3-Option Staff Direction Switcher:**
+  - Removed floating `<DirectionSwitcher />` from `staff-interface/src/components/Layout.jsx`, fixing the staff UI to a unified, distraction-free command deck.
+- **Formal Change Log:**
+  - Registered formal change record in `docs/changes/CR-004.md`.
+
 ### Fixed (CR-003: Staff Portal Cross-Origin Authentication & Error Feedback)
 - **Cross-Origin Cookie & Token Resilience:**
   - Configured `controllers/authController.js` to emit `SameSite=None` + `Secure=true` cookies in production environments, unblocking cross-site communication from Cloudflare Pages (`gocar-staff.pages.dev`) to Render (`gocar-backend-crtx.onrender.com`).

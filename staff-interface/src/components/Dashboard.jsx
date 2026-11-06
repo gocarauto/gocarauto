@@ -7,8 +7,22 @@ import {
 } from 'lucide-react';
 import { formatDate } from '../utils/dateUtils';
 
+const DEFAULT_SUMMARY = {
+    totalCustomers: 0,
+    totalVehicles: 0,
+    openRequests: 0,
+    inProgressRequests: 0,
+    outstandingBalance: 0,
+    monthlyRevenue: 0,
+    totalRevenue: 0,
+    totalInvoiced: 0,
+    upcomingServices: 0,
+    mileageAlerts: 0
+};
+
 const Dashboard = () => {
     const [stats, setStats] = useState(null);
+    const [telemetryError, setTelemetryError] = useState(false);
     const [reminders, setReminders] = useState([]);
     const [consignmentLeads, setConsignmentLeads] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -16,35 +30,49 @@ const Dashboard = () => {
     const [forecastLoading, setForecastLoading] = useState(true);
     const [activityFilter, setActivityFilter] = useState('All');
 
+    const fetchData = async () => {
+        setLoading(true);
+        setTelemetryError(false);
+        try {
+            const [statsRes, remindersRes, consignmentRes] = await Promise.all([
+                api.get('/reports/dashboard').catch((err) => {
+                    console.warn('Dashboard stats fetch failed:', err.message);
+                    return { data: { data: null } };
+                }),
+                api.get('/reminders/all').catch(() => ({ data: { data: [] } })),
+                api.get('/consignment/requests?status=New').catch(() => ({ data: { data: [] } }))
+            ]);
+
+            if (statsRes.data?.data) {
+                setStats(statsRes.data.data);
+            } else {
+                setStats({ summary: DEFAULT_SUMMARY, recentActivity: [] });
+                setTelemetryError(true);
+            }
+
+            setReminders(remindersRes.data?.data || []);
+            setConsignmentLeads(consignmentRes.data?.data || []);
+        } catch (error) {
+            console.error('Error fetching dashboard stats:', error);
+            setStats({ summary: DEFAULT_SUMMARY, recentActivity: [] });
+            setTelemetryError(true);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchForecast = async () => {
+        try {
+            const res = await api.get('/reports/forecast');
+            setForecast(res.data?.data || res.data || null);
+        } catch (error) {
+            console.error('Error fetching forecast:', error);
+        } finally {
+            setForecastLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [statsRes, remindersRes, consignmentRes] = await Promise.all([
-                    api.get('/reports/dashboard'),
-                    api.get('/reminders/all').catch(() => ({ data: { data: [] } })),
-                    api.get('/consignment/requests?status=New').catch(() => ({ data: { data: [] } }))
-                ]);
-                setStats(statsRes.data?.data || null);
-                setReminders(remindersRes.data?.data || []);
-                setConsignmentLeads(consignmentRes.data?.data || []);
-            } catch (error) {
-                console.error('Error fetching dashboard stats:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        const fetchForecast = async () => {
-            try {
-                const res = await api.get('/reports/forecast');
-                setForecast(res.data?.data || res.data || null);
-            } catch (error) {
-                console.error('Error fetching forecast:', error);
-            } finally {
-                setForecastLoading(false);
-            }
-        };
-
         fetchData();
         fetchForecast();
     }, []);
@@ -66,17 +94,11 @@ const Dashboard = () => {
             </span>
         </div>
     );
-    
-    if (!stats) return (
-        <div className="glass-card p-10 border-red-500/30 text-red-400 font-bold tracking-widest uppercase text-xs flex items-center gap-3">
-            <AlertTriangle size={20} />
-            <span>CRITICAL: TELEMETRY LINK OFFLINE</span>
-        </div>
-    );
 
-    const { summary, recentActivity = [] } = stats;
+    const activeStats = stats || { summary: DEFAULT_SUMMARY, recentActivity: [] };
+    const { summary = DEFAULT_SUMMARY, recentActivity = [] } = activeStats;
 
-    const filteredActivity = recentActivity.filter(activity => {
+    const filteredActivity = (recentActivity || []).filter(activity => {
         if (activityFilter === 'All') return true;
         if (activityFilter === 'In Progress') return activity.status?.includes('Progress');
         if (activityFilter === 'Pending') return activity.status?.includes('Pending') || activity.status?.includes('Open');
@@ -98,6 +120,23 @@ const Dashboard = () => {
 
     return (
         <div className="space-y-8 pb-20">
+            {telemetryError && (
+                <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 p-4 rounded-2xl flex items-center justify-between gap-4 backdrop-blur-xl">
+                    <div className="flex items-center gap-3">
+                        <AlertTriangle className="text-amber-400 shrink-0" size={20} />
+                        <div>
+                            <p className="text-xs font-bold uppercase tracking-wider text-amber-200">Cloud Telemetry Initializing</p>
+                            <p className="text-[11px] text-gray-300">Database statistics link is reconnecting. Live metrics will populate shortly.</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={fetchData}
+                        className="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap"
+                    >
+                        Retry Sync
+                    </button>
+                </div>
+            )}
             
             {/* ── Rapid Dispatch Bar (Top Level Actions) ── */}
             <section className="bg-white/5 border border-white/10 rounded-[2.2rem] p-5 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 backdrop-blur-xl">

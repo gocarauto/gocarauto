@@ -139,13 +139,6 @@ const Login = () => {
                             )}
                         </button>
                     </form>
-
-                    <div className="mt-10 text-center opacity-60 hover:opacity-100 transition-opacity">
-                        <p className="text-[10px] font-black text-white uppercase tracking-widest leading-none mb-2">Default Staff Credentials</p>
-                        <p className="text-xs font-mono text-gray-400 bg-black/50 py-2 px-4 rounded-lg inline-block border border-white/5">
-                            admin@gocar.com / password123
-                        </p>
-                    </div>
                 </div>
             </motion.div>
         </div>

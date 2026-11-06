@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import DirectionSwitcher, { useStaffUIDirection } from './DirectionSwitcher';
 import {
     LayoutDashboard, Users, Car, Wrench, Receipt, BarChart, LogOut, Settings, Search, Bell, Shield, Menu, X, Plus, Sparkles, Tag
 } from 'lucide-react';
@@ -11,7 +10,6 @@ const Layout = () => {
     const { user, logout } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
-    const { direction } = useStaffUIDirection();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -41,9 +39,6 @@ const Layout = () => {
         return 'GoCar Auto SFMS';
     };
 
-    const isDir2 = direction === '2';
-    const isDir3 = direction === '3';
-
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         if (!searchTerm.trim()) return;
@@ -52,9 +47,7 @@ const Layout = () => {
     };
 
     return (
-        <div className={`min-h-screen flex text-white relative transition-colors duration-500 ${
-            isDir2 ? 'bg-[#0b0f17]' : isDir3 ? 'bg-[#0f172a]' : 'bg-[#070709]'
-        }`}>
+        <div className="min-h-screen flex text-white relative bg-[#070709]">
             
             {/* ── Mobile/Tablet Backdrop Overlay ── */}
             <AnimatePresence>
@@ -221,9 +214,6 @@ const Layout = () => {
                     </AnimatePresence>
                 </main>
             </div>
-
-            {/* WHY: Omni Protocol v10.0 Staff True Multi-Direction Switcher (non-intrusive bottom-right) */}
-            <DirectionSwitcher />
         </div>
     );
 };

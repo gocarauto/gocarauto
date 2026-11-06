@@ -253,6 +253,11 @@ const reportController = {
      */
     getDashboardSummary: async (req, res) => {
         try {
+            const now = new Date();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+            const today = now.toISOString().split('T')[0];
+            const plus7Days = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
             const summary = await database.get(
                 `SELECT 
                     (SELECT COUNT(*) FROM clients) as totalCustomers,
@@ -260,11 +265,12 @@ const reportController = {
                     (SELECT COUNT(*) FROM service_requests WHERE status = 'Open') as openRequests,
                     (SELECT COUNT(*) FROM service_requests WHERE status = 'In Progress') as inProgressRequests,
                     (SELECT SUM(total_amount_due - amount_paid) FROM financial_transactions WHERE payment_status IN ('Pending', 'Partial')) as outstandingBalance,
-                    (SELECT SUM(total_price) FROM service_records WHERE service_date >= date('now', 'start of month')) as monthlyRevenue,
+                    (SELECT SUM(total_price) FROM service_records WHERE service_date >= ?) as monthlyRevenue,
                     (SELECT SUM(total_price) FROM service_records) as totalRevenue,
                     (SELECT SUM(total_amount_due) FROM financial_transactions WHERE payment_status = 'Paid') as totalInvoiced,
-                    (SELECT COUNT(*) FROM vehicles WHERE next_service_due <= date('now', '+7 days') AND next_service_due >= date('now')) as upcomingServices,
-                    (SELECT COUNT(*) FROM vehicles WHERE current_mileage - COALESCE(last_service_mileage, 0) > 5000) as mileageAlerts`
+                    (SELECT COUNT(*) FROM vehicles WHERE next_service_due <= ? AND next_service_due >= ?) as upcomingServices,
+                    (SELECT COUNT(*) FROM vehicles WHERE current_mileage - COALESCE(last_service_mileage, 0) > 5000) as mileageAlerts`,
+                [startOfMonth, plus7Days, today]
             );
 
             const recentActivity = await database.query(
@@ -306,11 +312,16 @@ const reportController = {
             });
 
             // Find vehicles due for service in next 30 days
-            const upcomingVehicles = await database.query(`
-                SELECT id, make, model, next_service_due
-                FROM vehicles 
-                WHERE next_service_due BETWEEN date('now') AND date('now', '+30 days')
-            `);
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const plus30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+            const upcomingVehicles = await database.query(
+                `SELECT id, make, model, next_service_due
+                 FROM vehicles 
+                 WHERE next_service_due BETWEEN ? AND ?`,
+                [today, plus30Days]
+            );
             
             // Assume upcoming services are 'Routine Maintenance' by default
             const defaultType = 'Routine Maintenance';

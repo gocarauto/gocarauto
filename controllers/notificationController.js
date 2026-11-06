@@ -42,15 +42,19 @@ const notificationController = {
     sendServiceReminders: async (req, res) => {
         try {
             const { days = 7 } = req.body;
+            const daysNum = parseInt(days, 10) || 7;
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const maxDate = new Date(now.getTime() + daysNum * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
             const vehicles = await database.query(
                 `SELECT v.*, c.email, c.phone, c.full_name as customer_name
                  FROM vehicles v
                  JOIN clients c ON v.client_id = c.id
                  WHERE v.next_service_due IS NOT NULL 
-                 AND v.next_service_due <= date('now', '+' || ? || ' days')
-                 AND v.next_service_due >= date('now')`,
-                [days]
+                 AND v.next_service_due <= ?
+                 AND v.next_service_due >= ?`,
+                [maxDate, today]
             );
 
             const results = [];

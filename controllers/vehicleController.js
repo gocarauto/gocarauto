@@ -222,16 +222,20 @@ const vehicleController = {
     getUpcomingService: async (req, res) => {
         try {
             const { days = 7 } = req.query;
+            const daysNum = parseInt(days, 10) || 7;
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const maxDate = new Date(now.getTime() + daysNum * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
             const vehicles = await database.query(
                 `SELECT v.*, c.email, c.phone
                  FROM vehicles v
                  JOIN clients c ON v.client_id = c.id
                  WHERE v.next_service_due IS NOT NULL 
-                 AND v.next_service_due <= date('now', '+' || ? || ' days')
-                 AND v.next_service_due >= date('now')
+                 AND v.next_service_due <= ?
+                 AND v.next_service_due >= ?
                  ORDER BY v.next_service_due ASC`,
-                [days]
+                [maxDate, today]
             );
 
             res.json({ success: true, data: vehicles });
