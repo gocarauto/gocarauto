@@ -63,9 +63,7 @@ const Layout = () => {
             </AnimatePresence>
 
             {/* ── Sidebar (Responsive & Shop-Floor Optimized) ── */}
-            <aside className={`w-[280px] border-r border-white/5 flex flex-col fixed inset-y-0 z-50 transition-all duration-300 ease-in-out ${
-                isDir2 ? 'bg-[#0e131f]' : isDir3 ? 'bg-[#111827]' : 'bg-[#0c0d12]'
-            } ${
+            <aside className={`w-[280px] border-r border-white/5 flex flex-col fixed inset-y-0 z-50 transition-all duration-300 ease-in-out bg-[#0c0d12] ${
                 mobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:translate-x-0'
             }`}>
                 <div className="p-6 pb-8 flex items-center justify-between">
@@ -143,9 +141,7 @@ const Layout = () => {
             <div className="flex-1 lg:pl-[280px] flex flex-col min-w-0">
                 
                 {/* Header */}
-                <header className={`h-[90px] md:h-[100px] flex items-center justify-between px-6 md:px-10 relative z-30 border-b border-white/5 sticky top-0 backdrop-blur-2xl ${
-                    isDir2 ? 'bg-[#0b0f17]/90' : isDir3 ? 'bg-[#0f172a]/90' : 'bg-[#070709]/90'
-                }`}>
+                <header className="h-[90px] md:h-[100px] flex items-center justify-between px-6 md:px-10 relative z-30 border-b border-white/5 sticky top-0 backdrop-blur-2xl bg-[#070709]/90">
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => setMobileOpen(true)}
