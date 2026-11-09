@@ -139,7 +139,7 @@ const Dashboard = () => {
             )}
             
             {/* ── Rapid Dispatch Bar (Top Level Actions) ── */}
-            <section className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-5 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 backdrop-blur-xl">
+            <section className="bg-white/80 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-5 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 backdrop-blur-xl shadow-sm">
                 <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
                     <Link
                         to="/service-requests/new"
@@ -150,23 +150,23 @@ const Dashboard = () => {
                     </Link>
                     <Link
                         to="/customers/new"
-                        className="flex-1 sm:flex-none py-3 px-5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-white font-semibold text-sm border border-white/10 flex items-center justify-center gap-2 transition-all"
+                        className="flex-1 sm:flex-none py-3 px-5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-800 dark:text-white font-semibold text-sm border border-slate-200/80 dark:border-white/10 flex items-center justify-center gap-2 transition-all"
                     >
                         <Users size={16} />
                         <span>Register Client</span>
                     </Link>
                     <Link
                         to="/vehicles/new"
-                        className="flex-1 sm:flex-none py-3 px-5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-white font-semibold text-sm border border-white/10 flex items-center justify-center gap-2 transition-all"
+                        className="flex-1 sm:flex-none py-3 px-5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-800 dark:text-white font-semibold text-sm border border-slate-200/80 dark:border-white/10 flex items-center justify-center gap-2 transition-all"
                     >
                         <Car size={16} />
                         <span>Intake Vehicle</span>
                     </Link>
                 </div>
 
-                <div className="flex items-center gap-2.5 text-sm font-mono font-medium text-slate-300">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span className="text-emerald-400 font-bold">FLOOR STATUS:</span>
+                <div className="flex items-center gap-2.5 text-sm font-mono font-medium text-slate-600 dark:text-slate-300">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse"></span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">FLOOR STATUS:</span>
                     <span>{summary.inProgressRequests} In Progress • {summary.openRequests} Pending Intake</span>
                 </div>
             </section>
@@ -176,20 +176,20 @@ const Dashboard = () => {
                 <section className="bg-amber-500/10 border border-amber-500/30 rounded-[2.2rem] p-5 md:p-6 backdrop-blur-xl space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <span className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-400">
+                            <span className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-500 dark:text-amber-400">
                                 <Tag size={20} />
                             </span>
                             <div>
-                                <h4 className="text-base font-black text-white uppercase tracking-wider flex items-center gap-2">
+                                <h4 className="text-base font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
                                     <span>Used Car Consignment Leads</span>
-                                    <span className="px-2.5 py-0.5 rounded-full bg-amber-500 text-black text-[10px] font-black">{consignmentLeads.length} NEW</span>
+                                    <span className="px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black">{consignmentLeads.length} NEW</span>
                                 </h4>
-                                <p className="text-xs text-gray-400">Customers requesting GoCar to handle the sale of their vehicle</p>
+                                <p className="text-xs text-slate-500 dark:text-gray-400">Customers requesting GoCar to handle the sale of their vehicle</p>
                             </div>
                         </div>
                         <Link
                             to="/consignment"
-                            className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all flex items-center gap-1.5 shadow-lg shadow-amber-500/20"
+                            className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl transition-all flex items-center gap-1.5 shadow-lg shadow-amber-500/20"
                         >
                             Open Consignment Hub
                             <ChevronRight size={14} />
@@ -198,32 +198,32 @@ const Dashboard = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {consignmentLeads.map(lead => (
-                            <div key={lead.id} className="p-4 rounded-2xl bg-black/50 border border-white/10 space-y-3">
+                            <div key={lead.id} className="p-4 rounded-2xl bg-white/90 dark:bg-black/50 border border-slate-200/80 dark:border-white/10 shadow-sm space-y-3">
                                 <div className="flex items-start justify-between">
                                     <div>
-                                        <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest block">{lead.client_name}</span>
-                                        <h5 className="text-sm font-bold text-white">{lead.make} {lead.model} ({lead.year})</h5>
-                                        <span className="text-[11px] text-gray-400 font-mono">{lead.license_plate}</span>
+                                        <span className="text-[10px] font-black text-amber-500 dark:text-amber-400 uppercase tracking-widest block">{lead.client_name}</span>
+                                        <h5 className="text-sm font-bold text-slate-900 dark:text-white">{lead.make} {lead.model} ({lead.year})</h5>
+                                        <span className="text-[11px] text-slate-500 dark:text-gray-400 font-mono">{lead.license_plate}</span>
                                     </div>
                                     {lead.asking_price && (
-                                        <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+                                        <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
                                             {lead.asking_price.toLocaleString()} EGP
                                         </span>
                                     )}
                                 </div>
                                 {lead.notes && (
-                                    <p className="text-xs text-gray-300 italic line-clamp-2">"{lead.notes}"</p>
+                                    <p className="text-xs text-slate-600 dark:text-gray-300 italic line-clamp-2">"{lead.notes}"</p>
                                 )}
-                                <div className="flex items-center justify-between pt-2 border-t border-white/5 text-xs">
+                                <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-white/5 text-xs">
                                     <a
                                         href={`tel:${lead.client_phone}`}
-                                        className="font-bold text-amber-400 hover:underline flex items-center gap-1"
+                                        className="font-bold text-amber-500 dark:text-amber-400 hover:underline flex items-center gap-1"
                                     >
                                         📞 {lead.client_phone}
                                     </a>
                                     <button
                                         onClick={() => handleUpdateLeadStatus(lead.id, 'Contacted')}
-                                        className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] uppercase tracking-wider transition-colors"
+                                        className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-white/10 dark:hover:bg-white/20 dark:text-white font-bold text-[10px] uppercase tracking-wider transition-colors"
                                     >
                                         Mark Contacted
                                     </button>
@@ -280,24 +280,24 @@ const Dashboard = () => {
 
             {/* ── Recent Service Activity Table ── */}
             <div className="glass-card overflow-hidden">
-                <div className="p-6 md:p-8 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="p-6 md:p-8 border-b border-slate-200/80 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h3 className="text-xl md:text-2xl font-display font-black text-white uppercase tracking-tight flex items-center gap-2">
+                        <h3 className="text-xl md:text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
                             <span>Service Operations Feed</span>
                         </h3>
-                        <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mt-0.5">Real-time status updates from active workshop floor</p>
+                        <p className="text-xs text-slate-500 dark:text-gray-400 uppercase tracking-widest font-bold mt-0.5">Real-time status updates from active workshop floor</p>
                     </div>
 
                     {/* Filter Pills */}
-                    <div className="flex items-center gap-1.5 bg-black/40 p-1.5 rounded-full border border-white/5 overflow-x-auto no-scrollbar">
+                    <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-black/40 p-1.5 rounded-full border border-slate-200/80 dark:border-white/5 overflow-x-auto no-scrollbar">
                         {['All', 'In Progress', 'Pending', 'Complete'].map(filter => (
                             <button
                                 key={filter}
                                 onClick={() => setActivityFilter(filter)}
                                 className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
                                     activityFilter === filter
-                                        ? 'bg-white text-black shadow-md'
-                                        : 'text-gray-400 hover:text-white'
+                                        ? 'bg-amber-400 text-slate-950 shadow-md font-bold'
+                                        : 'text-slate-600 dark:text-gray-400 hover:text-slate-950 dark:hover:text-white'
                                 }`}
                             >
                                 {filter}
@@ -309,24 +309,24 @@ const Dashboard = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b border-white/5 bg-white/[0.02]">
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Timestamp</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Client</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Vehicle / Operation</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Status</th>
-                                <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-gray-400">Action</th>
+                            <tr className="border-b border-slate-200/80 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-400">Timestamp</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-400">Client</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-400">Vehicle / Operation</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-400">Status</th>
+                                <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-400">Action</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-slate-200/80 dark:divide-white/5">
                             {filteredActivity.length > 0 ? filteredActivity.map((activity) => (
-                                <tr key={activity.id} className="hover:bg-white/[0.03] transition-colors group">
-                                    <td className="px-8 py-5 text-xs font-mono font-bold text-gray-400">
+                                <tr key={activity.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.03] transition-colors group">
+                                    <td className="px-8 py-5 text-xs font-mono font-bold text-slate-500 dark:text-gray-400">
                                         {formatDate(activity.date)}
                                     </td>
-                                    <td className="px-8 py-5 font-black text-sm text-white uppercase tracking-tight">
+                                    <td className="px-8 py-5 font-black text-sm text-slate-900 dark:text-white uppercase tracking-tight">
                                         {activity.customer}
                                     </td>
-                                    <td className="px-8 py-5 text-xs font-medium text-gray-300 max-w-xs truncate">
+                                    <td className="px-8 py-5 text-xs font-medium text-slate-600 dark:text-gray-300 max-w-xs truncate">
                                         {activity.details}
                                     </td>
                                     <td className="px-8 py-5">
@@ -339,7 +339,7 @@ const Dashboard = () => {
                                     </td>
                                     <td className="px-8 py-5 text-right">
                                         <Link to={`/service-requests/${activity.id}`}>
-                                            <button className="text-[#fbbf24] hover:text-white font-black text-xs uppercase tracking-widest flex items-center gap-1 group/link ml-auto cursor-pointer transition-colors">
+                                            <button className="text-amber-500 dark:text-[#fbbf24] hover:text-amber-600 dark:hover:text-white font-black text-xs uppercase tracking-widest flex items-center gap-1 group/link ml-auto cursor-pointer transition-colors">
                                                 <span>MANAGE</span>
                                                 <ChevronRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
                                             </button>
@@ -348,7 +348,7 @@ const Dashboard = () => {
                                 </tr>
                             )) : (
                                 <tr>
-                                    <td colSpan="5" className="px-8 py-16 text-center text-gray-400 text-xs font-bold uppercase tracking-widest">
+                                    <td colSpan="5" className="px-8 py-16 text-center text-slate-400 text-xs font-bold uppercase tracking-widest">
                                         No matching work orders in this view
                                     </td>
                                 </tr>
@@ -361,12 +361,12 @@ const Dashboard = () => {
             {/* ── Due Service Reminders Section (Bilingual WhatsApp Dispatch) ── */}
             {reminders.length > 0 && (
                 <div className="glass-card overflow-hidden">
-                    <div className="p-6 md:p-8 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="p-6 md:p-8 border-b border-slate-200/80 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h3 className="text-xl md:text-2xl font-display font-black text-white uppercase tracking-tight flex items-center gap-2">
+                            <h3 className="text-xl md:text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
                                 <span className="text-[#25D366]">Action Required: Maintenance Reminders</span>
                             </h3>
-                            <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mt-0.5">
+                            <p className="text-xs text-slate-500 dark:text-gray-400 uppercase tracking-widest font-bold mt-0.5">
                                 Send 1-tap personalized WhatsApp reminder notifications
                             </p>
                         </div>
@@ -377,13 +377,13 @@ const Dashboard = () => {
 
                     <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
                         {reminders.map(r => (
-                            <div key={r.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:border-white/20 transition-all">
+                            <div key={r.id} className="bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 rounded-2xl p-5 flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:border-slate-300 dark:hover:border-white/20 transition-all">
                                 <div className="space-y-1">
-                                    <div className="text-sm font-black text-white uppercase">{r.client_name}</div>
-                                    <div className="text-xs text-gray-400 font-medium">
-                                        {r.make} {r.model} • <span className="text-[#fbbf24] font-bold">{r.service_type}</span>
+                                    <div className="text-sm font-black text-slate-900 dark:text-white uppercase">{r.client_name}</div>
+                                    <div className="text-xs text-slate-500 dark:text-gray-400 font-medium">
+                                        {r.make} {r.model} • <span className="text-amber-500 dark:text-[#fbbf24] font-bold">{r.service_type}</span>
                                     </div>
-                                    <div className="text-[11px] text-rose-400 font-mono font-bold">
+                                    <div className="text-[11px] text-rose-500 dark:text-rose-400 font-mono font-bold">
                                         TARGET DATE: {formatDate(r.due_date)}
                                     </div>
                                 </div>
@@ -399,7 +399,7 @@ const Dashboard = () => {
                                     </button>
                                     <button 
                                         onClick={() => sendEnglishWhatsApp(r)}
-                                        className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider border border-white/10 flex items-center gap-1 transition-all cursor-pointer"
+                                        className="py-2.5 px-3 rounded-xl bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-800 dark:text-white font-bold text-xs uppercase tracking-wider border border-slate-300 dark:border-white/10 flex items-center gap-1 transition-all cursor-pointer"
                                         title="Send in English"
                                     >
                                         <span>EN</span>
@@ -413,23 +413,23 @@ const Dashboard = () => {
 
             {/* ── 30-Day AI Revenue Forecast Panel ── */}
             <div className="glass-card overflow-hidden">
-                <div className="p-6 md:p-8 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="p-6 md:p-8 border-b border-slate-200/80 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h3 className="text-xl md:text-2xl font-display font-black text-amber-400 uppercase tracking-tight flex items-center gap-2">
+                        <h3 className="text-xl md:text-2xl font-display font-black text-amber-500 dark:text-amber-400 uppercase tracking-tight flex items-center gap-2">
                             <TrendingUp size={22} />
                             <span>30-Day Predictive Revenue Forecast</span>
                         </h3>
-                        <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mt-0.5">
+                        <p className="text-xs text-slate-500 dark:text-gray-400 uppercase tracking-widest font-bold mt-0.5">
                             Automated ML forecast based on recurring maintenance schedules
                         </p>
                     </div>
 
                     {forecast && (
                         <div className="sm:text-right">
-                            <div className="text-3xl font-display font-black text-white tracking-tighter">
-                                {(forecast.forecastTotal || 0).toLocaleString()} <span className="text-xs text-gray-400 uppercase font-sans">EGP</span>
+                            <div className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter">
+                                {(forecast.forecastTotal || 0).toLocaleString()} <span className="text-xs text-slate-500 dark:text-gray-400 uppercase font-sans">EGP</span>
                             </div>
-                            <div className="text-[10px] font-mono font-bold text-purple-400 uppercase tracking-widest">
+                            <div className="text-[10px] font-mono font-bold text-purple-500 dark:text-purple-400 uppercase tracking-widest">
                                 AI Confidence: {forecast.confidence || '92%'}
                             </div>
                         </div>
@@ -438,7 +438,7 @@ const Dashboard = () => {
                 
                 <div className="p-6 md:p-8">
                     {forecastLoading ? (
-                        <div className="flex items-center justify-center p-8 text-purple-400 flex-col gap-3">
+                        <div className="flex items-center justify-center p-8 text-purple-500 dark:text-purple-400 flex-col gap-3">
                             <Loader className="animate-spin" size={28} />
                             <span className="text-xs font-mono font-bold uppercase tracking-widest">Generating Predictive Matrix...</span>
                         </div>
@@ -448,12 +448,12 @@ const Dashboard = () => {
                                 const maxAmount = Math.max(...Object.values(forecast.forecastByType), 1);
                                 const percentage = Math.round(((amount || 0) / maxAmount) * 100);
                                 return (
-                                    <div key={type} className="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-2">
-                                        <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-gray-300">
+                                    <div key={type} className="bg-slate-50 dark:bg-white/5 p-4 rounded-2xl border border-slate-200/80 dark:border-white/5 space-y-2">
+                                        <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-gray-300">
                                             <span>{type}</span>
-                                            <span className="font-mono text-purple-300">{(amount || 0).toLocaleString()} EGP</span>
+                                            <span className="font-mono text-purple-600 dark:text-purple-300">{(amount || 0).toLocaleString()} EGP</span>
                                         </div>
-                                        <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                                        <div className="h-2 w-full bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
                                             <div 
                                                 className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full transition-all duration-700 ease-out"
                                                 style={{ width: `${percentage}%` }}
@@ -481,17 +481,17 @@ const MetricCard = ({ title, value, sub, color, bgColor, borderColor, icon: Icon
         <Icon className={`absolute right-5 top-5 ${color} opacity-20 w-12 h-12 group-hover:scale-110 transition-transform`} />
         
         <div className="relative z-10 flex flex-col h-full space-y-1.5">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 {title}
             </span>
-            <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums">
+            <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight font-mono tabular-nums">
                 {value}
             </div>
-            <p className="text-xs text-slate-400 max-w-[85%] pb-3 font-normal">
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-[85%] pb-3 font-normal">
                 {sub}
             </p>
 
-            <div className="mt-auto h-2 w-full bg-white/10 rounded-full overflow-hidden">
+            <div className="mt-auto h-2 w-full bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
                 <div 
                     className={`h-full ${color.replace('text-', 'bg-')} rounded-full transition-all duration-700 ease-out`}
                     style={{ width: `${progress}%` }}

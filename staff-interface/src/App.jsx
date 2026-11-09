@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import Layout from './components/Layout';
 
@@ -36,43 +37,45 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <Router>
-          <Suspense fallback={<div className="p-20 text-center animate-glow text-slate-500 font-bold tracking-wider text-sm">LOADING MODULE...</div>}>
-            <Routes>
-              <Route path="/login" element={<Login />} />
+      <ThemeProvider>
+        <AuthProvider>
+          <Router>
+            <Suspense fallback={<div className="p-20 text-center animate-glow text-slate-500 font-bold tracking-wider text-sm">LOADING MODULE...</div>}>
+              <Routes>
+                <Route path="/login" element={<Login />} />
 
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Layout />
-                </ProtectedRoute>
-              }>
-                <Route index element={<Dashboard />} />
+                <Route path="/" element={
+                  <ProtectedRoute>
+                    <Layout />
+                  </ProtectedRoute>
+                }>
+                  <Route index element={<Dashboard />} />
 
-                <Route path="customers" element={<CustomerList />} />
-                <Route path="customers/new" element={<CustomerForm />} />
-                <Route path="customers/:id" element={<CustomerDossier />} />
-                <Route path="customers/:id/edit" element={<CustomerForm />} />
+                  <Route path="customers" element={<CustomerList />} />
+                  <Route path="customers/new" element={<CustomerForm />} />
+                  <Route path="customers/:id" element={<CustomerDossier />} />
+                  <Route path="customers/:id/edit" element={<CustomerForm />} />
 
-                <Route path="vehicles" element={<VehicleList />} />
-                <Route path="vehicles/new" element={<VehicleForm />} />
-                <Route path="vehicles/:id" element={<VehicleForm />} /> {/* TODO: Create VehicleSpecSheet */}
-                <Route path="vehicles/:id/edit" element={<VehicleForm />} />
+                  <Route path="vehicles" element={<VehicleList />} />
+                  <Route path="vehicles/new" element={<VehicleForm />} />
+                  <Route path="vehicles/:id" element={<VehicleForm />} /> {/* TODO: Create VehicleSpecSheet */}
+                  <Route path="vehicles/:id/edit" element={<VehicleForm />} />
 
-                <Route path="consignment" element={<ConsignmentHub />} />
+                  <Route path="consignment" element={<ConsignmentHub />} />
 
-                <Route path="service-requests" element={<ServiceRequestList />} />
-                <Route path="service-requests/new" element={<ServiceRequestForm />} />
-                <Route path="service-requests/:id" element={<ServiceRequestDetail />} />
-                <Route path="reminders" element={<ServiceRemindersModule />} />
-                <Route path="financial" element={<FinancialList />} />
-                <Route path="reports" element={<ReportsDashboard />} />
-                <Route path="credentials" element={<CredentialManager />} />
-              </Route>
-            </Routes>
-          </Suspense>
-        </Router>
-      </AuthProvider>
+                  <Route path="service-requests" element={<ServiceRequestList />} />
+                  <Route path="service-requests/new" element={<ServiceRequestForm />} />
+                  <Route path="service-requests/:id" element={<ServiceRequestDetail />} />
+                  <Route path="reminders" element={<ServiceRemindersModule />} />
+                  <Route path="financial" element={<FinancialList />} />
+                  <Route path="reports" element={<ReportsDashboard />} />
+                  <Route path="credentials" element={<CredentialManager />} />
+                </Route>
+              </Routes>
+            </Suspense>
+          </Router>
+        </AuthProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }

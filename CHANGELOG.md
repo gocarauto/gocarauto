@@ -4,6 +4,18 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-10
 
+### Added & Enhanced (Staff Portal Visual Theme Parity & Light/Dark Mode Unification)
+- **Unified Theme Architecture & ThemeProvider (`ThemeContext.jsx`):**
+  - Added dedicated `ThemeProvider` in `staff-interface/src/context/ThemeContext.jsx` matching the Customer Portal design engine.
+  - Persists preference in `localStorage.getItem('theme')` and synchronizes the `.dark` class directly onto `document.documentElement` for instantaneous transitions without page reloads.
+- **Top Header & Bottom Operations Theme Controls (`Layout.jsx`):**
+  - Integrated Sun/Moon toggle button in the master console top header alongside search and alert actions.
+  - Styled sidebar, top navigation, brand capsule, and mobile bottom navigation with dual-mode CSS tokens: crisp alabaster light theme (`bg-white dark:bg-[#0c0d12] border-slate-200/80 dark:border-white/[0.08]`) and obsidian dark theme.
+- **High-Contrast Component Styling (`Dashboard.jsx`, `CustomerList.jsx`, `VehicleList.jsx`, `ServiceRequestList.jsx`, `FinancialList.jsx`, `ReportsDashboard.jsx`):**
+  - Upgraded metric cards, quick action bars, consignment alert trays, data tables, and modal dialogues to render with high-contrast text (`text-slate-900 dark:text-white`), subtle light backgrounds (`bg-slate-50 dark:bg-black/40`), and WCAG-compliant status badges.
+- **Architectural Decision:**
+  - Recorded architectural decision **DEC-007** in `.valdoz/decisions.jsonl` and `.valdoz/decisions.md`.
+
 ### Added & Enhanced (CR-006: Comprehensive Application Responsiveness & Mobile/Tablet Adaptation)
 - **Persistent Mobile Bottom Navigation Bars:**
   - Added fixed bottom navigation bar in `customer-portal/src/components/Layout.jsx` for viewports `< 1024px` with quick touch access to Dashboard, Fleet, Center Booking CTA, History, and Drawer.

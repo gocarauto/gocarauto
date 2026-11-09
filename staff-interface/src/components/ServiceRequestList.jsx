@@ -119,9 +119,9 @@ const ServiceRequestList = () => {
                     <div className="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/10 rounded-full opacity-50"></div>
                     <Users className="absolute right-6 top-6 text-emerald-500 opacity-20 w-12 h-12" />
                     <div className="relative z-10">
-                        <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Recurring Clients</div>
-                        <div className="text-3xl font-display font-black text-white tracking-tighter">{stats.recurringClients}</div>
-                        <div className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mt-1">Customer Accounts</div>
+                        <div className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Recurring Clients</div>
+                        <div className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter">{stats.recurringClients}</div>
+                        <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider mt-1">Customer Accounts</div>
                     </div>
                 </div>
             </div>
@@ -139,10 +139,10 @@ const ServiceRequestList = () => {
                     <button
                         key={chip.value}
                         onClick={() => setStatusFilter(chip.value)}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap shrink-0 border ${
+                        className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap shrink-0 border cursor-pointer ${
                             statusFilter === chip.value
-                                ? 'bg-amber-400 text-black border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.3)]'
-                                : 'bg-black/40 text-slate-400 border-white/10 hover:border-white/20 hover:text-white'
+                                ? 'bg-amber-400 text-slate-950 border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.3)]'
+                                : 'bg-slate-100 dark:bg-black/40 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/10 hover:border-amber-400/50 hover:text-slate-950 dark:hover:text-white'
                         }`}
                     >
                         {chip.label}
@@ -156,17 +156,17 @@ const ServiceRequestList = () => {
                     <div className="relative flex items-center">
                         <Filter className="absolute left-6 text-primary/70" size={18} />
                         <select
-                            className="w-full bg-black/40 border border-primary/20 focus:border-primary/50 rounded-2xl py-4 pl-14 pr-5 text-sm outline-none transition-all text-primary font-bold tracking-widest uppercase appearance-none cursor-pointer"
+                            className="w-full bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-primary/20 focus:border-amber-400 rounded-2xl py-4 pl-14 pr-5 text-sm outline-none transition-all text-slate-800 dark:text-primary font-bold tracking-widest uppercase appearance-none cursor-pointer"
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
                         >
-                            <option value="" className="bg-gray-900 text-white">ALL STATUSES</option>
-                            <option value="Open" className="bg-gray-900 text-white">OPEN</option>
-                            <option value="In Progress" className="bg-gray-900 text-white">IN PROGRESS</option>
-                            <option value="Waiting for Parts" className="bg-gray-900 text-white">WAITING FOR PARTS</option>
-                            <option value="Complete" className="bg-gray-900 text-white">COMPLETED</option>
-                            <option value="Invoiced" className="bg-gray-900 text-white">INVOICED</option>
-                            <option value="Paid" className="bg-gray-900 text-white">PAID</option>
+                            <option value="" className="bg-slate-50 text-slate-900 dark:bg-gray-900 dark:text-white">ALL STATUSES</option>
+                            <option value="Open" className="bg-slate-50 text-slate-900 dark:bg-gray-900 dark:text-white">OPEN</option>
+                            <option value="In Progress" className="bg-slate-50 text-slate-900 dark:bg-gray-900 dark:text-white">IN PROGRESS</option>
+                            <option value="Waiting for Parts" className="bg-slate-50 text-slate-900 dark:bg-gray-900 dark:text-white">WAITING FOR PARTS</option>
+                            <option value="Complete" className="bg-slate-50 text-slate-900 dark:bg-gray-900 dark:text-white">COMPLETED</option>
+                            <option value="Invoiced" className="bg-slate-50 text-slate-900 dark:bg-gray-900 dark:text-white">INVOICED</option>
+                            <option value="Paid" className="bg-slate-50 text-slate-900 dark:bg-gray-900 dark:text-white">PAID</option>
                         </select>
                     </div>
                 </div>
@@ -176,7 +176,7 @@ const ServiceRequestList = () => {
                         <Search className="absolute left-6 text-slate-400" size={20} />
                         <input
                             type="text"
-                            className="input-glass h-full pl-14 text-base bg-transparent border-none text-white placeholder-slate-500"
+                            className="input-glass h-full pl-14 text-base bg-transparent border-none text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
                             placeholder="SEARCH BY ID, CLIENT, OR VEHICLE..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -186,12 +186,12 @@ const ServiceRequestList = () => {
             </div>
 
             <div className="glass-card overflow-hidden">
-                <div className="p-8 border-b border-white/5 flex gap-4 items-center justify-between">
+                <div className="p-8 border-b border-slate-200/80 dark:border-white/5 flex gap-4 items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-primary shadow-inner">
-                            <Wrench size={20} className="text-primary" />
+                        <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-primary shadow-inner">
+                            <Wrench size={20} className="text-amber-500 dark:text-primary" />
                         </div>
-                        <h3 className="text-xl font-display font-black text-white uppercase tracking-tighter">Mission Log</h3>
+                        <h3 className="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter">Mission Log</h3>
                     </div>
                     <div className="badge badge-warning flex items-center gap-2 px-4 py-2">
                         {filteredRequests.length} DETECTED
@@ -199,7 +199,7 @@ const ServiceRequestList = () => {
                 </div>
 
                 {loading ? (
-                    <div className="p-20 text-center animate-glow text-gray-500 font-bold tracking-widest text-xs uppercase">
+                    <div className="p-20 text-center animate-glow text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
                         LOADING REQUESTS...
                     </div>
                 ) : error ? (
@@ -209,9 +209,9 @@ const ServiceRequestList = () => {
                 ) : (
                     <>
                         {/* Mobile Responsive Cards (< md screens) */}
-                        <div className="md:hidden divide-y divide-white/5">
+                        <div className="md:hidden divide-y divide-slate-200/80 dark:divide-white/5">
                             {filteredRequests.length === 0 ? (
-                                <div className="p-12 text-center text-gray-500 font-bold tracking-widest text-xs uppercase">
+                                <div className="p-12 text-center text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
                                     {searchTerm ? 'NO MISSIONS MATCH YOUR SEARCH.' : 'LOG EMPTY: NO REQUESTS FOUND.'}
                                 </div>
                             ) : (
@@ -219,10 +219,10 @@ const ServiceRequestList = () => {
                                     <div key={req.id} className="p-4 space-y-3">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
-                                                <span className="font-mono font-black text-amber-400 text-base tracking-wider">
+                                                <span className="font-mono font-black text-amber-500 dark:text-amber-400 text-base tracking-wider">
                                                     #{String(req.id).padStart(5, '0')}
                                                 </span>
-                                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${req.source === 'PORTAL' ? 'bg-amber-400/20 text-amber-400' : 'bg-white/10 text-slate-400'}`}>
+                                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${req.source === 'PORTAL' ? 'bg-amber-400/20 text-amber-500 dark:text-amber-400' : 'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-400'}`}>
                                                     {req.source === 'PORTAL' ? 'PORTAL' : 'STAFF'}
                                                 </span>
                                             </div>
@@ -232,14 +232,14 @@ const ServiceRequestList = () => {
                                             </span>
                                         </div>
 
-                                        <div className="flex items-center justify-between text-xs pt-1 border-t border-white/5">
+                                        <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-200/80 dark:border-white/5">
                                             <div>
-                                                <div className="font-bold text-white text-sm">{req.client_name}</div>
-                                                <div className="text-xs text-blue-400 font-medium">{req.vehicle_info}</div>
+                                                <div className="font-bold text-slate-900 dark:text-white text-sm">{req.client_name}</div>
+                                                <div className="text-xs text-blue-500 dark:text-blue-400 font-medium">{req.vehicle_info}</div>
                                             </div>
                                             <div className="text-right">
-                                                <div className="text-[10px] text-slate-400 uppercase font-bold">TOTAL</div>
-                                                <div className="font-black text-white text-sm">
+                                                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold">TOTAL</div>
+                                                <div className="font-black text-slate-900 dark:text-white text-sm">
                                                     {parseFloat(req.total_amount) > 0 
                                                         ? `${parseFloat(req.total_amount).toLocaleString()} EGP` 
                                                         : (parseFloat(req.running_total) > 0 ? `${parseFloat(req.running_total).toLocaleString()} EGP` : '0 EGP')}
@@ -247,20 +247,20 @@ const ServiceRequestList = () => {
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center justify-between pt-1 text-xs text-slate-400">
+                                        <div className="flex items-center justify-between pt-1 text-xs text-slate-500 dark:text-slate-400">
                                             <div className="flex items-center gap-1.5">
-                                                <Clock size={12} className="text-amber-400" />
+                                                <Clock size={12} className="text-amber-500 dark:text-amber-400" />
                                                 <span>{formatDate(req.request_date || req.created_at)}</span>
                                             </div>
-                                            <span className="text-[11px] text-slate-300">
+                                            <span className="text-[11px] text-slate-600 dark:text-slate-300">
                                                 {req.assigned_to_name || 'Unassigned'}
                                             </span>
                                         </div>
 
                                         <Link to={`/service-requests/${req.id}`} className="block pt-1">
-                                            <button className="w-full py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all">
+                                            <button className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200/80 dark:border-white/10 text-slate-800 dark:text-white rounded-xl font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all">
                                                 MANAGE WORK ORDER
-                                                <ChevronRight size={14} className="text-amber-400" />
+                                                <ChevronRight size={14} className="text-amber-500 dark:text-amber-400" />
                                             </button>
                                         </Link>
                                     </div>
@@ -272,46 +272,46 @@ const ServiceRequestList = () => {
                         <div className="hidden md:block overflow-x-auto">
                             <table className="w-full text-left border-collapse min-w-[850px]">
                                 <thead>
-                                    <tr className="border-b border-white/10 bg-white/[0.03]">
-                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">REQ ID / SRC</th>
-                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Date</th>
-                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Client / Vehicle</th>
-                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Assigned To</th>
-                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Status</th>
-                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Total</th>
-                                        <th className="px-8 py-5 text-right text-xs font-black uppercase tracking-widest text-slate-400">Action</th>
+                                    <tr className="border-b border-slate-200/80 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.03]">
+                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">REQ ID / SRC</th>
+                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Date</th>
+                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Client / Vehicle</th>
+                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Assigned To</th>
+                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Status</th>
+                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Total</th>
+                                        <th className="px-8 py-5 text-right text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/5">
+                                <tbody className="divide-y divide-slate-200/80 dark:divide-white/5">
                                     {filteredRequests.length === 0 ? (
                                         <tr>
-                                            <td colSpan="7" className="text-center p-20 text-gray-500 font-bold tracking-widest text-xs uppercase">
+                                            <td colSpan="7" className="text-center p-20 text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
                                                 {searchTerm ? 'NO MISSIONS MATCH YOUR SEARCH PARAMETERS.' : 'LOG EMPTY: NO REQUESTS FOUND.'}
                                             </td>
                                         </tr>
                                     ) : (
                                         filteredRequests.map((req) => (
-                                            <tr key={req.id} className="hover:bg-white/[0.02] transition-colors group">
+                                            <tr key={req.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors group">
                                                 <td className="px-8 py-5 align-middle">
-                                                    <div className="font-mono font-black text-primary text-lg tracking-widest">
+                                                    <div className="font-mono font-black text-amber-500 dark:text-primary text-lg tracking-widest">
                                                         #{String(req.id).padStart(5, '0')}
                                                     </div>
-                                                    <div className={`text-[10px] font-bold mt-1 tracking-widest uppercase ${req.source === 'PORTAL' ? 'text-primary font-black drop-shadow-[0_0_5px_currentColor]' : 'text-slate-400'}`}>
+                                                    <div className={`text-[10px] font-bold mt-1 tracking-widest uppercase ${req.source === 'PORTAL' ? 'text-amber-500 dark:text-primary font-black drop-shadow-[0_0_5px_currentColor]' : 'text-slate-500 dark:text-slate-400'}`}>
                                                         {req.source === 'PORTAL' ? '✦ PORTAL' : '⚙ STAFF'}
                                                     </div>
                                                 </td>
-                                                <td className="px-8 py-5 text-sm font-bold text-slate-300">
+                                                <td className="px-8 py-5 text-sm font-bold text-slate-700 dark:text-slate-300">
                                                     <div className="flex items-center gap-2">
-                                                        <Clock size={12} className="text-amber-400" />
+                                                        <Clock size={12} className="text-amber-500 dark:text-amber-400" />
                                                         {formatDate(req.request_date || req.created_at)}
                                                     </div>
                                                 </td>
                                                 <td className="px-8 py-5">
-                                                    <div className="font-black text-white uppercase text-sm tracking-tight">{req.client_name}</div>
-                                                    <div className="text-xs text-blue-400 font-bold mt-1 uppercase tracking-wider">{req.vehicle_info}</div>
+                                                    <div className="font-black text-slate-900 dark:text-white uppercase text-sm tracking-tight">{req.client_name}</div>
+                                                    <div className="text-xs text-blue-500 dark:text-blue-400 font-bold mt-1 uppercase tracking-wider">{req.vehicle_info}</div>
                                                 </td>
                                                 <td className="px-8 py-5">
-                                                    <div className="text-xs font-bold text-slate-300 uppercase tracking-widest">{req.assigned_to_name || 'Unassigned'}</div>
+                                                    <div className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-widest">{req.assigned_to_name || 'Unassigned'}</div>
                                                 </td>
                                                 <td className="px-8 py-5">
                                                     <span className={`px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase border ${getStatusTheme(req.status)} inline-flex items-center gap-2`}>
@@ -321,23 +321,23 @@ const ServiceRequestList = () => {
                                                 </td>
                                                 <td className="px-8 py-5 align-middle">
                                                     {parseFloat(req.total_amount) > 0 ? (
-                                                        <div className="font-black text-white text-base">
+                                                        <div className="font-black text-slate-900 dark:text-white text-base">
                                                             {parseFloat(req.total_amount).toLocaleString()} EGP
                                                         </div>
                                                     ) : (
                                                         <div>
-                                                            <div className={`text-base font-black ${parseFloat(req.running_total) > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                                            <div className={`text-base font-black ${parseFloat(req.running_total) > 0 ? 'text-slate-800 dark:text-slate-200' : 'text-slate-400 dark:text-slate-500'}`}>
                                                                 {parseFloat(req.running_total) > 0 ? `${parseFloat(req.running_total).toLocaleString()} EGP` : '0 EGP'}
                                                             </div>
-                                                            <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">LIVE TOTAL</div>
+                                                            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest mt-0.5">LIVE TOTAL</div>
                                                         </div>
                                                     )}
                                                 </td>
                                                 <td className="px-8 py-5 text-right">
                                                     <Link to={`/service-requests/${req.id}`}>
-                                                        <button className="h-10 px-5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-primary/50 text-white rounded-xl font-black text-[10px] tracking-widest uppercase flex items-center justify-center gap-2 ml-auto transition-all shadow-sm">
+                                                        <button className="h-10 px-5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200/80 dark:border-white/10 hover:border-amber-400/50 text-slate-800 dark:text-white rounded-xl font-black text-[10px] tracking-widest uppercase flex items-center justify-center gap-2 ml-auto transition-all shadow-sm">
                                                             MANAGE
-                                                            <ChevronRight size={14} className="text-primary" />
+                                                            <ChevronRight size={14} className="text-amber-500 dark:text-primary" />
                                                         </button>
                                                     </Link>
                                                 </td>
