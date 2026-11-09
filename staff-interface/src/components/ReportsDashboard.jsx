@@ -186,9 +186,9 @@ const ReportsDashboard = () => {
                             <span className="text-[9px] text-gray-500 block">10%–15% sliding management fee</span>
                         </div>
 
-                        <div className="p-5 rounded-2xl bg-black/40 border border-purple-500/20 space-y-1">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-purple-400">Consignment Cuts</span>
-                            <p className="text-2xl font-black text-purple-400 font-mono">{(economics.totalConsignmentCommissions || 0).toLocaleString()} <span className="text-xs font-sans text-gray-400">EGP</span></p>
+                        <div className="p-5 rounded-2xl bg-black/40 border border-emerald-500/20 space-y-1">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Consignment Cuts</span>
+                            <p className="text-2xl font-black text-emerald-400 font-mono">{(economics.totalConsignmentCommissions || 0).toLocaleString()} <span className="text-xs font-sans text-gray-400">EGP</span></p>
                             <span className="text-[9px] text-gray-500 block">{economics.soldCarsCount || 0} vehicles sold (2.5% cut)</span>
                         </div>
                     </div>

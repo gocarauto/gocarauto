@@ -572,7 +572,7 @@ const ServiceRemindersModule = () => {
             '</span></td><td>' + r.phone + '</td></tr>'
         ).join('');
         const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>GoCar Auto — Service Reminders</title>' +
-            '<style>body{font-family:Arial,sans-serif;margin:24px;color:#111;font-size:12px;}' +
+            '<style>body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:24px;color:#111;font-size:12px;}' +
             'h1{font-size:20px;margin-bottom:4px;}.meta{color:#666;margin-bottom:16px;font-size:11px;}' +
             '.summary{display:flex;gap:16px;margin-bottom:20px;}' +
             '.card{border:1px solid #ddd;border-radius:8px;padding:12px 20px;text-align:center;}' +

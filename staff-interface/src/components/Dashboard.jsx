@@ -415,7 +415,7 @@ const Dashboard = () => {
             <div className="glass-card overflow-hidden">
                 <div className="p-6 md:p-8 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h3 className="text-xl md:text-2xl font-display font-black text-white uppercase tracking-tight text-purple-400 flex items-center gap-2">
+                        <h3 className="text-xl md:text-2xl font-display font-black text-amber-400 uppercase tracking-tight flex items-center gap-2">
                             <TrendingUp size={22} />
                             <span>30-Day Predictive Revenue Forecast</span>
                         </h3>
