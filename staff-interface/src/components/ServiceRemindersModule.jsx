@@ -677,7 +677,7 @@ const ServiceRemindersModule = () => {
                         <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                         <p className="text-[10px] font-black text-primary uppercase tracking-widest">Maintenance Dispatch Hub</p>
                     </div>
-                    <h2 className="text-3xl font-display font-black text-white tracking-tighter uppercase mt-1">Service Reminders</h2>
+                    <h2 className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter uppercase mt-1">Service Reminders</h2>
                 </div>
                 <div className="flex gap-2 flex-wrap items-center">
                     <button
@@ -689,7 +689,7 @@ const ServiceRemindersModule = () => {
                     </button>
                     <button
                         onClick={() => setShowAnalytics(!showAnalytics)}
-                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 font-black text-[11px] uppercase tracking-widest transition-all"
+                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 dark:text-slate-200 font-black text-[11px] uppercase tracking-widest transition-all"
                     >
                         <BarChart3 size={14} />
                         {showAnalytics ? 'Hide Stats' : 'Show Stats'}
@@ -698,7 +698,7 @@ const ServiceRemindersModule = () => {
                     <button
                         onClick={handleSmartScan}
                         disabled={isScanning}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 font-black text-[11px] uppercase tracking-widest transition-all disabled:opacity-50"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-black text-[11px] uppercase tracking-widest transition-all disabled:opacity-50"
                         title="Auto-scan work order history to detect due oil & periodic services"
                     >
                         {isScanning ? <RefreshCw size={14} className="animate-spin" /> : <Scan size={14} />}
@@ -709,44 +709,44 @@ const ServiceRemindersModule = () => {
                     <div className="relative" ref={exportRef}>
                         <button
                             onClick={() => setShowExportMenu(v => !v)}
-                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 font-black text-[11px] uppercase tracking-widest transition-all"
+                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 dark:text-slate-200 font-black text-[11px] uppercase tracking-widest transition-all"
                         >
                             <Download size={14} />
                             Export
                             <ChevronDown size={12} className={`transition-transform ${showExportMenu ? 'rotate-180' : ''}`} />
                         </button>
                         {showExportMenu && (
-                            <div className="absolute right-0 top-full mt-2 w-56 bg-[#12141c] border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-xl">
+                            <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-[#12141c] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-xl">
                                 <button
                                     onClick={exportInteractiveHTML}
-                                    className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-white/5 transition-all text-gray-200"
+                                    className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-white/5 transition-all text-slate-900 dark:text-slate-100"
                                 >
-                                    <Globe size={15} className="text-blue-400" />
+                                    <Globe size={15} className="text-blue-500 dark:text-blue-400" />
                                     <div>
                                         <div className="text-[12px] font-black">Interactive Ledger (HTML)</div>
-                                        <div className="text-[10px] text-gray-400">Shareable, styled ledger file</div>
+                                        <div className="text-[10px] text-slate-600 dark:text-slate-400">Shareable, styled ledger file</div>
                                     </div>
                                 </button>
-                                <div className="h-px bg-white/5" />
+                                <div className="h-px bg-slate-100 dark:bg-white/5" />
                                 <button
                                     onClick={exportPDF}
-                                    className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-white/5 transition-all text-gray-200"
+                                    className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-white/5 transition-all text-slate-900 dark:text-slate-100"
                                 >
-                                    <FileText size={15} className="text-red-400" />
+                                    <FileText size={15} className="text-red-500 dark:text-red-400" />
                                     <div>
                                         <div className="text-[12px] font-black">PDF Document</div>
-                                        <div className="text-[10px] text-gray-400">Print or save as PDF report</div>
+                                        <div className="text-[10px] text-slate-600 dark:text-slate-400">Print or save as PDF report</div>
                                     </div>
                                 </button>
-                                <div className="h-px bg-white/5" />
+                                <div className="h-px bg-slate-100 dark:bg-white/5" />
                                 <button
                                     onClick={exportCSV}
-                                    className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-white/5 transition-all text-gray-200"
+                                    className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-white/5 transition-all text-slate-900 dark:text-slate-100"
                                 >
-                                    <Sheet size={15} className="text-green-400" />
+                                    <Sheet size={15} className="text-green-500 dark:text-green-400" />
                                     <div>
                                         <div className="text-[12px] font-black">Excel / CSV Spreadsheet</div>
-                                        <div className="text-[10px] text-gray-400">Raw tabular export</div>
+                                        <div className="text-[10px] text-slate-600 dark:text-slate-400">Raw tabular export</div>
                                     </div>
                                 </button>
                             </div>
@@ -765,25 +765,25 @@ const ServiceRemindersModule = () => {
                             className="glass-card p-5 bg-primary/5 hover:bg-primary/10 border-primary/20 cursor-pointer transition-all flex flex-col justify-between min-h-[115px] group"
                         >
                             <div className="flex justify-between items-center">
-                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Active Pool</span>
+                                <span className="text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Active Pool</span>
                                 <Bell size={14} className="text-primary group-hover:scale-110 transition-transform" />
                             </div>
-                            <h3 className="text-3xl font-black text-white mt-1">{totalActive}</h3>
-                            <span className="text-[9px] text-gray-400 font-bold uppercase">Pending Reminders</span>
+                            <h3 className="text-3xl font-black text-slate-900 dark:text-white mt-1">{totalActive}</h3>
+                            <span className="text-[9px] text-slate-600 dark:text-slate-400 font-bold uppercase">Pending Reminders</span>
                         </div>
 
                         {/* Overdue Card */}
                         <div 
                             onClick={() => { setActiveTab('active'); setTimeFilter('overdue'); }}
                             className={`glass-card p-5 cursor-pointer transition-all flex flex-col justify-between min-h-[115px] group ${
-                                overdueCount > 0 ? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/30 text-red-400' : 'bg-green-500/5 border-green-500/10'
+                                overdueCount > 0 ? 'bg-red-500/10 hover:bg-red-500/20 border-red-500/30 text-red-500 dark:text-red-400' : 'bg-green-500/5 border-green-500/10'
                             }`}
                         >
                             <div className="flex justify-between items-center">
                                 <span className="text-[9px] font-black uppercase tracking-widest">Critical Alert</span>
                                 <AlertTriangle size={14} className="group-hover:scale-110 transition-transform" />
                             </div>
-                            <h3 className="text-3xl font-black text-white mt-1">{overdueCount}</h3>
+                            <h3 className="text-3xl font-black text-slate-900 dark:text-white mt-1">{overdueCount}</h3>
                             <span className="text-[9px] font-bold uppercase">Overdue Action Needed</span>
                         </div>
 
@@ -793,11 +793,11 @@ const ServiceRemindersModule = () => {
                             className="glass-card p-5 bg-blue-500/5 hover:bg-blue-500/10 border-blue-500/20 cursor-pointer transition-all flex flex-col justify-between min-h-[115px] group"
                         >
                             <div className="flex justify-between items-center">
-                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Due Soon</span>
-                                <Clock size={14} className="text-blue-400 group-hover:scale-110 transition-transform" />
+                                <span className="text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Due Soon</span>
+                                <Clock size={14} className="text-blue-500 dark:text-blue-400 group-hover:scale-110 transition-transform" />
                             </div>
-                            <h3 className="text-3xl font-black text-white mt-1">{dueSoonCount}</h3>
-                            <span className="text-[9px] text-gray-400 font-bold uppercase">Next 30 Days</span>
+                            <h3 className="text-3xl font-black text-slate-900 dark:text-white mt-1">{dueSoonCount}</h3>
+                            <span className="text-[9px] text-slate-600 dark:text-slate-400 font-bold uppercase">Next 30 Days</span>
                         </div>
 
                         {/* Prospects Card */}
@@ -806,34 +806,34 @@ const ServiceRemindersModule = () => {
                             className="glass-card p-5 bg-orange-500/5 hover:bg-orange-500/10 border-orange-500/20 cursor-pointer transition-all flex flex-col justify-between min-h-[115px] group"
                         >
                             <div className="flex justify-between items-center">
-                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">New Leads</span>
-                                <Users size={14} className="text-orange-400 group-hover:scale-110 transition-transform" />
+                                <span className="text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">New Leads</span>
+                                <Users size={14} className="text-orange-500 dark:text-orange-400 group-hover:scale-110 transition-transform" />
                             </div>
-                            <h3 className="text-3xl font-black text-white mt-1">{prospectsCount}</h3>
-                            <span className="text-[9px] text-gray-400 font-bold uppercase">Never Serviced Oil</span>
+                            <h3 className="text-3xl font-black text-slate-900 dark:text-white mt-1">{prospectsCount}</h3>
+                            <span className="text-[9px] text-slate-600 dark:text-slate-400 font-bold uppercase">Never Serviced Oil</span>
                         </div>
                     </div>
 
                     {/* Service Type Breakdown Card */}
-                    <div className="glass-card p-5 bg-white/[0.02] border-white/5 flex flex-col justify-between min-h-[115px]">
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Service Distribution</span>
+                    <div className="glass-card p-5 bg-slate-50 dark:bg-white/[0.02] border-slate-200 dark:border-white/5 flex flex-col justify-between min-h-[115px]">
+                        <span className="text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Service Distribution</span>
                         <div className="space-y-2.5 mt-2">
                             <div>
-                                <div className="flex justify-between text-[10px] font-bold text-gray-300 mb-1">
+                                <div className="flex justify-between text-[10px] font-bold text-slate-700 dark:text-gray-300 mb-1">
                                     <span>Engine Oil (الموتور)</span>
                                     <span>{engineOilCount} ({engineOilPct}%)</span>
                                 </div>
-                                <div className="h-1.5 w-full bg-black/40 rounded-full overflow-hidden">
+                                <div className="h-1.5 w-full bg-slate-200 dark:bg-black/40 rounded-full overflow-hidden">
                                     <div className="h-full bg-primary transition-all duration-500" style={{ width: `${engineOilPct}%` }}></div>
                                 </div>
                             </div>
                             <div>
-                                <div className="flex justify-between text-[10px] font-bold text-gray-300 mb-1">
+                                <div className="flex justify-between text-[10px] font-bold text-slate-700 dark:text-gray-300 mb-1">
                                     <span>Trans Oil (الفتيس)</span>
                                     <span>{transOilCount} ({transOilPct}%)</span>
                                 </div>
-                                <div className="h-1.5 w-full bg-black/40 rounded-full overflow-hidden">
-                                    <div className="h-full bg-blue-400 transition-all duration-500" style={{ width: `${transOilPct}%` }}></div>
+                                <div className="h-1.5 w-full bg-slate-200 dark:bg-black/40 rounded-full overflow-hidden">
+                                    <div className="h-full bg-blue-500 dark:bg-blue-400 transition-all duration-500" style={{ width: `${transOilPct}%` }}></div>
                                 </div>
                             </div>
                         </div>
@@ -844,21 +844,21 @@ const ServiceRemindersModule = () => {
             {/* Smart Scan Toast */}
             {scanResult && (
                 <div className={`p-4 rounded-2xl border flex items-start gap-4 animate-in slide-in-from-top duration-300 ${
-                    scanResult.error ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-primary/10 border-primary/20'
+                    scanResult.error ? 'bg-red-500/10 border-red-500/20 text-red-500 dark:text-red-400' : 'bg-primary/10 border-primary/20'
                 }`}>
-                    <Zap size={18} className={scanResult.error ? 'text-red-400' : 'text-primary'} />
+                    <Zap size={18} className={scanResult.error ? 'text-red-500 dark:text-red-400' : 'text-primary'} />
                     {scanResult.error ? (
                         <p className="text-xs font-bold">Smart scan failed. Please check server logs.</p>
                     ) : (
                         <div>
-                            <p className="text-xs font-black text-white uppercase tracking-widest mb-1">Smart Scan Synchronized ✓</p>
-                            <p className="text-[11px] text-gray-300">
+                            <p className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest mb-1">Smart Scan Synchronized ✓</p>
+                            <p className="text-[11px] text-slate-600 dark:text-gray-300">
                                 Analyzed <strong>{scanResult.scanned}</strong> past service entries &bull; 
-                                <strong className="text-green-400"> {scanResult.created} new</strong> reminders registered &bull; 
-                                <strong className="text-blue-400"> {scanResult.updated} updated</strong> &bull; 
-                                <strong className="text-yellow-400"> {scanResult.skipped} skipped</strong>
+                                <strong className="text-green-600 dark:text-green-400"> {scanResult.created} new</strong> reminders registered &bull; 
+                                <strong className="text-blue-600 dark:text-blue-400"> {scanResult.updated} updated</strong> &bull; 
+                                <strong className="text-yellow-600 dark:text-yellow-400"> {scanResult.skipped} skipped</strong>
                                 {scanResult.prospects_count > 0 && (
-                                    <> &bull; <strong className="text-orange-400"> {scanResult.prospects_count} prospect clients</strong> detected.</>  
+                                    <> &bull; <strong className="text-orange-600 dark:text-orange-400"> {scanResult.prospects_count} prospect clients</strong> detected.</>  
                                 )}
                             </p>
                         </div>
@@ -867,14 +867,14 @@ const ServiceRemindersModule = () => {
             )}
 
             {/* Navigation Tabs */}
-            <div className="flex items-center justify-between border-b border-white/5 pb-2">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/5 pb-2">
                 <div className="flex gap-2">
                     <button
                         onClick={() => setActiveTab('active')}
                         className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider border transition-all ${
                             activeTab === 'active' 
                                 ? 'bg-primary text-black border-primary shadow-lg shadow-yellow-500/10' 
-                                : 'bg-white/5 text-gray-400 border-white/5 hover:bg-white/10'
+                                : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-gray-400 border-slate-200 dark:border-white/5 hover:bg-slate-200 dark:hover:bg-white/10'
                         }`}
                     >
                         <Bell size={13} /> Active Reminders ({reminders.length})
@@ -883,8 +883,8 @@ const ServiceRemindersModule = () => {
                         onClick={() => setActiveTab('sent')}
                         className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider border transition-all ${
                             activeTab === 'sent' 
-                                ? 'bg-blue-500 text-black border-blue-500' 
-                                : 'bg-white/5 text-gray-400 border-white/5 hover:bg-white/10'
+                                ? 'bg-blue-600 dark:bg-blue-500 text-white dark:text-black border-blue-600 dark:border-blue-500' 
+                                : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-gray-400 border-slate-200 dark:border-white/5 hover:bg-slate-200 dark:hover:bg-white/10'
                         }`}
                     >
                         <History size={13} /> Sent / History ({sentCount})
@@ -894,7 +894,7 @@ const ServiceRemindersModule = () => {
                         className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider border transition-all ${
                             activeTab === 'prospects' 
                                 ? 'bg-orange-500 text-black border-orange-500' 
-                                : 'bg-white/5 text-gray-400 border-white/5 hover:bg-white/10'
+                                : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-gray-400 border-slate-200 dark:border-white/5 hover:bg-slate-200 dark:hover:bg-white/10'
                         }`}
                     >
                         <Users size={13} /> Prospects ({prospectsCount})
@@ -908,11 +908,11 @@ const ServiceRemindersModule = () => {
                 {/* Search & Sub-Filter Bar */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
                     <div className="lg:col-span-6 relative">
-                        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400" />
                         <input 
-                            type="text"
+                            type="text" 
                             placeholder="Search by customer name, mobile, plate, vehicle model, or service..."
-                            className="input-glass pl-11 h-11 text-xs bg-black/40 border-white/10 w-full"
+                            className="input-glass pl-11 h-11 text-xs bg-white dark:bg-black/40 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-500 w-full"
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
                         />
@@ -920,25 +920,25 @@ const ServiceRemindersModule = () => {
                     <div className="lg:col-span-6 flex gap-2 flex-wrap">
                         <button 
                             onClick={() => setTimeFilter('all')}
-                            className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all ${timeFilter === 'all' ? 'bg-white/15 text-white border-white/20' : 'bg-white/5 text-gray-400 border-white/5 hover:bg-white/10'}`}
+                            className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all ${timeFilter === 'all' ? 'bg-slate-900 text-white border-slate-900 dark:bg-white/15 dark:text-white dark:border-white/20' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/5 dark:hover:bg-white/10'}`}
                         >
                             All ({reminders.length})
                         </button>
                         <button 
                             onClick={() => setTimeFilter('overdue')}
-                            className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all ${timeFilter === 'overdue' ? 'bg-red-500/20 text-red-400 border-red-500/30' : 'bg-white/5 text-gray-400 border-white/5 hover:bg-white/10'}`}
+                            className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all ${timeFilter === 'overdue' ? 'bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30 font-black' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/5 dark:hover:bg-white/10'}`}
                         >
                             Overdue ({overdueCount})
                         </button>
                         <button 
                             onClick={() => setTimeFilter('due_7d')}
-                            className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all ${timeFilter === 'due_7d' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 'bg-white/5 text-gray-400 border-white/5 hover:bg-white/10'}`}
+                            className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all ${timeFilter === 'due_7d' ? 'bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30 font-black' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/5 dark:hover:bg-white/10'}`}
                         >
                             Next 7 Days
                         </button>
                         <button 
                             onClick={() => setTimeFilter('due_30d')}
-                            className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all ${timeFilter === 'due_30d' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-white/5 text-gray-400 border-white/5 hover:bg-white/10'}`}
+                            className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all ${timeFilter === 'due_30d' ? 'bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30 font-black' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/5 dark:hover:bg-white/10'}`}
                         >
                             Next 30 Days
                         </button>
@@ -947,12 +947,12 @@ const ServiceRemindersModule = () => {
                         <select 
                             value={typeFilter} 
                             onChange={e => setTypeFilter(e.target.value)}
-                            className="bg-white/5 border border-white/10 text-gray-300 rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-wider outline-none ml-auto"
+                            className="bg-white dark:bg-white/5 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-gray-300 rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-wider outline-none ml-auto"
                         >
-                            <option value="all" className="bg-[#12141c]">All Services</option>
-                            <option value="engine_oil" className="bg-[#12141c]">Engine Oil (الموتور)</option>
-                            <option value="trans_oil" className="bg-[#12141c]">Trans Oil (الفتيس)</option>
-                            <option value="other" className="bg-[#12141c]">Other Periodic</option>
+                            <option value="all">All Services</option>
+                            <option value="engine_oil">Engine Oil (الموتور)</option>
+                            <option value="trans_oil">Trans Oil (الفتيس)</option>
+                            <option value="other">Other Periodic</option>
                         </select>
                     </div>
                 </div>
@@ -962,7 +962,7 @@ const ServiceRemindersModule = () => {
                     <div className="glass-card p-4 bg-primary/10 border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in duration-300">
                         <div className="flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-primary" />
-                            <span className="text-xs font-black text-white uppercase tracking-wider">
+                            <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                                 {selectedIds.length} Reminders Selected
                             </span>
                         </div>
@@ -992,56 +992,56 @@ const ServiceRemindersModule = () => {
                 {/* Reminders Table */}
                 <div className="glass-card overflow-hidden">
                     {loading ? (
-                        <div className="p-20 text-center text-xs font-bold text-gray-500 uppercase tracking-widest animate-pulse">
+                        <div className="p-20 text-center text-xs font-bold text-slate-500 dark:text-gray-500 uppercase tracking-widest animate-pulse">
                             Synchronizing Active Reminders...
                         </div>
                     ) : filteredActiveReminders.length === 0 ? (
-                        <div className="p-16 text-center border border-dashed border-white/5 rounded-2xl">
-                            <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">No matching reminders found.</p>
-                            <p className="text-[11px] text-gray-600 mt-1">Try resetting filters or run a Smart Scan to auto-detect due services.</p>
+                        <div className="p-16 text-center border border-dashed border-slate-200 dark:border-white/5 rounded-2xl">
+                            <p className="text-xs text-slate-600 dark:text-gray-400 font-bold uppercase tracking-widest">No matching reminders found.</p>
+                            <p className="text-[11px] text-slate-500 dark:text-gray-600 mt-1">Try resetting filters or run a Smart Scan to auto-detect due services.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="border-b border-white/5 bg-white/[0.02]">
+                                    <tr className="border-b border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02]">
                                         <th className="px-6 py-4 w-10 text-center">
                                             <input 
                                                 type="checkbox" 
-                                                className="rounded border-white/20 bg-black/40 text-primary focus:ring-primary cursor-pointer"
+                                                className="rounded border-slate-300 dark:border-white/20 bg-white dark:bg-black/40 text-primary focus:ring-primary cursor-pointer"
                                                 checked={selectedIds.length === filteredActiveReminders.length && filteredActiveReminders.length > 0}
                                                 onChange={handleSelectAll}
                                             />
                                         </th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400">Client / Contact</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400">Vehicle</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400">Service Task</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400">Due Target</th>
-                                        <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-gray-400">Quick Actions</th>
+                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Client / Contact</th>
+                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Vehicle</th>
+                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Service Task</th>
+                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Due Target</th>
+                                        <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Quick Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/5">
+                                <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                                     {filteredActiveReminders.map(rem => {
                                         const isOverdue = new Date(rem.due_date) < now;
                                         const isChecked = selectedIds.includes(rem.id);
                                         const serviceAr = normalizeServiceType(rem.service_type);
 
                                         return (
-                                            <tr key={rem.id} className={`hover:bg-white/[0.02] transition-colors group ${isChecked ? 'bg-primary/5' : ''}`}>
+                                            <tr key={rem.id} className={`hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors group ${isChecked ? 'bg-primary/5' : ''}`}>
                                                 <td className="px-6 py-4 text-center">
                                                     <input 
                                                         type="checkbox" 
-                                                        className="rounded border-white/20 bg-black/40 text-primary focus:ring-primary cursor-pointer"
+                                                        className="rounded border-slate-300 dark:border-white/20 bg-white dark:bg-black/40 text-primary focus:ring-primary cursor-pointer"
                                                         checked={isChecked}
                                                         onChange={() => handleSelectOne(rem.id)}
                                                     />
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <div className="font-black text-white uppercase tracking-tight">{rem.client_name}</div>
+                                                    <div className="font-black text-slate-900 dark:text-white uppercase tracking-tight">{rem.client_name}</div>
                                                     <div className="flex items-center gap-2 mt-0.5">
                                                         <a 
                                                             href={`tel:${rem.client_phone}`} 
-                                                            className="text-[11px] text-gray-400 hover:text-primary font-mono tracking-wider flex items-center gap-1"
+                                                            className="text-[11px] text-slate-600 dark:text-slate-400 hover:text-primary font-mono tracking-wider flex items-center gap-1 font-bold"
                                                             title="Click to dial"
                                                         >
                                                             <Phone size={10} />
@@ -1050,8 +1050,8 @@ const ServiceRemindersModule = () => {
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <div className="font-bold text-gray-200">{rem.make} {rem.model}</div>
-                                                    <div className="text-[10px] text-gray-400 font-mono tracking-wider mt-0.5 bg-white/5 inline-block px-1.5 py-0.5 rounded border border-white/5">
+                                                    <div className="font-bold text-slate-800 dark:text-gray-200">{rem.make} {rem.model}</div>
+                                                    <div className="text-[10px] text-slate-600 dark:text-slate-400 font-mono tracking-wider mt-0.5 bg-slate-100 dark:bg-white/5 inline-block px-1.5 py-0.5 rounded border border-slate-200 dark:border-white/5 font-semibold">
                                                         {rem.license_plate || 'No Plate'}
                                                     </div>
                                                 </td>
@@ -1061,7 +1061,7 @@ const ServiceRemindersModule = () => {
                                                         <span>{serviceAr}</span>
                                                     </div>
                                                     {rem.notes && (
-                                                        <div className="text-[10px] text-gray-400 truncate mt-1" title={rem.notes}>
+                                                        <div className="text-[10px] text-slate-600 dark:text-slate-400 truncate mt-1 font-medium" title={rem.notes}>
                                                             {rem.notes}
                                                         </div>
                                                     )}
@@ -1073,18 +1073,18 @@ const ServiceRemindersModule = () => {
                                                                 type="date" 
                                                                 value={editDate} 
                                                                 onChange={(e) => setEditDate(e.target.value)}
-                                                                className="input-glass text-xs p-1.5 text-white bg-black/60 border-primary/30 rounded"
+                                                                className="input-glass text-xs p-1.5 text-slate-900 dark:text-white bg-white dark:bg-black/60 border-primary/30 rounded"
                                                             />
                                                             <div className="flex gap-1.5">
-                                                                <button onClick={() => handleSaveManualDate(rem)} className="text-[10px] font-bold bg-green-500/20 text-green-400 px-2 py-0.5 rounded hover:bg-green-500/40">Save</button>
-                                                                <button onClick={() => setEditingId(null)} className="text-[10px] font-bold bg-red-500/20 text-red-400 px-2 py-0.5 rounded hover:bg-red-500/40">Cancel</button>
+                                                                <button onClick={() => handleSaveManualDate(rem)} className="text-[10px] font-bold bg-green-500/20 text-green-600 dark:text-green-400 px-2 py-0.5 rounded hover:bg-green-500/40">Save</button>
+                                                                <button onClick={() => setEditingId(null)} className="text-[10px] font-bold bg-red-500/20 text-red-600 dark:text-red-400 px-2 py-0.5 rounded hover:bg-red-500/40">Cancel</button>
                                                             </div>
                                                         </div>
                                                     ) : (
                                                         <div>
                                                             <div 
                                                                 className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider cursor-pointer hover:opacity-80 transition-all ${
-                                                                    isOverdue ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                                                    isOverdue ? 'bg-red-500/10 text-red-500 dark:text-red-400 border border-red-500/20' : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
                                                                 }`}
                                                                 onClick={() => { setEditingId(rem.id); setEditDate(rem.due_date ? rem.due_date.split('T')[0] : ''); }}
                                                                 title="Click to edit exact date"
@@ -1094,25 +1094,25 @@ const ServiceRemindersModule = () => {
                                                             </div>
 
                                                             {/* Quick Reschedule Extension Chips */}
-                                                            <div className="flex items-center gap-1 mt-1 opacity-60 hover:opacity-100 transition-opacity">
-                                                                <span className="text-[9px] text-gray-500 font-bold">Postpone:</span>
+                                                            <div className="flex items-center gap-1 mt-1 opacity-75 hover:opacity-100 transition-opacity">
+                                                                <span className="text-[9px] text-slate-600 dark:text-slate-400 font-bold">Postpone:</span>
                                                                 <button 
                                                                     onClick={() => handleQuickReschedule(rem, 7)}
-                                                                    className="text-[9px] bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white px-1.5 py-0.5 rounded"
+                                                                    className="text-[9px] bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white px-1.5 py-0.5 rounded font-bold"
                                                                     title="Add 7 Days"
                                                                 >
                                                                     +7d
                                                                 </button>
                                                                 <button 
                                                                     onClick={() => handleQuickReschedule(rem, 30)}
-                                                                    className="text-[9px] bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white px-1.5 py-0.5 rounded"
+                                                                    className="text-[9px] bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white px-1.5 py-0.5 rounded font-bold"
                                                                     title="Add 1 Month"
                                                                 >
                                                                     +1m
                                                                 </button>
                                                                 <button 
                                                                     onClick={() => handleQuickReschedule(rem, 90)}
-                                                                    className="text-[9px] bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white px-1.5 py-0.5 rounded"
+                                                                    className="text-[9px] bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white px-1.5 py-0.5 rounded font-bold"
                                                                     title="Add 3 Months"
                                                                 >
                                                                     +3m
@@ -1174,52 +1174,52 @@ const ServiceRemindersModule = () => {
             {/* ════════════════════════ SENT / HISTORY TAB ════════════════════════ */}
             {activeTab === 'sent' && (
                 <div className="glass-card overflow-hidden">
-                    <div className="p-4 border-b border-white/5 flex items-center justify-between">
+                    <div className="p-4 border-b border-slate-200 dark:border-white/5 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <History size={16} className="text-blue-400" />
-                            <span className="text-xs font-black text-white uppercase tracking-wider">Contacted & Dispatched Reminders Ledger</span>
+                            <History size={16} className="text-blue-500 dark:text-blue-400" />
+                            <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Contacted & Dispatched Reminders Ledger</span>
                         </div>
-                        <span className="text-[10px] text-gray-500 font-bold uppercase">{sentReminders.length} Records</span>
+                        <span className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase">{sentReminders.length} Records</span>
                     </div>
 
                     {filteredSentReminders.length === 0 ? (
                         <div className="p-16 text-center">
-                            <History size={32} className="mx-auto text-gray-600 mb-2" />
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">No sent reminders recorded yet.</p>
-                            <p className="text-[11px] text-gray-600 mt-1">Dispatched WhatsApp messages will appear here for audit and follow-up.</p>
+                            <History size={32} className="mx-auto text-slate-400 dark:text-slate-500 mb-2" />
+                            <p className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">No sent reminders recorded yet.</p>
+                            <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">Dispatched WhatsApp messages will appear here for audit and follow-up.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead>
-                                    <tr className="border-b border-white/5 bg-white/[0.02]">
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400">Client / Contact</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400">Vehicle</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400">Service Task</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400">Original Due</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400">Status</th>
-                                        <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-gray-400">Action</th>
+                                    <tr className="border-b border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02]">
+                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Client / Contact</th>
+                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Vehicle</th>
+                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Service Task</th>
+                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Original Due</th>
+                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Status</th>
+                                        <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/5">
+                                <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                                     {filteredSentReminders.map(r => (
-                                        <tr key={r.id} className="hover:bg-white/[0.02] transition-colors">
+                                        <tr key={r.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors">
                                             <td className="px-6 py-4">
-                                                <div className="font-black text-white uppercase">{r.client_name}</div>
-                                                <div className="text-[11px] text-gray-500 font-mono">{r.client_phone}</div>
+                                                <div className="font-black text-slate-900 dark:text-white uppercase">{r.client_name}</div>
+                                                <div className="text-[11px] text-slate-600 dark:text-slate-400 font-mono font-medium">{r.client_phone}</div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <div className="font-bold text-gray-300">{r.make} {r.model}</div>
-                                                <div className="text-[10px] text-gray-500 font-mono">{r.license_plate || '—'}</div>
+                                                <div className="font-bold text-slate-800 dark:text-gray-300">{r.make} {r.model}</div>
+                                                <div className="text-[10px] text-slate-600 dark:text-slate-400 font-mono font-medium">{r.license_plate || '—'}</div>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="font-black text-primary text-xs">{normalizeServiceType(r.service_type)}</div>
                                             </td>
-                                            <td className="px-6 py-4 text-xs font-mono text-gray-400">
+                                            <td className="px-6 py-4 text-xs font-mono text-slate-700 dark:text-gray-300 font-medium">
                                                 {formatDate(r.due_date)}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-widest">
+                                                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 uppercase tracking-widest">
                                                     Sent / Contacted
                                                 </span>
                                             </td>
@@ -1227,7 +1227,7 @@ const ServiceRemindersModule = () => {
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button 
                                                         onClick={() => handleReactivateReminder(r.id)}
-                                                        className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-bold rounded-xl border border-white/10 uppercase tracking-wider"
+                                                        className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300 text-[10px] font-bold rounded-xl border border-slate-200 dark:border-white/10 uppercase tracking-wider"
                                                         title="Re-open into active pool"
                                                     >
                                                         Re-activate
@@ -1253,33 +1253,33 @@ const ServiceRemindersModule = () => {
             {/* ════════════════════════ PROSPECTS TAB ════════════════════════ */}
             {activeTab === 'prospects' && (
                 <div className="glass-card overflow-hidden">
-                    <div className="p-4 border-b border-white/5 flex items-center justify-between">
+                    <div className="p-4 border-b border-slate-200 dark:border-white/5 flex items-center justify-between">
                         <div>
-                            <span className="text-xs font-black text-white uppercase tracking-wider">Registered Vehicles with No Oil Service History</span>
-                            <p className="text-[11px] text-gray-400 mt-0.5">Vehicles registered over 60 days ago that have never undergone engine or transmission oil change at GoCar Auto.</p>
+                            <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Registered Vehicles with No Oil Service History</span>
+                            <p className="text-[11px] text-slate-500 dark:text-gray-400 mt-0.5">Vehicles registered over 60 days ago that have never undergone engine or transmission oil change at GoCar Auto.</p>
                         </div>
-                        <span className="text-[10px] text-orange-400 font-bold uppercase">{prospects.length} Prospect Leads</span>
+                        <span className="text-[10px] text-orange-600 dark:text-orange-400 font-bold uppercase">{prospects.length} Prospect Leads</span>
                     </div>
 
                     {prospects.length === 0 ? (
                         <div className="p-16 text-center">
-                            <Users size={32} className="mx-auto text-gray-600 mb-3" />
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">No unserviced prospect vehicles found.</p>
-                            <p className="text-[11px] text-gray-600 mt-1">Click "Smart Scan" in the header to evaluate all vehicle profiles.</p>
+                            <Users size={32} className="mx-auto text-slate-400 dark:text-slate-500 mb-3" />
+                            <p className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">No unserviced prospect vehicles found.</p>
+                            <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">Click "Smart Scan" in the header to evaluate all vehicle profiles.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead>
-                                    <tr className="border-b border-white/5 bg-white/[0.02]">
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Customer</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Vehicle Asset</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Direct Contact</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Registration Age</th>
-                                        <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Lead Actions</th>
+                                    <tr className="border-b border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02]">
+                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Customer</th>
+                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Vehicle Asset</th>
+                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Direct Contact</th>
+                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Registration Age</th>
+                                        <th className="px-6 py-4 text-right text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Lead Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/5">
+                                <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                                     {prospects.map((p) => {
                                         const mockReminder = {
                                             client_name: p.full_name,
@@ -1290,25 +1290,25 @@ const ServiceRemindersModule = () => {
                                         };
 
                                         return (
-                                            <tr key={p.id} className="hover:bg-white/[0.02] transition-colors">
+                                            <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors">
                                                 <td className="px-6 py-4">
-                                                    <div className="font-black text-white uppercase tracking-tight">{p.full_name}</div>
+                                                    <div className="font-black text-slate-900 dark:text-white uppercase tracking-tight">{p.full_name}</div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <div className="font-bold text-gray-200">{p.make} {p.model}</div>
-                                                    <div className="text-[10px] text-gray-400 font-mono">{p.license_plate || 'No Plate'}</div>
+                                                    <div className="font-bold text-slate-800 dark:text-gray-200">{p.make} {p.model}</div>
+                                                    <div className="text-[10px] text-slate-600 dark:text-slate-400 font-mono font-medium">{p.license_plate || 'No Plate'}</div>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <a 
                                                         href={`tel:${p.phone}`} 
-                                                        className="text-xs font-bold text-gray-300 font-mono hover:text-primary flex items-center gap-1.5"
+                                                        className="text-xs font-bold text-slate-700 dark:text-gray-300 font-mono hover:text-primary flex items-center gap-1.5"
                                                     >
                                                         <Phone size={11} />
                                                         {getDisplayPhone(p.phone)}
                                                     </a>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-orange-500/10 text-orange-400 border border-orange-500/20">
+                                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
                                                         {Math.round(p.days_since_registered)} Days Ago
                                                     </span>
                                                 </td>
@@ -1316,7 +1316,7 @@ const ServiceRemindersModule = () => {
                                                     <div className="flex items-center justify-end gap-2">
                                                         <button
                                                             onClick={() => handleSingleWhatsAppClick(mockReminder, 'prospect')}
-                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 hover:bg-green-500 hover:text-black border border-green-500/20 text-green-400 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all"
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 hover:bg-green-500 hover:text-black border border-green-500/20 text-green-600 dark:text-green-400 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all"
                                                         >
                                                             <MessageCircle size={12} /> WhatsApp Offer
                                                         </button>
@@ -1353,37 +1353,37 @@ const ServiceRemindersModule = () => {
 
             {/* 1. New Reminder Modal */}
             {showNewReminderModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
-                    <div className="glass-card p-7 max-w-lg w-full border-primary/30 shadow-2xl relative">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-300">
+                    <div className="glass-card bg-white dark:bg-[#12141c] p-7 max-w-lg w-full border-primary/30 shadow-2xl relative">
                         <button 
                             onClick={() => setShowNewReminderModal(false)}
-                            className="absolute top-6 right-6 text-gray-400 hover:text-white"
+                            className="absolute top-6 right-6 text-slate-400 hover:text-slate-700 dark:hover:text-white"
                         >
                             <X size={18} />
                         </button>
                         
                         <div className="flex items-center gap-2 mb-1">
                             <span className="w-2 h-2 rounded-full bg-primary" />
-                            <h3 className="text-xl font-display font-black text-white uppercase tracking-tighter">
+                            <h3 className="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter">
                                 Schedule Service Reminder
                             </h3>
                         </div>
-                        <p className="text-xs text-gray-400 mb-6">
+                        <p className="text-xs text-slate-600 dark:text-gray-400 mb-6">
                             Register a proactive maintenance target for any customer vehicle.
                         </p>
 
                         <form onSubmit={handleCreateNewReminder} className="space-y-4">
                             <div>
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Select Client</label>
+                                <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Select Client</label>
                                 <select 
-                                    className="input-glass text-xs w-full bg-black/40 border-white/10"
+                                    className="input-glass text-xs w-full bg-slate-50 dark:bg-black/40 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white"
                                     value={newReminderForm.clientId}
                                     onChange={e => handleClientChange(e.target.value)}
                                     required
                                 >
-                                    <option value="" className="bg-[#12141c]">-- Choose Customer --</option>
+                                    <option value="" className="bg-white dark:bg-[#12141c]">-- Choose Customer --</option>
                                     {allClients.map(c => (
-                                        <option key={c.id} value={c.id} className="bg-[#12141c]">
+                                        <option key={c.id} value={c.id} className="bg-white dark:bg-[#12141c]">
                                             {c.full_name} ({c.phone})
                                         </option>
                                     ))}
@@ -1391,19 +1391,19 @@ const ServiceRemindersModule = () => {
                             </div>
 
                             <div>
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Select Vehicle Asset</label>
+                                <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Select Vehicle Asset</label>
                                 <select 
-                                    className="input-glass text-xs w-full bg-black/40 border-white/10"
+                                    className="input-glass text-xs w-full bg-slate-50 dark:bg-black/40 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white"
                                     value={newReminderForm.vehicleId}
                                     onChange={e => setNewReminderForm(prev => ({ ...prev, vehicleId: e.target.value }))}
                                     disabled={!newReminderForm.clientId || clientVehicles.length === 0}
                                     required
                                 >
-                                    <option value="" className="bg-[#12141c]">
+                                    <option value="" className="bg-white dark:bg-[#12141c]">
                                         {!newReminderForm.clientId ? '-- First Select a Customer --' : clientVehicles.length === 0 ? 'No vehicles registered for client' : '-- Choose Vehicle --'}
                                     </option>
                                     {clientVehicles.map(v => (
-                                        <option key={v.id} value={v.id} className="bg-[#12141c]">
+                                        <option key={v.id} value={v.id} className="bg-white dark:bg-[#12141c]">
                                             {v.make} {v.model} ({v.license_plate || 'No Plate'})
                                         </option>
                                     ))}
@@ -1412,24 +1412,24 @@ const ServiceRemindersModule = () => {
 
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Service Task</label>
+                                    <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Service Task</label>
                                     <select 
-                                        className="input-glass text-xs w-full bg-black/40 border-white/10"
+                                        className="input-glass text-xs w-full bg-slate-50 dark:bg-black/40 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white"
                                         value={newReminderForm.serviceType}
                                         onChange={e => setNewReminderForm(prev => ({ ...prev, serviceType: e.target.value }))}
                                     >
-                                        <option value="تغيير زيت الموتور" className="bg-[#12141c]">Engine Oil (تغيير زيت الموتور)</option>
-                                        <option value="تغيير زيت الفتيس" className="bg-[#12141c]">Trans Oil (تغيير زيت الفتيس)</option>
-                                        <option value="تغيير تيل الفرامل" className="bg-[#12141c]">Brakes (تغيير تيل الفرامل)</option>
-                                        <option value="تغيير سير المجموعة" className="bg-[#12141c]">Drive Belt (سير المجموعة)</option>
-                                        <option value="صيانة دورية شاملة" className="bg-[#12141c]">Comprehensive Periodic</option>
+                                        <option value="تغيير زيت الموتور" className="bg-white dark:bg-[#12141c]">Engine Oil (تغيير زيت الموتور)</option>
+                                        <option value="تغيير زيت الفتيس" className="bg-white dark:bg-[#12141c]">Trans Oil (تغيير زيت الفتيس)</option>
+                                        <option value="تغيير تيل الفرامل" className="bg-white dark:bg-[#12141c]">Brakes (تغيير تيل الفرامل)</option>
+                                        <option value="تغيير سير المجموعة" className="bg-white dark:bg-[#12141c]">Drive Belt (سير المجموعة)</option>
+                                        <option value="صيانة دورية شاملة" className="bg-white dark:bg-[#12141c]">Comprehensive Periodic</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Due Date</label>
+                                    <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Due Date</label>
                                     <input 
                                         type="date" 
-                                        className="input-glass text-xs w-full bg-black/40 border-white/10"
+                                        className="input-glass text-xs w-full bg-slate-50 dark:bg-black/40 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white"
                                         value={newReminderForm.dueDate}
                                         onChange={e => setNewReminderForm(prev => ({ ...prev, dueDate: e.target.value }))}
                                         required
@@ -1439,7 +1439,7 @@ const ServiceRemindersModule = () => {
 
                             {/* Preset Due Chips */}
                             <div className="flex items-center gap-1.5 pt-1">
-                                <span className="text-[9px] text-gray-400 font-bold uppercase">Quick Set:</span>
+                                <span className="text-[9px] text-slate-600 dark:text-slate-400 font-bold uppercase">Quick Set:</span>
                                 {[
                                     { label: '+1 Month', months: 1 },
                                     { label: '+3 Months', months: 3 },
@@ -1454,7 +1454,7 @@ const ServiceRemindersModule = () => {
                                             d.setMonth(d.getMonth() + p.months);
                                             setNewReminderForm(prev => ({ ...prev, dueDate: d.toISOString().split('T')[0] }));
                                         }}
-                                        className="text-[9px] font-bold px-2 py-1 bg-white/5 hover:bg-white/10 text-gray-300 rounded border border-white/5"
+                                        className="text-[9px] font-bold px-2 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300 rounded border border-slate-200 dark:border-white/5"
                                     >
                                         {p.label}
                                     </button>
@@ -1462,17 +1462,17 @@ const ServiceRemindersModule = () => {
                             </div>
 
                             <div>
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Internal Notes</label>
+                                <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Internal Notes</label>
                                 <input 
                                     type="text" 
                                     placeholder="e.g. Total 5W-40, check filter replacement"
-                                    className="input-glass text-xs w-full bg-black/40 border-white/10"
+                                    className="input-glass text-xs w-full bg-slate-50 dark:bg-black/40 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-500"
                                     value={newReminderForm.notes}
                                     onChange={e => setNewReminderForm(prev => ({ ...prev, notes: e.target.value }))}
                                 />
                             </div>
 
-                            <div className="flex gap-3 pt-4 border-t border-white/5">
+                            <div className="flex gap-3 pt-4 border-t border-slate-200 dark:border-white/5">
                                 <button 
                                     type="button"
                                     onClick={() => setShowNewReminderModal(false)}
@@ -1495,31 +1495,31 @@ const ServiceRemindersModule = () => {
 
             {/* 2. WhatsApp Live Bubble Preview Modal */}
             {activeTemplateReminder && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
-                    <div className="glass-card p-7 max-w-xl w-full border-green-500/30 shadow-2xl relative">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-300">
+                    <div className="glass-card bg-white dark:bg-[#12141c] p-7 max-w-xl w-full border-green-500/30 shadow-2xl relative">
                         <button 
                             onClick={() => setActiveTemplateReminder(null)}
-                            className="absolute top-6 right-6 text-gray-400 hover:text-white"
+                            className="absolute top-6 right-6 text-slate-400 hover:text-slate-700 dark:hover:text-white"
                         >
                             <X size={18} />
                         </button>
 
                         <div className="flex items-center gap-2 mb-1">
-                            <MessageCircle size={18} className="text-green-400" />
-                            <h3 className="text-xl font-display font-black text-white uppercase tracking-tighter">
+                            <MessageCircle size={18} className="text-green-500 dark:text-green-400" />
+                            <h3 className="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter">
                                 WhatsApp Dispatch Console
                             </h3>
                         </div>
-                        <p className="text-xs text-gray-400 mb-4">
-                            Recipient: <strong className="text-white">{activeTemplateReminder.client_name}</strong> &bull; {activeTemplateReminder.make} {activeTemplateReminder.model}
+                        <p className="text-xs text-slate-600 dark:text-gray-400 mb-4">
+                            Recipient: <strong className="text-slate-900 dark:text-white">{activeTemplateReminder.client_name}</strong> &bull; {activeTemplateReminder.make} {activeTemplateReminder.model}
                         </p>
 
                         {/* Template Type Selector Tabs */}
-                        <div className="flex gap-1.5 mb-4 bg-white/5 p-1 rounded-xl">
+                        <div className="flex gap-1.5 mb-4 bg-slate-100 dark:bg-white/5 p-1 rounded-xl">
                             <button
                                 onClick={() => handleSwitchTemplateType('standard')}
                                 className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${
-                                    activeTemplateType === 'standard' ? 'bg-green-500 text-black' : 'text-gray-400 hover:text-white'
+                                    activeTemplateType === 'standard' ? 'bg-green-500 text-black' : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                                 }`}
                             >
                                 Polite Standard
@@ -1527,7 +1527,7 @@ const ServiceRemindersModule = () => {
                             <button
                                 onClick={() => handleSwitchTemplateType('urgent')}
                                 className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${
-                                    activeTemplateType === 'urgent' ? 'bg-red-500 text-white' : 'text-gray-400 hover:text-white'
+                                    activeTemplateType === 'urgent' ? 'bg-red-500 text-white' : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                                 }`}
                             >
                                 Urgent Alert
@@ -1535,7 +1535,7 @@ const ServiceRemindersModule = () => {
                             <button
                                 onClick={() => handleSwitchTemplateType('promo')}
                                 className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${
-                                    activeTemplateType === 'promo' ? 'bg-primary text-black' : 'text-gray-400 hover:text-white'
+                                    activeTemplateType === 'promo' ? 'bg-primary text-black' : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                                 }`}
                             >
                                 Promo Offer
@@ -1544,8 +1544,8 @@ const ServiceRemindersModule = () => {
 
                         {/* WhatsApp Message Preview Bubble */}
                         <div className="space-y-3">
-                            <div className="p-4 rounded-2xl bg-[#0b141a] border border-[#202c33] text-right" dir="rtl">
-                                <div className="text-[11px] text-gray-400 mb-1 font-mono text-left" dir="ltr">
+                            <div className="p-4 rounded-2xl bg-slate-900 dark:bg-[#0b141a] border border-slate-700 dark:border-[#202c33] text-right" dir="rtl">
+                                <div className="text-[11px] text-slate-400 dark:text-gray-400 mb-1 font-mono text-left" dir="ltr">
                                     To: +{getCleanWhatsAppPhone(activeTemplateReminder.client_phone)}
                                 </div>
                                 <textarea 
@@ -1553,21 +1553,21 @@ const ServiceRemindersModule = () => {
                                     value={customMessage}
                                     onChange={e => setCustomMessage(e.target.value)}
                                 />
-                                <div className="flex items-center justify-between pt-2 border-t border-white/5 text-[10px] text-gray-500">
+                                <div className="flex items-center justify-between pt-2 border-t border-white/5 text-[10px] text-gray-400">
                                     <button 
                                         type="button" 
                                         onClick={handleCopyMessage}
-                                        className="text-gray-400 hover:text-white flex items-center gap-1 font-sans"
+                                        className="text-gray-300 hover:text-white flex items-center gap-1 font-sans"
                                     >
                                         {copied ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
                                         {copied ? 'Copied to Clipboard!' : 'Copy Text'}
                                     </button>
-                                    <span className="font-mono">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ✓✓</span>
+                                    <span className="font-mono text-gray-400">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ✓✓</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex gap-3 mt-6 pt-4 border-t border-white/5">
+                        <div className="flex gap-3 mt-6 pt-4 border-t border-slate-200 dark:border-white/5">
                             <button 
                                 className="flex-1 btn-secondary text-xs py-3" 
                                 onClick={() => setActiveTemplateReminder(null)}
@@ -1587,37 +1587,37 @@ const ServiceRemindersModule = () => {
 
             {/* 3. Bulk WhatsApp Queue Modal */}
             {showBulkModal && bulkQueue.length > 0 && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
-                    <div className="glass-card p-7 max-w-lg w-full border-green-500/20 shadow-2xl relative">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-300">
+                    <div className="glass-card bg-white dark:bg-[#12141c] p-7 max-w-lg w-full border-green-500/20 shadow-2xl relative">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-xl font-display font-black text-white uppercase tracking-tighter text-green-400">
+                            <h3 className="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter text-green-600 dark:text-green-400">
                                 Bulk WhatsApp Dispatch
                             </h3>
-                            <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-black text-gray-300">
+                            <span className="px-3 py-1 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full text-[10px] font-black text-slate-700 dark:text-gray-300">
                                 {currentQueueIndex + 1} OF {bulkQueue.length}
                             </span>
                         </div>
 
                         {/* Progress Bar */}
-                        <div className="w-full bg-white/5 rounded-full h-1.5 mb-6 overflow-hidden">
+                        <div className="w-full bg-slate-100 dark:bg-white/5 rounded-full h-1.5 mb-6 overflow-hidden">
                             <div 
                                 className="bg-green-500 h-full transition-all duration-300"
                                 style={{ width: `${Math.round(((currentQueueIndex + 1) / bulkQueue.length) * 100)}%` }}
                             />
                         </div>
 
-                        <div className="p-4 bg-white/[0.02] border border-white/5 rounded-xl mb-4">
-                            <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Current Target</div>
-                            <div className="text-sm font-black text-white">{bulkQueue[currentQueueIndex].reminder.client_name}</div>
-                            <div className="text-xs text-green-400 font-mono mt-0.5">
+                        <div className="p-4 bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 rounded-xl mb-4">
+                            <div className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-1">Current Target</div>
+                            <div className="text-sm font-black text-slate-900 dark:text-white">{bulkQueue[currentQueueIndex].reminder.client_name}</div>
+                            <div className="text-xs text-green-600 dark:text-green-400 font-mono mt-0.5">
                                 +{getCleanWhatsAppPhone(bulkQueue[currentQueueIndex].reminder.client_phone)} &bull; {bulkQueue[currentQueueIndex].reminder.make} {bulkQueue[currentQueueIndex].reminder.model}
                             </div>
                         </div>
 
                         <div className="space-y-2 mb-6">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Message Payload</label>
+                            <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest">Message Payload</label>
                             <textarea 
-                                className="input-glass text-xs p-4 min-h-[140px] bg-black/40 text-right leading-relaxed" 
+                                className="input-glass text-xs p-4 min-h-[140px] bg-slate-50 dark:bg-black/40 text-slate-900 dark:text-white text-right leading-relaxed border-slate-300 dark:border-white/10" 
                                 dir="rtl"
                                 value={bulkQueue[currentQueueIndex].message}
                                 onChange={e => {
@@ -1628,9 +1628,9 @@ const ServiceRemindersModule = () => {
                             />
                         </div>
 
-                        <div className="flex gap-3 pt-4 border-t border-white/5">
+                        <div className="flex gap-3 pt-4 border-t border-slate-200 dark:border-white/5">
                             <button 
-                                className="flex-1 btn-secondary text-xs hover:text-red-400" 
+                                className="flex-1 btn-secondary text-xs hover:text-red-500" 
                                 onClick={() => { setShowBulkModal(false); setBulkQueue([]); }}
                             >
                                 Abort

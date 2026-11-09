@@ -9,15 +9,15 @@ const API_BASE = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' 
     : 'http://localhost:3000/api');
 
 const renderKmBadge = (km) => {
-    if (km === null || km === undefined) return <span className="text-gray-500 text-sm">—</span>;
-    let badgeClass = 'bg-green-500/10 text-green-500 border-green-500/20';
-    if (km >= 3000 && km <= 5000) badgeClass = 'bg-amber-500/10 text-amber-500 border-amber-500/20';
-    if (km > 5000) badgeClass = 'bg-red-500/10 text-red-500 border-red-500/20';
+    if (km === null || km === undefined) return <span className="text-slate-500 dark:text-slate-400 text-sm">—</span>;
+    let badgeClass = 'bg-green-500/10 text-green-600 dark:text-green-500 border-green-500/20';
+    if (km >= 3000 && km <= 5000) badgeClass = 'bg-amber-500/10 text-amber-600 dark:text-amber-500 border-amber-500/20';
+    if (km > 5000) badgeClass = 'bg-red-500/10 text-red-600 dark:text-red-500 border-red-500/20';
     return <span className={`badge border ${badgeClass}`}>{km.toLocaleString()} km</span>;
 };
 
 const renderHealthRing = (score) => {
-    if (score === null || score === undefined) return <span className="text-gray-500 text-sm">—</span>;
+    if (score === null || score === undefined) return <span className="text-slate-500 dark:text-slate-400 text-sm">—</span>;
     let colorClass = 'text-green-500 stroke-green-500';
     if (score >= 40 && score < 70) colorClass = 'text-amber-500 stroke-amber-500';
     if (score < 40) colorClass = 'text-red-500 stroke-red-500';
@@ -75,7 +75,7 @@ const VehicleList = () => {
             {/* High-Tech Search Bar */}
             <div className="glass-card p-4">
                 <div className="relative">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500" size={20} />
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400" size={20} />
                     <input
                         type="text"
                         className="input-glass pl-14 h-14 text-base"
@@ -99,7 +99,7 @@ const VehicleList = () => {
                 </div>
 
                 {loading ? (
-                    <div className="p-20 text-center animate-glow text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
+                    <div className="p-20 text-center animate-glow text-slate-500 dark:text-slate-400 font-bold tracking-widest text-xs uppercase">
                         LOADING VEHICLES...
                     </div>
                 ) : (
@@ -107,7 +107,7 @@ const VehicleList = () => {
                         {/* Mobile Responsive Cards (< md screens) */}
                         <div className="md:hidden divide-y divide-slate-200/80 dark:divide-white/5">
                             {vehicles.length === 0 ? (
-                                <div className="p-12 text-center text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
+                                <div className="p-12 text-center text-slate-500 dark:text-slate-400 font-bold tracking-widest text-xs uppercase">
                                     REGISTRY EMPTY: NO VEHICLES FOUND.
                                 </div>
                             ) : (
@@ -166,18 +166,18 @@ const VehicleList = () => {
                             <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-slate-200/80 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
-                                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Vehicle Info</th>
-                                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Client</th>
-                                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Km Since Service</th>
-                                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Health</th>
-                                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Next Service</th>
-                                    <th className="px-6 py-5 text-right text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Actions</th>
+                                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Vehicle Info</th>
+                                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Client</th>
+                                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Km Since Service</th>
+                                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Health</th>
+                                    <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Next Service</th>
+                                    <th className="px-6 py-5 text-right text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-200/80 dark:divide-white/5">
                                 {vehicles.length === 0 ? (
                                     <tr>
-                                        <td colSpan="6" className="text-center p-20 text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
+                                        <td colSpan="6" className="text-center p-20 text-slate-500 dark:text-slate-400 font-bold tracking-widest text-xs uppercase">
                                             REGISTRY EMPTY: NO VEHICLES FOUND.
                                         </td>
                                     </tr>
@@ -187,7 +187,7 @@ const VehicleList = () => {
                                             <td className="px-6 py-5">
                                                 <div className="font-black text-slate-900 dark:text-white text-lg tracking-tight uppercase">
                                                     {vehicle.make} {vehicle.model}
-                                                    <span className="text-slate-500 dark:text-gray-500 text-sm ml-2">[{vehicle.year}]</span>
+                                                    <span className="text-slate-500 dark:text-slate-400 text-sm ml-2">[{vehicle.year}]</span>
                                                 </div>
                                                 <div className="text-xs text-blue-500 font-bold uppercase mt-1 tracking-widest">
                                                     {vehicle.license_plate}

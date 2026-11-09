@@ -89,12 +89,12 @@ const CustomerForm = () => {
     return (
         <div className="space-y-8 pb-20 w-full max-w-[2200px] mx-auto">
             {/* Top Navigation & Action Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2 border-b border-white/5">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2 border-b border-slate-200/80 dark:border-white/5">
                 <div>
-                    <h1 className="text-3xl font-display font-black text-white uppercase tracking-tighter">
+                    <h1 className="text-3xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter">
                         {isEditMode ? 'Update Client Profile' : 'New Client Registration'}
                     </h1>
-                    <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mt-1">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-widest font-bold mt-1">
                         {isEditMode ? `Modifying records for Client ID: ${id}` : 'Registering a new client into the garage central repository'}
                     </p>
                 </div>
@@ -128,17 +128,17 @@ const CustomerForm = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         
                         {/* ── Panel 1: Core Identification ── */}
-                        <div className="space-y-6 bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex flex-col justify-between">
+                        <div className="space-y-6 bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/5 rounded-2xl p-6 flex flex-col justify-between">
                             <div>
-                                <div className="flex items-center gap-3 pb-4 mb-6 border-b border-white/5">
-                                    <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                                <div className="flex items-center gap-3 pb-4 mb-6 border-b border-slate-200/80 dark:border-white/5">
+                                    <div className="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-500 dark:text-amber-400">
                                         <ShieldCheck size={20} />
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-display font-black text-white uppercase tracking-wider">
+                                        <h3 className="text-sm font-display font-black text-slate-900 dark:text-white uppercase tracking-wider">
                                             01. Primary Identity
                                         </h3>
-                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                                        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
                                             Client Identification
                                         </p>
                                     </div>
@@ -146,7 +146,7 @@ const CustomerForm = () => {
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
-                                        <label htmlFor="customer-full-name" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="customer-full-name" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <span>Full Legal Name</span>
                                             <span className="text-primary">*</span>
                                         </label>
@@ -163,7 +163,7 @@ const CustomerForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="customer-phone" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="customer-phone" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <Phone size={11} className="text-primary" />
                                             <span>Primary Phone (WhatsApp)</span>
                                             <span className="text-primary">*</span>
@@ -181,8 +181,8 @@ const CustomerForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="customer-email" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
-                                            <Mail size={11} className="text-gray-400" />
+                                        <label htmlFor="customer-email" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                            <Mail size={11} className="text-slate-500 dark:text-slate-400" />
                                             <span>Email Address</span>
                                         </label>
                                         <input
@@ -198,24 +198,24 @@ const CustomerForm = () => {
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-white/5 flex items-center gap-2 text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
+                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 flex items-center gap-2 text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">
                                 <CheckCircle2 size={13} />
                                 <span>Direct WhatsApp Gateway Linked</span>
                             </div>
                         </div>
 
                         {/* ── Panel 2: Contact & Demographics ── */}
-                        <div className="space-y-6 bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex flex-col justify-between">
+                        <div className="space-y-6 bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/5 rounded-2xl p-6 flex flex-col justify-between">
                             <div>
-                                <div className="flex items-center gap-3 pb-4 mb-6 border-b border-white/5">
-                                    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300">
+                                <div className="flex items-center gap-3 pb-4 mb-6 border-b border-slate-200/80 dark:border-white/5">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-700 dark:text-slate-300">
                                         <MapPin size={20} />
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-display font-black text-white uppercase tracking-wider">
+                                        <h3 className="text-sm font-display font-black text-slate-900 dark:text-white uppercase tracking-wider">
                                             02. Demographics & Source
                                         </h3>
-                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                                        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
                                             Address & Acquisition
                                         </p>
                                     </div>
@@ -223,8 +223,8 @@ const CustomerForm = () => {
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
-                                        <label htmlFor="customer-referral-source" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
-                                            <Share2 size={11} className="text-gray-400" />
+                                        <label htmlFor="customer-referral-source" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                            <Share2 size={11} className="text-slate-500 dark:text-slate-400" />
                                             <span>Referral Source</span>
                                         </label>
                                         <select
@@ -232,18 +232,18 @@ const CustomerForm = () => {
                                             name="referral_source"
                                             value={formData.referral_source}
                                             onChange={handleChange}
-                                            className="input-glass appearance-none bg-black/40"
+                                            className="input-glass appearance-none bg-slate-50 dark:bg-black/40 text-slate-900 dark:text-white"
                                         >
-                                            <option value="Friend Referral" className="bg-gray-900">Word of Mouth / Client Referral</option>
-                                            <option value="Direct Call" className="bg-gray-900">Direct Inbound Call</option>
-                                            <option value="Corporate Fleet" className="bg-gray-900">Corporate Fleet Account</option>
-                                            <option value="Other" className="bg-gray-900">Other</option>
+                                            <option value="Friend Referral" className="bg-white text-slate-900 dark:bg-neutral-900 dark:text-white">Word of Mouth / Client Referral</option>
+                                            <option value="Direct Call" className="bg-white text-slate-900 dark:bg-neutral-900 dark:text-white">Direct Inbound Call</option>
+                                            <option value="Corporate Fleet" className="bg-white text-slate-900 dark:bg-neutral-900 dark:text-white">Corporate Fleet Account</option>
+                                            <option value="Other" className="bg-white text-slate-900 dark:bg-neutral-900 dark:text-white">Other</option>
                                         </select>
                                     </div>
 
                                     {/* ── Referred By Client Linkage ── */}
                                     <div className="space-y-2">
-                                        <label htmlFor="customer-referred-by" className="text-[10px] font-black uppercase tracking-widest text-amber-400 flex items-center gap-1.5">
+                                        <label htmlFor="customer-referred-by" className="text-[10px] font-black uppercase tracking-widest text-amber-500 dark:text-amber-400 flex items-center gap-1.5">
                                             <span>⭐ Referred By Existing Client</span>
                                         </label>
                                         <select
@@ -251,23 +251,23 @@ const CustomerForm = () => {
                                             name="referred_by_client_id"
                                             value={formData.referred_by_client_id}
                                             onChange={handleChange}
-                                            className="input-glass appearance-none bg-black/40 border-amber-500/30 text-white"
+                                            className="input-glass appearance-none bg-slate-50 dark:bg-black/40 border-amber-500/30 text-slate-900 dark:text-white"
                                         >
-                                            <option value="" className="bg-gray-900 text-gray-400">-- NO REFERRING CLIENT LINKED --</option>
+                                            <option value="" className="bg-white text-slate-600 dark:bg-neutral-900 dark:text-slate-400">-- NO REFERRING CLIENT LINKED --</option>
                                             {existingClients
                                                 .filter(c => !id || c.id !== parseInt(id, 10))
                                                 .map(c => (
-                                                    <option key={c.id} value={c.id} className="bg-gray-900 text-white">
+                                                    <option key={c.id} value={c.id} className="bg-white text-slate-900 dark:bg-neutral-900 dark:text-white">
                                                         {c.full_name} ({c.phone})
                                                     </option>
                                                 ))}
                                         </select>
-                                        <p className="text-[9px] text-gray-400">Links this new client to their referrer for network LTV attribution</p>
+                                        <p className="text-[9px] text-slate-600 dark:text-slate-400 font-medium">Links this new client to their referrer for network LTV attribution</p>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="customer-address" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
-                                            <MapPin size={11} className="text-gray-400" />
+                                        <label htmlFor="customer-address" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                            <MapPin size={11} className="text-slate-500 dark:text-slate-400" />
                                             <span>Physical / Workshop Address</span>
                                         </label>
                                         <textarea
@@ -283,31 +283,31 @@ const CustomerForm = () => {
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-white/5 text-[10px] text-gray-500 font-mono">
+                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 text-[10px] text-slate-600 dark:text-slate-400 font-mono">
                                 GEODATA: EGYPT (CAIRO/GIZA METRO)
                             </div>
                         </div>
 
                         {/* ── Panel 3: Workshop Notes & Preferences ── */}
-                        <div className="space-y-6 bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex flex-col justify-between">
+                        <div className="space-y-6 bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/5 rounded-2xl p-6 flex flex-col justify-between">
                             <div className="flex-1 flex flex-col">
-                                <div className="flex items-center gap-3 pb-4 mb-6 border-b border-white/5">
-                                    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300">
+                                <div className="flex items-center gap-3 pb-4 mb-6 border-b border-slate-200/80 dark:border-white/5">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-700 dark:text-slate-300">
                                         <FileText size={20} />
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-display font-black text-white uppercase tracking-wider">
+                                        <h3 className="text-sm font-display font-black text-slate-900 dark:text-white uppercase tracking-wider">
                                             03. Workshop Intel & Notes
                                         </h3>
-                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                                        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
                                             Internal Directives
                                         </p>
                                     </div>
                                 </div>
 
                                 <div className="space-y-2 flex-1 flex flex-col">
-                                    <label htmlFor="customer-notes" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
-                                        <Settings size={11} className="text-gray-400" />
+                                    <label htmlFor="customer-notes" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                        <Settings size={11} className="text-slate-500 dark:text-slate-400" />
                                         <span>Customer Directives, VIP Tags, or Preferences</span>
                                     </label>
                                     <textarea
@@ -321,17 +321,17 @@ const CustomerForm = () => {
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-[10px] text-gray-400 font-mono">
+                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-400 font-mono">
                                 <span>ENCRYPTION: AES-256</span>
-                                <span className="text-primary font-bold">VIP COMPATIBLE</span>
+                                <span className="text-amber-500 dark:text-primary font-bold">VIP COMPATIBLE</span>
                             </div>
                         </div>
 
                     </div>
 
                     {/* Bottom Action Footer */}
-                    <div className="flex items-center justify-between pt-6 border-t border-white/5">
-                        <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">
+                    <div className="flex items-center justify-between pt-6 border-t border-slate-200/80 dark:border-white/5">
+                        <span className="text-[11px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
                             Mandatory fields marked with <span className="text-primary">*</span>
                         </span>
                         <div className="flex items-center gap-4">

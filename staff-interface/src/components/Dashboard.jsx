@@ -89,7 +89,7 @@ const Dashboard = () => {
     if (loading) return (
         <div className="flex flex-col items-center justify-center p-24 space-y-4">
             <Loader className="animate-spin text-[#fbbf24]" size={36} />
-            <span className="text-xs font-mono font-bold uppercase tracking-widest text-gray-400">
+            <span className="text-xs font-mono font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">
                 SYNCHRONIZING WORKSHOP TELEMETRY...
             </span>
         </div>
@@ -121,17 +121,17 @@ const Dashboard = () => {
     return (
         <div className="space-y-8 pb-20">
             {telemetryError && (
-                <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 p-4 rounded-2xl flex items-center justify-between gap-4 backdrop-blur-xl">
+                <div className="bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 p-4 rounded-2xl flex items-center justify-between gap-4 backdrop-blur-xl">
                     <div className="flex items-center gap-3">
-                        <AlertTriangle className="text-amber-400 shrink-0" size={20} />
+                        <AlertTriangle className="text-amber-500 dark:text-amber-400 shrink-0" size={20} />
                         <div>
-                            <p className="text-xs font-bold uppercase tracking-wider text-amber-200">Cloud Telemetry Initializing</p>
-                            <p className="text-[11px] text-gray-300">Database statistics link is reconnecting. Live metrics will populate shortly.</p>
+                            <p className="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-200">Cloud Telemetry Initializing</p>
+                            <p className="text-[11px] text-slate-700 dark:text-slate-300">Database statistics link is reconnecting. Live metrics will populate shortly.</p>
                         </div>
                     </div>
                     <button
                         onClick={fetchData}
-                        className="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap"
+                        className="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-800 dark:text-amber-300 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap"
                     >
                         Retry Sync
                     </button>
@@ -184,7 +184,7 @@ const Dashboard = () => {
                                     <span>Used Car Consignment Leads</span>
                                     <span className="px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black">{consignmentLeads.length} NEW</span>
                                 </h4>
-                                <p className="text-xs text-slate-500 dark:text-gray-400">Customers requesting GoCar to handle the sale of their vehicle</p>
+                                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">Customers requesting GoCar to handle the sale of their vehicle</p>
                             </div>
                         </div>
                         <Link
@@ -203,7 +203,7 @@ const Dashboard = () => {
                                     <div>
                                         <span className="text-[10px] font-black text-amber-500 dark:text-amber-400 uppercase tracking-widest block">{lead.client_name}</span>
                                         <h5 className="text-sm font-bold text-slate-900 dark:text-white">{lead.make} {lead.model} ({lead.year})</h5>
-                                        <span className="text-[11px] text-slate-500 dark:text-gray-400 font-mono">{lead.license_plate}</span>
+                                        <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono">{lead.license_plate}</span>
                                     </div>
                                     {lead.asking_price && (
                                         <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
@@ -212,7 +212,7 @@ const Dashboard = () => {
                                     )}
                                 </div>
                                 {lead.notes && (
-                                    <p className="text-xs text-slate-600 dark:text-gray-300 italic line-clamp-2">"{lead.notes}"</p>
+                                    <p className="text-xs text-slate-700 dark:text-slate-300 italic line-clamp-2">"{lead.notes}"</p>
                                 )}
                                 <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-white/5 text-xs">
                                     <a
@@ -285,7 +285,7 @@ const Dashboard = () => {
                         <h3 className="text-xl md:text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
                             <span>Service Operations Feed</span>
                         </h3>
-                        <p className="text-xs text-slate-500 dark:text-gray-400 uppercase tracking-widest font-bold mt-0.5">Real-time status updates from active workshop floor</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-widest font-bold mt-0.5">Real-time status updates from active workshop floor</p>
                     </div>
 
                     {/* Filter Pills */}
@@ -297,7 +297,7 @@ const Dashboard = () => {
                                 className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
                                     activityFilter === filter
                                         ? 'bg-amber-400 text-slate-950 shadow-md font-bold'
-                                        : 'text-slate-600 dark:text-gray-400 hover:text-slate-950 dark:hover:text-white'
+                                        : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white'
                                 }`}
                             >
                                 {filter}
@@ -310,23 +310,23 @@ const Dashboard = () => {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b border-slate-200/80 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-400">Timestamp</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-400">Client</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-400">Vehicle / Operation</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-400">Status</th>
-                                <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-400">Action</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Timestamp</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Client</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Vehicle / Operation</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Status</th>
+                                <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-200/80 dark:divide-white/5">
                             {filteredActivity.length > 0 ? filteredActivity.map((activity) => (
                                 <tr key={activity.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.03] transition-colors group">
-                                    <td className="px-8 py-5 text-xs font-mono font-bold text-slate-500 dark:text-gray-400">
+                                    <td className="px-8 py-5 text-xs font-mono font-bold text-slate-600 dark:text-slate-400">
                                         {formatDate(activity.date)}
                                     </td>
                                     <td className="px-8 py-5 font-black text-sm text-slate-900 dark:text-white uppercase tracking-tight">
                                         {activity.customer}
                                     </td>
-                                    <td className="px-8 py-5 text-xs font-medium text-slate-600 dark:text-gray-300 max-w-xs truncate">
+                                    <td className="px-8 py-5 text-xs font-medium text-slate-700 dark:text-slate-300 max-w-xs truncate">
                                         {activity.details}
                                     </td>
                                     <td className="px-8 py-5">
@@ -348,7 +348,7 @@ const Dashboard = () => {
                                 </tr>
                             )) : (
                                 <tr>
-                                    <td colSpan="5" className="px-8 py-16 text-center text-slate-400 text-xs font-bold uppercase tracking-widest">
+                                    <td colSpan="5" className="px-8 py-16 text-center text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">
                                         No matching work orders in this view
                                     </td>
                                 </tr>
@@ -366,7 +366,7 @@ const Dashboard = () => {
                             <h3 className="text-xl md:text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
                                 <span className="text-[#25D366]">Action Required: Maintenance Reminders</span>
                             </h3>
-                            <p className="text-xs text-slate-500 dark:text-gray-400 uppercase tracking-widest font-bold mt-0.5">
+                            <p className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-widest font-bold mt-0.5">
                                 Send 1-tap personalized WhatsApp reminder notifications
                             </p>
                         </div>
@@ -380,7 +380,7 @@ const Dashboard = () => {
                             <div key={r.id} className="bg-slate-50 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 rounded-2xl p-5 flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:border-slate-300 dark:hover:border-white/20 transition-all">
                                 <div className="space-y-1">
                                     <div className="text-sm font-black text-slate-900 dark:text-white uppercase">{r.client_name}</div>
-                                    <div className="text-xs text-slate-500 dark:text-gray-400 font-medium">
+                                    <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                                         {r.make} {r.model} • <span className="text-amber-500 dark:text-[#fbbf24] font-bold">{r.service_type}</span>
                                     </div>
                                     <div className="text-[11px] text-rose-500 dark:text-rose-400 font-mono font-bold">
@@ -419,7 +419,7 @@ const Dashboard = () => {
                             <TrendingUp size={22} />
                             <span>30-Day Predictive Revenue Forecast</span>
                         </h3>
-                        <p className="text-xs text-slate-500 dark:text-gray-400 uppercase tracking-widest font-bold mt-0.5">
+                        <p className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-widest font-bold mt-0.5">
                             Automated ML forecast based on recurring maintenance schedules
                         </p>
                     </div>
@@ -427,7 +427,7 @@ const Dashboard = () => {
                     {forecast && (
                         <div className="sm:text-right">
                             <div className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter">
-                                {(forecast.forecastTotal || 0).toLocaleString()} <span className="text-xs text-slate-500 dark:text-gray-400 uppercase font-sans">EGP</span>
+                                {(forecast.forecastTotal || 0).toLocaleString()} <span className="text-xs text-slate-600 dark:text-slate-400 uppercase font-sans">EGP</span>
                             </div>
                             <div className="text-[10px] font-mono font-bold text-purple-500 dark:text-purple-400 uppercase tracking-widest">
                                 AI Confidence: {forecast.confidence || '92%'}
@@ -449,7 +449,7 @@ const Dashboard = () => {
                                 const percentage = Math.round(((amount || 0) / maxAmount) * 100);
                                 return (
                                     <div key={type} className="bg-slate-50 dark:bg-white/5 p-4 rounded-2xl border border-slate-200/80 dark:border-white/5 space-y-2">
-                                        <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-gray-300">
+                                        <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
                                             <span>{type}</span>
                                             <span className="font-mono text-purple-600 dark:text-purple-300">{(amount || 0).toLocaleString()} EGP</span>
                                         </div>
@@ -464,7 +464,7 @@ const Dashboard = () => {
                             })}
                         </div>
                     ) : (
-                        <div className="text-center text-slate-400 text-xs font-semibold uppercase tracking-wider py-6">
+                        <div className="text-center text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider py-6">
                             No forecast data available for current cycle
                         </div>
                     )}

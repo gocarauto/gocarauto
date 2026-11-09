@@ -393,14 +393,14 @@ const ServiceRequestDetail = () => {
     };
 
     if (loading) return (
-        <div className="p-20 text-center animate-glow text-gray-500 font-bold tracking-widest text-xs uppercase">
+        <div className="p-20 text-center animate-glow text-slate-500 dark:text-slate-400 font-bold tracking-widest text-xs uppercase">
             LOADING OPERATION INTEL...
         </div>
     );
     
     if (error) return (
         <div className="p-20 text-center">
-             <div className="bg-red-500/10 border border-red-500/30 text-red-500 p-8 rounded-3xl text-sm font-bold flex flex-col items-center gap-4 uppercase tracking-widest max-w-lg mx-auto">
+             <div className="bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-500 p-8 rounded-3xl text-sm font-bold flex flex-col items-center gap-4 uppercase tracking-widest max-w-lg mx-auto">
                 <AlertCircle size={40} />
                 {error}
                 <button onClick={() => window.location.reload()} className="btn-secondary mt-4">RETRY MISSION</button>
@@ -408,7 +408,7 @@ const ServiceRequestDetail = () => {
         </div>
     );
 
-    if (!request) return <div className="p-20 text-center text-gray-500 uppercase font-black">MISSION DATA NOT FOUND.</div>;
+    if (!request) return <div className="p-20 text-center text-slate-600 dark:text-slate-400 uppercase font-black">MISSION DATA NOT FOUND.</div>;
 
     const vehicleParts = request.vehicle_info ? request.vehicle_info.split(' ') : ['Generic', 'Vehicle'];
     const totalAmount = records.reduce((sum, r) => sum + (r.total_price || 0), 0);
@@ -440,18 +440,18 @@ const ServiceRequestDetail = () => {
                             OP #{String(request.id || '').padStart(5, '0')}
                         </div>
                         <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-                            request.status === 'Completed' || request.status === 'Paid' ? 'bg-green-500/10 border-green-500/20 text-green-400' : 
-                            request.status === 'In Progress' ? 'bg-blue-500/10 border-blue-500/20 text-blue-400 animate-pulse' :
-                            'bg-white/5 border-white/10 text-gray-400'
+                            request.status === 'Completed' || request.status === 'Paid' ? 'bg-green-500/10 border-green-500/20 text-green-700 dark:text-green-400' : 
+                            request.status === 'In Progress' ? 'bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-400 animate-pulse' :
+                            'bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400'
                         }`}>
                             {request.status?.toUpperCase()}
                         </div>
-                        {request.source === 'PORTAL' && <div className="text-[10px] font-black text-amber-500 drop-shadow-[0_0_5px_currentColor]">✦ PORTAL ORIGIN</div>}
+                        {request.source === 'PORTAL' && <div className="text-[10px] font-black text-amber-600 dark:text-amber-500 drop-shadow-[0_0_5px_currentColor]">✦ PORTAL ORIGIN</div>}
                     </div>
-                    <h1 className="text-4xl font-display font-black text-white uppercase tracking-tighter leading-none">
+                    <h1 className="text-4xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none">
                         {request.client_name || 'N/A'}
                     </h1>
-                    <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mt-2 flex items-center gap-2">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-widest font-bold mt-2 flex items-center gap-2">
                         <Car size={14} className="text-primary" /> {request.vehicle_info || 'Unknown Vehicle'}
                     </p>
                 </div>
@@ -487,17 +487,17 @@ const ServiceRequestDetail = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <StatCard title="Financial Exposure" value={`${(request.total_amount_due || totalAmount || 0).toLocaleString()} EGP`} sub={request.invoice_number ? 'Finalized Amount' : 'Current Ledger Total'} color="text-primary" />
-                <StatCard title="Mission Elapsed" value={`${request.days_open || 0} DAYS`} sub="Total Operational Time" color="text-blue-500" />
-                <StatCard title="Fleet Status" value={(request.status || 'N/A').toUpperCase()} sub="Current Phase" color="text-green-500" />
+                <StatCard title="Mission Elapsed" value={`${request.days_open || 0} DAYS`} sub="Total Operational Time" color="text-blue-600 dark:text-blue-400" />
+                <StatCard title="Fleet Status" value={(request.status || 'N/A').toUpperCase()} sub="Current Phase" color="text-green-600 dark:text-green-400" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
                 <div className="space-y-8">
                     <div className="glass-card overflow-hidden">
-                        <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
+                        <div className="p-8 border-b border-slate-200 dark:border-white/5 flex justify-between items-center bg-slate-50 dark:bg-white/[0.01]">
                         <div className="flex items-center gap-3">
                             <Wrench size={18} className="text-primary" />
-                            <h3 className="text-lg font-display font-black text-white uppercase tracking-widest">Operations Ledger</h3>
+                            <h3 className="text-lg font-display font-black text-slate-900 dark:text-white uppercase tracking-widest">Operations Ledger</h3>
                         </div>
                         {canEditItems && (
                             <div className="flex gap-2">
@@ -507,7 +507,7 @@ const ServiceRequestDetail = () => {
                         )}
                     </div>
 
-                    {showAddItem && <div className="p-8 bg-black/20 border-b border-white/5 animate-in slide-in-from-top duration-300">
+                    {showAddItem && <div className="p-8 bg-slate-50 dark:bg-black/20 border-b border-slate-200 dark:border-white/5 animate-in slide-in-from-top duration-300">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                             <div className="md:col-span-2">
                                 <FormInput label="Operation Item" value={newItem.itemName} onChange={e => setNewItem({...newItem, itemName: e.target.value})} placeholder="Engine Oil, Filter, Brake Pads..." />
@@ -519,21 +519,21 @@ const ServiceRequestDetail = () => {
                         <button className="btn-primary w-full text-[10px] mt-6" onClick={handleAddItem}>SAVE OPERATION ENTRY</button>
                     </div>}
 
-                    {showBulkAdd && <div className="p-10 bg-black/40 border-b border-white/10 animate-in slide-in-from-top duration-300 space-y-10">
+                    {showBulkAdd && <div className="p-10 bg-slate-100/70 dark:bg-black/40 border-b border-slate-200 dark:border-white/10 animate-in slide-in-from-top duration-300 space-y-10">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                             <div className="space-y-4 text-left">
                                 <div className="text-[10px] font-black text-[#25D366] uppercase tracking-widest px-4 flex justify-between items-end">
                                     <span>Incoming Log Parser</span>
-                                    <span className="opacity-50 italic">e.g., 1. Oil - 2500</span>
+                                    <span className="opacity-70 italic">e.g., 1. Oil - 2500</span>
                                 </div>
                                 <textarea 
-                                    className="input-glass bg-black/60 border-white/5 h-40 p-5 text-xs font-medium focus:border-[#25D366]/50 placeholder:text-gray-800"
+                                    className="input-glass bg-white dark:bg-black/60 border-slate-200 dark:border-white/5 h-40 p-5 text-xs font-medium focus:border-[#25D366]/50 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-white"
                                     placeholder="PASTE WHATSAPP LOG HERE..."
                                     value={whatsappText}
                                     onChange={e => setWhatsappText(e.target.value)}
                                 ></textarea>
                                 <div className="grid grid-cols-2 gap-3">
-                                    <button onClick={handleParseWhatsApp} className="h-12 w-full bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-primary transition-all">
+                                    <button onClick={handleParseWhatsApp} className="h-12 w-full bg-slate-900 text-white dark:bg-white dark:text-black rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-primary transition-all">
                                         <Wrench size={16} /> PARSE DATA
                                     </button>
                                     <button 
@@ -549,10 +549,10 @@ const ServiceRequestDetail = () => {
                             </div>
 
                             <div className="space-y-4 text-left">
-                                <div className="text-[10px] font-black text-blue-500 uppercase tracking-widest px-4 text-left">
+                                <div className="text-[10px] font-black text-blue-600 dark:text-blue-500 uppercase tracking-widest px-4 text-left">
                                     Remote Fleet Sync (Sheets)
                                 </div>
-                                <div className="bg-black/60 p-5 rounded-3xl border border-white/5 h-40 flex flex-col justify-center gap-4">
+                                <div className="bg-white dark:bg-black/60 p-5 rounded-3xl border border-slate-200 dark:border-white/5 h-40 flex flex-col justify-center gap-4">
                                     <FormInput label="Sheet Protocol URL" placeholder="https://docs.google.com/spreadsheets/..." value={googleSheetsUrl} onChange={e => setGoogleSheetsUrl(e.target.value)} />
                                 </div>
                                 <button className="h-12 w-full bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 opacity-50 cursor-not-allowed" disabled>
@@ -561,11 +561,11 @@ const ServiceRequestDetail = () => {
                             </div>
                         </div>
 
-                        <div className="pt-6 border-t border-white/10">
-                            <div className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-8 text-center bg-white/5 py-2 rounded-lg text-left px-5">Review Bulk Staging Rows</div>
+                        <div className="pt-6 border-t border-slate-200 dark:border-white/10">
+                            <div className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-[0.3em] mb-8 text-center bg-slate-200/60 dark:bg-white/5 py-2 rounded-lg text-left px-5">Review Bulk Staging Rows</div>
                             <div className="grid grid-cols-1 gap-5">
                                 {bulkItems.map((item, idx) => (
-                                    <div key={idx} className="flex flex-col md:flex-row gap-4 items-end bg-white/[0.02] p-6 rounded-3xl border border-white/5 group hover:border-white/10 transition-all">
+                                    <div key={idx} className="flex flex-col md:flex-row gap-4 items-end bg-slate-50/50 dark:bg-white/[0.02] p-6 rounded-3xl border border-slate-200 dark:border-white/5 group hover:border-slate-300 dark:hover:border-white/10 transition-all">
                                         <div className="flex-1 w-full text-left">
                                             <FormInput label={`Item #${idx + 1}`} value={item.itemName} onChange={e => {
                                                 const newItems = [...bulkItems];
@@ -592,7 +592,7 @@ const ServiceRequestDetail = () => {
                                                 const newItems = [...bulkItems];
                                                 newItems.splice(idx, 1);
                                                 setBulkItems(newItems.length ? newItems : [{ itemName: '', itemNameAr: '', quantity: 1, unitPrice: 0, notes: '' }]);
-                                            }} className="h-14 w-14 flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors">
+                                            }} className="h-14 w-14 flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors">
                                                 <Trash2 size={20} />
                                             </button>
                                         )}
@@ -616,38 +616,38 @@ const ServiceRequestDetail = () => {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-white/5 bg-white/[0.02]">
-                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-gray-500 text-left">Component / Description</th>
-                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-gray-500 text-right">Qty</th>
-                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-gray-500 text-right">Unit Price</th>
-                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-gray-500 text-right">Subtotal</th>
+                                <tr className="border-b border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02]">
+                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-left">Component / Description</th>
+                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-right">Qty</th>
+                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-right">Unit Price</th>
+                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-right">Subtotal</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-white/5 font-bold uppercase tracking-tight">
+                            <tbody className="divide-y divide-slate-100 dark:divide-white/5 font-bold uppercase tracking-tight">
                                 {records.length === 0 ? (
-                                    <tr><td colSpan="4" className="p-20 text-center text-gray-600 font-bold text-xs">NO ENTRIES RECORDED IN MISSION LOG.</td></tr>
+                                    <tr><td colSpan="4" className="p-20 text-center text-slate-500 dark:text-slate-500 font-bold text-xs">NO ENTRIES RECORDED IN MISSION LOG.</td></tr>
                                 ) : (
                                     records.map(record => (
-                                        <tr key={record.id} className="hover:bg-white/[0.01] transition-colors">
+                                        <tr key={record.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.01] transition-colors">
                                             <td className="px-8 py-5 text-left">
-                                                <div className="text-white text-sm">{record.item_name}</div>
-                                                <div className="text-[10px] text-gray-500 font-mono mt-1" dir="rtl">{record.item_name_ar}</div>
+                                                <div className="text-slate-900 dark:text-white text-sm">{record.item_name}</div>
+                                                <div className="text-[10px] text-slate-600 dark:text-slate-400 font-mono mt-1" dir="rtl">{record.item_name_ar}</div>
                                             </td>
-                                            <td className="px-8 py-5 text-right font-mono text-xs text-gray-400">{record.quantity}</td>
-                                            <td className="px-8 py-5 text-right font-mono text-xs text-gray-400">{(parseFloat(record.unit_price) || 0).toLocaleString()} EGP</td>
+                                            <td className="px-8 py-5 text-right font-mono text-xs text-slate-700 dark:text-slate-300">{record.quantity}</td>
+                                            <td className="px-8 py-5 text-right font-mono text-xs text-slate-700 dark:text-slate-300">{(parseFloat(record.unit_price) || 0).toLocaleString()} EGP</td>
                                             <td className="px-8 py-5 text-right text-primary">{(parseFloat(record.total_price) || 0).toLocaleString()} EGP</td>
                                         </tr>
                                     ))
                                 )}
                             </tbody>
-                            <tfoot className="bg-black/40 font-black uppercase tracking-widest">
+                            <tfoot className="bg-slate-100/60 dark:bg-black/40 font-black uppercase tracking-widest">
                                 <tr>
-                                    <td colSpan="3" className="px-8 py-6 text-right text-[10px] text-gray-500">Subtotal Ledger</td>
-                                    <td className="px-8 py-6 text-right text-white">{(totalAmount || 0).toLocaleString()} EGP</td>
+                                    <td colSpan="3" className="px-8 py-6 text-right text-[10px] text-slate-600 dark:text-slate-400">Subtotal Ledger</td>
+                                    <td className="px-8 py-6 text-right text-slate-900 dark:text-white">{(totalAmount || 0).toLocaleString()} EGP</td>
                                 </tr>
                                 {request.invoice_number && (
                                     <>
-                                        <tr className="text-blue-400/80">
+                                        <tr className="text-blue-600 dark:text-blue-400/80">
                                             <td colSpan="3" className="px-8 py-2 text-right text-[9px]">Operational Surcharge</td>
                                             <td className="px-8 py-2 text-right text-xs">{(parseFloat(request.service_fee || 0) + parseFloat(request.spare_parts_markup || 0)).toLocaleString()} EGP</td>
                                         </tr>
@@ -666,19 +666,19 @@ const ServiceRequestDetail = () => {
                     <div className="glass-card p-8">
                         <div className="flex items-center gap-3 mb-6">
                             <MessageCircle size={18} className="text-primary" />
-                            <h3 className="text-lg font-display font-black text-white uppercase tracking-widest">Internal Notes & Timeline</h3>
+                            <h3 className="text-lg font-display font-black text-slate-900 dark:text-white uppercase tracking-widest">Internal Notes & Timeline</h3>
                         </div>
                         <div className="space-y-4 max-h-80 overflow-y-auto mb-6 pr-2">
                             {comments.length === 0 ? (
-                                <div className="text-center text-xs text-gray-500 font-bold uppercase tracking-widest py-8">No internal notes yet.</div>
+                                <div className="text-center text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest py-8">No internal notes yet.</div>
                             ) : (
                                 comments.map(comment => (
-                                    <div key={comment.id} className="bg-black/40 p-4 rounded-2xl border border-white/5">
+                                    <div key={comment.id} className="bg-slate-100 dark:bg-black/40 p-4 rounded-2xl border border-slate-200 dark:border-white/5">
                                         <div className="flex justify-between items-center mb-2">
                                             <span className="text-xs font-black text-primary">{comment.author_name}</span>
-                                            <span className="text-[10px] text-gray-500">{formatDate(comment.created_at)}</span>
+                                            <span className="text-[10px] text-slate-600 dark:text-slate-400">{formatDate(comment.created_at)}</span>
                                         </div>
-                                        <div className="text-sm text-gray-300 whitespace-pre-wrap">{comment.content}</div>
+                                        <div className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{comment.content}</div>
                                     </div>
                                 ))
                             )}
@@ -701,17 +701,17 @@ const ServiceRequestDetail = () => {
                     <div className="glass-card p-8 space-y-6 text-left">
                         <div className="flex items-center gap-3 mb-2">
                             <Clock size={18} className="text-blue-500" />
-                            <h3 className="text-sm font-black text-white uppercase tracking-widest text-left">Protocol Logs</h3>
+                            <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest text-left">Protocol Logs</h3>
                         </div>
                         
                         <IntelligenceItem label="Mission Initiation" value={formatDate(request.request_date || request.created_at)} />
                         <IntelligenceItem label="Primary Target" value={request.client_name} />
                         
                         <div className="flex justify-between items-center gap-4 py-1 text-left">
-                            <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest whitespace-nowrap">Assigned Tech</div>
-                            <div className="h-px border-b border-dashed border-white/10 flex-1 mb-1"></div>
+                            <div className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest whitespace-nowrap">Assigned Tech</div>
+                            <div className="h-px border-b border-dashed border-slate-200 dark:border-white/10 flex-1 mb-1"></div>
                             <select 
-                                className="bg-black/40 border border-white/10 rounded-lg text-xs text-white p-1 focus:border-primary/50 outline-none w-32"
+                                className="bg-white dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-xs text-slate-900 dark:text-white p-1 focus:border-primary/50 outline-none w-32"
                                 value={assignedTo || ''}
                                 onChange={(e) => handleAssign(e.target.value)}
                             >
@@ -722,12 +722,12 @@ const ServiceRequestDetail = () => {
                             </select>
                         </div>
                         
-                        <div className="pt-4 border-t border-white/5 space-y-4">
+                        <div className="pt-4 border-t border-slate-200 dark:border-white/5 space-y-4">
                             <div className="flex justify-between items-center text-left">
                                 <IntelligenceLabel text="Fleet Asset" />
                                 {!isEditingMileage && <button onClick={() => { setIsEditingMileage(true); setTempMileage(request.mileage || 0); }} className="text-[9px] font-black text-primary hover:underline">CALIBRATE KM</button>}
                             </div>
-                            <div className="text-sm text-white font-bold text-left">{request.vehicle_info}</div>
+                            <div className="text-sm text-slate-900 dark:text-white font-bold text-left">{request.vehicle_info}</div>
                             {isEditingMileage ? (
                                 <div className="flex gap-2">
                                     <input type="number" className="input-glass h-10 py-0 flex-1 text-xs" value={tempMileage} onChange={e => setTempMileage(e.target.value)} autoFocus />
@@ -736,14 +736,14 @@ const ServiceRequestDetail = () => {
                             ) : (
                                 <div className="flex items-center gap-2 text-left">
                                     <Zap size={14} className="text-amber-500" />
-                                    <span className="text-xl font-display font-black text-white tracking-widest">{(request.mileage || 0).toLocaleString()} <span className="text-[10px] text-gray-500 align-middle">KM</span></span>
+                                    <span className="text-xl font-display font-black text-slate-900 dark:text-white tracking-widest">{(request.mileage || 0).toLocaleString()} <span className="text-[10px] text-slate-600 dark:text-slate-400 align-middle">KM</span></span>
                                 </div>
                             )}
                         </div>
 
-                        <div className="pt-4 border-t border-white/5 space-y-3">
+                        <div className="pt-4 border-t border-slate-200 dark:border-white/5 space-y-3">
                             <IntelligenceLabel text="Mission Parameters" />
-                            <div className="text-xs text-gray-400 leading-relaxed font-medium bg-black/20 p-4 rounded-xl border border-white/5 whitespace-pre-wrap text-left">
+                            <div className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium bg-slate-50 dark:bg-black/20 p-4 rounded-xl border border-slate-200 dark:border-white/5 whitespace-pre-wrap text-left">
                                 {request.notes || 'NO EXTRA PARAMETERS DEFINED.'}
                             </div>
                         </div>
@@ -751,32 +751,32 @@ const ServiceRequestDetail = () => {
                 </div>
             </div>
 
-            {showInvoiceModal && <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
-                <div className="glass-card p-12 max-w-md w-full border-primary/20">
-                    <h3 className="text-2xl font-display font-black text-white uppercase tracking-tighter mb-8 text-left">Finalize Treasury Report</h3>
+            {showInvoiceModal && <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-300">
+                <div className="glass-card p-12 max-w-md w-full border-primary/20 bg-white dark:bg-[#121319]">
+                    <h3 className="text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter mb-8 text-left">Finalize Treasury Report</h3>
                     <div className="space-y-6">
                         <FormInput label={`Platform Fee (Automated: ${projectedFee.toLocaleString()} EGP)`} value={invoiceData.serviceFee} onChange={e => setInvoiceData({...invoiceData, serviceFee: e.target.value})} type="number" />
                         <FormInput label="Inventory Margin (EGP)" value={invoiceData.sparePartsMarkup} onChange={e => setInvoiceData({...invoiceData, sparePartsMarkup: e.target.value})} type="number" />
                         <FormInput label="Tax Resolution (%)" value={invoiceData.taxRate} onChange={e => setInvoiceData({...invoiceData, taxRate: e.target.value})} type="number" />
                     </div>
-                    <div className="flex gap-4 mt-12 pt-8 border-t border-white/5">
+                    <div className="flex gap-4 mt-12 pt-8 border-t border-slate-200 dark:border-white/5">
                         <button className="flex-1 btn-secondary text-[10px]" onClick={() => setShowInvoiceModal(false)}>ABORT</button>
                         <button className="flex-2 btn-primary text-[10px]" onClick={handleGenerateInvoice}>COMMIT REPORT</button>
                     </div>
                 </div>
             </div>}
 
-            {showReminderModal && <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
-                <div className="glass-card p-12 max-w-md w-full border-blue-500/20">
-                    <h3 className="text-2xl font-display font-black text-white uppercase tracking-tighter mb-2 text-left text-blue-400">Set Service Reminder</h3>
-                    <p className="text-xs text-gray-400 mb-8 text-left">We detected a service that requires a recurring reminder. You can customize the scope or details below.</p>
+            {showReminderModal && <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-300">
+                <div className="glass-card p-12 max-w-md w-full border-blue-500/20 bg-white dark:bg-[#121319]">
+                    <h3 className="text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter mb-2 text-left text-blue-600 dark:text-blue-400">Set Service Reminder</h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mb-8 text-left">We detected a service that requires a recurring reminder. You can customize the scope or details below.</p>
                     <div className="space-y-6">
                         <FormInput label="Service Scope" value={reminderForm.serviceType} onChange={e => setReminderForm({...reminderForm, serviceType: e.target.value})} />
                         <FormInput label="Interval (Months)" value={reminderForm.intervalMonths} onChange={e => setReminderForm({...reminderForm, intervalMonths: e.target.value})} type="number" />
                         <FormInput label="Interval (KM)" value={reminderForm.intervalKm} onChange={e => setReminderForm({...reminderForm, intervalKm: e.target.value})} type="number" />
                         <FormInput label="Internal Notes" value={reminderForm.notes} onChange={e => setReminderForm({...reminderForm, notes: e.target.value})} />
                     </div>
-                    <div className="flex gap-4 mt-12 pt-8 border-t border-white/5">
+                    <div className="flex gap-4 mt-12 pt-8 border-t border-slate-200 dark:border-white/5">
                          <button className="flex-1 btn-secondary text-[10px]" onClick={() => setShowReminderModal(false)}>SKIP</button>
                          <button className="flex-2 btn-primary text-[10px] bg-blue-500 text-black border-none" onClick={handleCreateReminder}>SET REMINDER</button>
                     </div>
@@ -788,26 +788,26 @@ const ServiceRequestDetail = () => {
 
 const StatCard = ({ title, value, sub, color }) => (
     <div className="glass-card p-8 relative group overflow-hidden text-left">
-        <div className={`absolute -right-4 -bottom-4 w-24 h-24 bg-white/5 rounded-full group-hover:scale-150 transition-transform duration-700`}></div>
-        <div className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">{title}</div>
+        <div className={`absolute -right-4 -bottom-4 w-24 h-24 bg-slate-100 dark:bg-white/5 rounded-full group-hover:scale-150 transition-transform duration-700`}></div>
+        <div className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 mb-2">{title}</div>
         <div className={`text-3xl font-display font-black tracking-tighter mb-1 ${color}`}>{value}</div>
-        <div className="text-[9px] font-black text-gray-600 uppercase tracking-widest">{sub}</div>
+        <div className="text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">{sub}</div>
     </div>
 );
 
 const IntelligenceItem = ({ label, value }) => (
     <div className="flex justify-between items-end gap-4 py-1 text-left">
-        <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest whitespace-nowrap">{label}</div>
-        <div className="h-px border-b border-dashed border-white/10 flex-1 mb-1"></div>
-        <div className="text-xs font-black text-white uppercase tracking-tight text-right">{value}</div>
+        <div className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest whitespace-nowrap">{label}</div>
+        <div className="h-px border-b border-dashed border-slate-200 dark:border-white/10 flex-1 mb-1"></div>
+        <div className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight text-right">{value}</div>
     </div>
 );
 
-const IntelligenceLabel = ({ text }) => <div className="text-[10px] font-black uppercase tracking-widest text-gray-500 text-left">{text}</div>;
+const IntelligenceLabel = ({ text }) => <div className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-left">{text}</div>;
 
 const FormInput = ({ label, value, onChange, type = "text", placeholder = "" }) => (
     <div className="space-y-2 text-left">
-        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">{label}</label>
+        <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-4">{label}</label>
         <input type={type} value={value} onChange={onChange} placeholder={placeholder} className="input-glass font-mono tracking-widest w-full" />
     </div>
 );

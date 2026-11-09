@@ -72,8 +72,8 @@ const ServiceRequestList = () => {
         <div className="space-y-8 pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-3xl font-display font-black text-white uppercase tracking-tighter">Service Operations</h1>
-                    <p className="text-xs text-slate-400 uppercase tracking-widest font-bold mt-1">Active workshop floor missions & work orders</p>
+                    <h1 className="text-3xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter">Service Operations</h1>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-widest font-bold mt-1">Active workshop floor missions & work orders</p>
                 </div>
                 <div className="flex items-center gap-4">
                     <Link to="/service-requests/new">
@@ -90,29 +90,29 @@ const ServiceRequestList = () => {
                     <div className="absolute -right-6 -top-6 w-24 h-24 bg-amber-500/10 rounded-full opacity-50"></div>
                     <Wrench className="absolute right-6 top-6 text-amber-500 opacity-20 w-12 h-12" />
                     <div className="relative z-10">
-                        <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Active Operations</div>
-                        <div className="text-3xl font-display font-black text-white tracking-tighter">{requests.length}</div>
-                        <div className="text-[10px] text-amber-400 font-bold uppercase tracking-wider mt-1">Total Work Orders</div>
+                        <div className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Active Operations</div>
+                        <div className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter">{requests.length}</div>
+                        <div className="text-[10px] text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider mt-1">Total Work Orders</div>
                     </div>
                 </div>
                 <div className="glass-card p-6 border-cyan-500/30 relative overflow-hidden group">
                     <div className="absolute -right-6 -top-6 w-24 h-24 bg-cyan-500/10 rounded-full opacity-50"></div>
                     <Clock className="absolute right-6 top-6 text-cyan-500 opacity-20 w-12 h-12" />
                     <div className="relative z-10">
-                        <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">In Workshop Bay</div>
-                        <div className="text-3xl font-display font-black text-white tracking-tighter">
+                        <div className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">In Workshop Bay</div>
+                        <div className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter">
                             {requests.filter(r => r?.status?.includes('Progress') || r?.status === 'Open').length}
                         </div>
-                        <div className="text-[10px] text-cyan-400 font-bold uppercase tracking-wider mt-1">Open / In Progress</div>
+                        <div className="text-[10px] text-cyan-600 dark:text-cyan-400 font-bold uppercase tracking-wider mt-1">Open / In Progress</div>
                     </div>
                 </div>
                 <div className="glass-card p-6 border-blue-500/30 relative overflow-hidden group">
                     <div className="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/10 rounded-full opacity-50"></div>
                     <Car className="absolute right-6 top-6 text-blue-500 opacity-20 w-12 h-12" />
                     <div className="relative z-10">
-                        <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Recurring Vehicles</div>
-                        <div className="text-3xl font-display font-black text-white tracking-tighter">{stats.recurringVehicles}</div>
-                        <div className="text-[10px] text-blue-400 font-bold uppercase tracking-wider mt-1">Fleet Assets</div>
+                        <div className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Recurring Vehicles</div>
+                        <div className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter">{stats.recurringVehicles}</div>
+                        <div className="text-[10px] text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider mt-1">Fleet Assets</div>
                     </div>
                 </div>
                 <div className="glass-card p-6 border-emerald-500/30 relative overflow-hidden group">
@@ -199,7 +199,7 @@ const ServiceRequestList = () => {
                 </div>
 
                 {loading ? (
-                    <div className="p-20 text-center animate-glow text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
+                    <div className="p-20 text-center animate-glow text-slate-500 dark:text-slate-400 font-bold tracking-widest text-xs uppercase">
                         LOADING REQUESTS...
                     </div>
                 ) : error ? (
@@ -211,7 +211,7 @@ const ServiceRequestList = () => {
                         {/* Mobile Responsive Cards (< md screens) */}
                         <div className="md:hidden divide-y divide-slate-200/80 dark:divide-white/5">
                             {filteredRequests.length === 0 ? (
-                                <div className="p-12 text-center text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
+                                <div className="p-12 text-center text-slate-500 dark:text-slate-400 font-bold tracking-widest text-xs uppercase">
                                     {searchTerm ? 'NO MISSIONS MATCH YOUR SEARCH.' : 'LOG EMPTY: NO REQUESTS FOUND.'}
                                 </div>
                             ) : (
@@ -285,7 +285,7 @@ const ServiceRequestList = () => {
                                 <tbody className="divide-y divide-slate-200/80 dark:divide-white/5">
                                     {filteredRequests.length === 0 ? (
                                         <tr>
-                                            <td colSpan="7" className="text-center p-20 text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
+                                            <td colSpan="7" className="text-center p-20 text-slate-500 dark:text-slate-400 font-bold tracking-widest text-xs uppercase">
                                                 {searchTerm ? 'NO MISSIONS MATCH YOUR SEARCH PARAMETERS.' : 'LOG EMPTY: NO REQUESTS FOUND.'}
                                             </td>
                                         </tr>

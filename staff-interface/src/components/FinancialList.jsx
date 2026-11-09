@@ -62,7 +62,7 @@ const FinancialList = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                     <h1 className="text-3xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter">Financial Treasury</h1>
-                    <p className="text-xs text-slate-500 dark:text-gray-500 uppercase tracking-widest font-bold mt-1">Settlements & Revenue Tracking</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-widest font-bold mt-1">Settlements & Revenue Tracking</p>
                 </div>
             </div>
 
@@ -80,7 +80,7 @@ const FinancialList = () => {
                 </div>
 
                 {loading ? (
-                    <div className="p-20 text-center animate-glow text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
+                    <div className="p-20 text-center animate-glow text-slate-500 dark:text-slate-400 font-bold tracking-widest text-xs uppercase">
                         LOADING FINANCIAL DATA...
                     </div>
                 ) : (
@@ -88,18 +88,18 @@ const FinancialList = () => {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-slate-200/80 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Invoice #</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Date</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Client</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Amount Due</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Status</th>
-                                    <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Actions</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Invoice #</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Date</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Client</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Amount Due</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Status</th>
+                                    <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-200/80 dark:divide-white/5">
                                 {invoices.length === 0 ? (
                                     <tr>
-                                        <td colSpan="6" className="text-center p-20 text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
+                                        <td colSpan="6" className="text-center p-20 text-slate-500 dark:text-slate-400 font-bold tracking-widest text-xs uppercase">
                                             NO TRANSACTIONS FOUND.
                                         </td>
                                     </tr>
@@ -109,7 +109,7 @@ const FinancialList = () => {
                                             <td className="px-8 py-5 font-mono font-black text-amber-500 dark:text-primary text-base tracking-widest">
                                                 {inv.invoice_number}
                                             </td>
-                                            <td className="px-8 py-5 text-sm font-bold text-slate-500 dark:text-gray-400">
+                                            <td className="px-8 py-5 text-sm font-bold text-slate-600 dark:text-slate-400">
                                                 {formatDate(inv.created_at)}
                                             </td>
                                             <td className="px-8 py-5 font-black text-slate-900 dark:text-white uppercase tracking-tight">
@@ -174,11 +174,11 @@ const FinancialList = () => {
                         <div className="p-6 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
                             <div>
                                 <h3 className="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter">Process Payment</h3>
-                                <p className="text-xs text-slate-500 dark:text-gray-400 uppercase tracking-widest font-bold mt-1">Invoice #{selectedInvoice.invoice_number}</p>
+                                <p className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-widest font-bold mt-1">Invoice #{selectedInvoice.invoice_number}</p>
                             </div>
                             <button
                                 onClick={() => setIsPaymentModalOpen(false)}
-                                className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 flex items-center justify-center text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+                                className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                             >
                                 <X size={16} />
                             </button>
@@ -186,15 +186,15 @@ const FinancialList = () => {
                         <form onSubmit={handleSubmitPayment} className="p-6 space-y-6">
                             <div className="space-y-4">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-slate-500 dark:text-gray-400 font-bold uppercase tracking-widest">Total Due:</span>
+                                    <span className="text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">Total Due:</span>
                                     <span className="text-slate-900 dark:text-white font-black">{parseFloat(selectedInvoice.total_amount_due).toLocaleString()} EGP</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-slate-500 dark:text-gray-400 font-bold uppercase tracking-widest">Already Paid:</span>
+                                    <span className="text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">Already Paid:</span>
                                     <span className="text-green-600 dark:text-green-400 font-black">{parseFloat(selectedInvoice.amount_paid || 0).toLocaleString()} EGP</span>
                                 </div>
                                 <div className="flex justify-between text-base border-t border-slate-100 dark:border-white/5 pt-4">
-                                    <span className="text-slate-500 dark:text-gray-400 font-bold uppercase tracking-widest">Outstanding:</span>
+                                    <span className="text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">Outstanding:</span>
                                     <span className="text-amber-500 font-black">
                                         {parseFloat(selectedInvoice.total_amount_due - (selectedInvoice.amount_paid || 0)).toLocaleString()} EGP
                                     </span>
@@ -203,7 +203,7 @@ const FinancialList = () => {
                             
                             <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
                                 <div>
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-400 mb-2">Payment Amount (EGP)</label>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 mb-2">Payment Amount (EGP)</label>
                                     <input
                                         type="number"
                                         step="0.01"
@@ -216,7 +216,7 @@ const FinancialList = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-400 mb-2">Payment Method</label>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 mb-2">Payment Method</label>
                                     <select
                                         value={paymentMethod}
                                         onChange={(e) => setPaymentMethod(e.target.value)}

@@ -76,14 +76,14 @@ const ReminderManager = ({ clientId, vehicles }) => {
         }
     };
 
-    if (loading) return <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest animate-pulse">Synchronizing Reminders...</div>;
+    if (loading) return <div className="text-[10px] font-bold text-slate-500 dark:text-gray-500 uppercase tracking-widest animate-pulse">Synchronizing Reminders...</div>;
 
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <Bell size={18} className="text-purple-500" />
-                    <h3 className="text-sm font-black text-white uppercase tracking-widest">Active Reminders</h3>
+                    <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Active Reminders</h3>
                 </div>
                 <button 
                     onClick={() => setShowForm(!showForm)}
@@ -97,23 +97,23 @@ const ReminderManager = ({ clientId, vehicles }) => {
                 <form onSubmit={handleCreate} className="glass-card p-6 bg-purple-500/5 border-purple-500/20 space-y-4 animate-in slide-in-from-top duration-300">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Vehicle Asset</label>
+                            <label className="text-[9px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-widest">Vehicle Asset</label>
                             <select 
-                                className="input-glass h-10 py-0 text-xs bg-black/40"
+                                className="input-glass h-10 py-0 text-xs bg-slate-50 dark:bg-black/40 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white"
                                 value={formData.vehicleId}
                                 onChange={e => setFormData({...formData, vehicleId: e.target.value})}
                                 required
                             >
-                                <option value="" className="bg-gray-900">Select Vehicle...</option>
+                                <option value="" className="bg-white dark:bg-gray-900">Select Vehicle...</option>
                                 {vehicles.map(v => (
-                                    <option key={v.id} value={v.id} className="bg-gray-900">
+                                    <option key={v.id} value={v.id} className="bg-white dark:bg-gray-900">
                                         {v.make} {v.model} {v.license_plate ? `(${v.license_plate})` : ''}
                                     </option>
                                 ))}
                             </select>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Maintenance Scope</label>
+                            <label className="text-[9px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-widest">Maintenance Scope</label>
                             <input 
                                 type="text"
                                 className="input-glass h-10 py-0 text-xs"
@@ -125,7 +125,7 @@ const ReminderManager = ({ clientId, vehicles }) => {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Target Date</label>
+                        <label className="text-[9px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-widest">Target Date</label>
                         <input 
                             type="date"
                             className="input-glass h-10 py-0 text-xs"
@@ -135,7 +135,7 @@ const ReminderManager = ({ clientId, vehicles }) => {
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Protocol Notes</label>
+                        <label className="text-[9px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-widest">Protocol Notes</label>
                         <textarea 
                             className="input-glass text-xs p-3 min-h-[80px]"
                             placeholder="Details for the owner..."
@@ -153,19 +153,19 @@ const ReminderManager = ({ clientId, vehicles }) => {
 
             <div className="space-y-3">
                 {reminders.length === 0 ? (
-                    <div className="p-10 text-center border border-dashed border-white/5 rounded-2xl">
-                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">No active reminders detected.</p>
+                    <div className="p-10 text-center border border-dashed border-slate-200 dark:border-white/5 rounded-2xl">
+                        <p className="text-[10px] text-slate-500 dark:text-gray-400 font-bold uppercase tracking-widest">No active reminders detected.</p>
                     </div>
                 ) : (
                     reminders.map(reminder => (
-                        <div key={reminder.id} className="p-4 bg-white/[0.02] border border-white/5 rounded-xl hover:bg-white/[0.04] transition-all group">
+                        <div key={reminder.id} className="p-4 bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.04] transition-all group">
                             <div className="flex justify-between items-start">
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-2">
                                         <div className={`w-2 h-2 rounded-full ${isOverdue(reminder.due_date) ? 'bg-red-400 animate-pulse' : 'bg-purple-400'}`}></div>
-                                        <h4 className="text-sm font-black text-white uppercase tracking-tight">{reminder.service_type}</h4>
+                                        <h4 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">{reminder.service_type}</h4>
                                     </div>
-                                    <div className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center gap-2 mt-0.5">
+                                    <div className="text-[10px] text-slate-500 dark:text-gray-400 font-bold uppercase tracking-widest flex items-center gap-2 mt-0.5">
                                         <span>{reminder.make} {reminder.model}</span>
                                         <span>•</span>
                                         {editingId === reminder.id ? (
@@ -174,14 +174,14 @@ const ReminderManager = ({ clientId, vehicles }) => {
                                                     type="date" 
                                                     value={editDate} 
                                                     onChange={(e) => setEditDate(e.target.value)}
-                                                    className="input-glass text-[10px] p-1 px-2 h-6 text-white bg-black/40 border-purple-500/20 rounded"
+                                                    className="input-glass text-[10px] p-1 px-2 h-6 text-slate-900 dark:text-white bg-white dark:bg-black/40 border-purple-500/20 rounded"
                                                 />
-                                                <button onClick={() => handleSaveDate(reminder)} className="text-[9px] bg-green-500/20 text-green-400 px-2 h-6 rounded hover:bg-green-500/40">SAVE</button>
-                                                <button onClick={() => setEditingId(null)} className="text-[9px] bg-red-500/20 text-red-400 px-2 h-6 rounded hover:bg-red-500/40">CANCEL</button>
+                                                <button onClick={() => handleSaveDate(reminder)} className="text-[9px] bg-green-500/20 text-green-600 dark:text-green-400 px-2 h-6 rounded hover:bg-green-500/40">SAVE</button>
+                                                <button onClick={() => setEditingId(null)} className="text-[9px] bg-red-500/20 text-red-600 dark:text-red-400 px-2 h-6 rounded hover:bg-red-500/40">CANCEL</button>
                                             </div>
                                         ) : (
                                             <span 
-                                                className={`cursor-pointer hover:text-white transition-colors ${isOverdue(reminder.due_date) ? 'text-red-400' : 'text-purple-400'}`}
+                                                className={`cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors ${isOverdue(reminder.due_date) ? 'text-red-500 dark:text-red-400' : 'text-purple-600 dark:text-purple-400'}`}
                                                 onClick={() => { setEditingId(reminder.id); setEditDate(reminder.due_date.split('T')[0]); }}
                                                 title="Click to edit date"
                                             >
@@ -189,7 +189,7 @@ const ReminderManager = ({ clientId, vehicles }) => {
                                             </span>
                                         )}
                                     </div>
-                                    {reminder.notes && <p className="text-[11px] text-gray-400 mt-2 bg-black/20 p-2 rounded border border-white/5">{reminder.notes}</p>}
+                                    {reminder.notes && <p className="text-[11px] text-slate-600 dark:text-gray-400 mt-2 bg-slate-100 dark:bg-black/20 p-2 rounded border border-slate-200 dark:border-white/5">{reminder.notes}</p>}
                                 </div>
                                 <div className="flex gap-2">
                                     <button className="h-8 w-8 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-black" onClick={() => handleDelete(reminder.id)}>

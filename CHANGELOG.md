@@ -5,6 +5,17 @@ All notable changes to the GoCar Auto platform are documented in this file.
 ## [Unreleased] - 2026-11-10
 
 ### Added & Enhanced (Staff Portal Visual Theme Parity & Light/Dark Mode Unification)
+- **Deep WCAG AA Text Contrast Remediation Across All Views:**
+  - Systematically audited and remediated all 18 views and sub-pages in `staff-interface/` to eliminate hardcoded low-contrast dark tokens, ensuring 100% theme parity with `customer-portal`:
+    - **`CustomerForm.jsx` & `CustomerDossier.jsx`:** All step indicators, section headers, form labels, profile details, and magic link cards upgraded to high-contrast `text-slate-900 dark:text-white` and `text-slate-700 dark:text-slate-300` on crisp white cards.
+    - **`VehicleForm.jsx` & `VehicleList.jsx`:** Asset intake forms, client dropdowns, telemetry chips, and vehicle list tables updated with high-contrast text and border treatments.
+    - **`ServiceRequestForm.jsx` & `ServiceRequestDetail.jsx`:** 3-step intake wizard, operations ledger table, add item form, bulk WhatsApp import parser & staging rows, internal notes & timeline, protocol logs sidebar, invoice modal, and reminder modal remediated for crisp readability in light mode.
+    - **`FinancialList.jsx` & `ReportsDashboard.jsx`:** Payment tables, ledger line items, KPI metric cards, operational economics breakdown, charts container, and referral leaderboard table upgraded with high-contrast slate text and labels.
+    - **`ConsignmentHub.jsx`:** Header, pipeline KPI ribbon, tabs, search/filters, inbound lead cards, active consignment cards, settle deal modal, and create consignment listing modal re-themed with dual light/dark tokens.
+    - **`CredentialManager.jsx` & `ReminderManager.jsx`:** Staff IAM cards, password reset modals, active reminder cards, and inline date editors remediated.
+    - **`ServiceRemindersModule.jsx`:** Stats breakdown cards, sub-filter chips, active table, sent history ledger, prospect vehicle rows, New Reminder modal, WhatsApp template preview bubble modal, and bulk queue modal upgraded with WCAG AA compliant slate text.
+    - **`Login.jsx` & `ErrorBoundary.jsx`:** Full dual light/dark mode support with top-right theme toggle and high-contrast inputs and error screens.
+    - **`index.css` Global Safeguards:** Added systemic CSS safeguards enforcing minimum `#475569` (7.0:1 contrast) for secondary text and `#334155` font-weight 800 for table headers in light mode.
 - **Unified Theme Architecture & ThemeProvider (`ThemeContext.jsx`):**
   - Added dedicated `ThemeProvider` in `staff-interface/src/context/ThemeContext.jsx` matching the Customer Portal design engine.
   - Persists preference in `localStorage.getItem('theme')` and synchronizes the `.dark` class directly onto `document.documentElement` for instantaneous transitions without page reloads.

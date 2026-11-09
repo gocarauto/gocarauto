@@ -128,12 +128,12 @@ const VehicleForm = () => {
     return (
         <div className="space-y-8 pb-20 w-full max-w-[2200px] mx-auto">
             {/* Top Navigation & Action Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2 border-b border-white/5">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2 border-b border-slate-200/80 dark:border-white/5">
                 <div>
-                    <h1 className="text-3xl font-display font-black text-white uppercase tracking-tighter">
+                    <h1 className="text-3xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter">
                         {isEditMode ? 'Modify Vehicle Record' : 'Intake New Fleet Asset'}
                     </h1>
-                    <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mt-1">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-widest font-bold mt-1">
                         {isEditMode ? `Updating telemetry for Asset #${id}` : 'Register a new customer vehicle into the master fleet repository'}
                     </p>
                 </div>
@@ -167,17 +167,17 @@ const VehicleForm = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         
                         {/* ── Panel 1: Asset Ownership & Client ── */}
-                        <div className="space-y-6 bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex flex-col justify-between">
+                        <div className="space-y-6 bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/5 rounded-2xl p-6 flex flex-col justify-between">
                             <div>
-                                <div className="flex items-center gap-3 pb-4 mb-6 border-b border-white/5">
-                                    <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                                <div className="flex items-center gap-3 pb-4 mb-6 border-b border-slate-200/80 dark:border-white/5">
+                                    <div className="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-500 dark:text-amber-400">
                                         <User size={20} />
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-display font-black text-white uppercase tracking-wider">
+                                        <h3 className="text-sm font-display font-black text-slate-900 dark:text-white uppercase tracking-wider">
                                             01. Asset Ownership
                                         </h3>
-                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                                        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
                                             Registered Proprietor
                                         </p>
                                     </div>
@@ -185,7 +185,7 @@ const VehicleForm = () => {
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
-                                        <label htmlFor="vehicle-client-id" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="vehicle-client-id" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <span>Registered Client *</span>
                                         </label>
                                         <select
@@ -194,11 +194,11 @@ const VehicleForm = () => {
                                             value={formData.client_id}
                                             onChange={handleChange}
                                             required
-                                            className="input-glass appearance-none bg-black/40 font-medium"
+                                            className="input-glass appearance-none bg-slate-50 dark:bg-black/40 text-slate-900 dark:text-white font-medium"
                                         >
-                                            <option value="" className="bg-gray-900 text-gray-400">SELECT CLIENT FROM REGISTRY...</option>
+                                            <option value="" className="bg-white text-slate-600 dark:bg-neutral-900 dark:text-slate-400">SELECT CLIENT FROM REGISTRY...</option>
                                             {clients.map(c => (
-                                                <option key={c.id} value={c.id} className="bg-gray-900">
+                                                <option key={c.id} value={c.id} className="bg-white text-slate-900 dark:bg-neutral-900 dark:text-white">
                                                     {c.full_name} ({c.phone})
                                                 </option>
                                             ))}
@@ -206,45 +206,45 @@ const VehicleForm = () => {
                                     </div>
 
                                     {selectedClient ? (
-                                        <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 space-y-2 text-xs">
-                                            <div className="text-[10px] font-black text-primary uppercase tracking-wider flex items-center gap-1.5">
+                                        <div className="p-4 rounded-xl bg-slate-100 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/10 space-y-2 text-xs">
+                                            <div className="text-[10px] font-black text-amber-500 dark:text-primary uppercase tracking-wider flex items-center gap-1.5">
                                                 <ShieldCheck size={13} />
                                                 <span>Active Client Verified</span>
                                             </div>
-                                            <div className="font-bold text-white uppercase">{selectedClient.full_name}</div>
-                                            <div className="text-gray-400 font-mono text-[11px]">{selectedClient.phone}</div>
+                                            <div className="font-bold text-slate-900 dark:text-white uppercase">{selectedClient.full_name}</div>
+                                            <div className="text-slate-600 dark:text-slate-400 font-mono text-[11px]">{selectedClient.phone}</div>
                                             {selectedClient.address && (
-                                                <div className="text-gray-500 text-[11px] truncate">{selectedClient.address}</div>
+                                                <div className="text-slate-600 dark:text-slate-400 text-[11px] truncate">{selectedClient.address}</div>
                                             )}
                                         </div>
                                     ) : (
-                                        <div className="p-4 rounded-xl bg-white/[0.01] border border-dashed border-white/10 text-center text-gray-500 text-xs">
+                                        <div className="p-4 rounded-xl bg-slate-100/50 dark:bg-white/[0.01] border border-dashed border-slate-200 dark:border-white/10 text-center text-slate-600 dark:text-slate-400 text-xs">
                                             <span>No client selected yet. Choose an owner above.</span>
                                         </div>
                                     )}
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-[10px] text-gray-400">
+                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-400">
                                 <span>TOTAL CLIENTS: {clients.length}</span>
-                                <Link to="/customers/new" className="text-primary hover:underline font-bold uppercase">
+                                <Link to="/customers/new" className="text-amber-500 dark:text-primary hover:underline font-bold uppercase">
                                     + Add New Client
                                 </Link>
                             </div>
                         </div>
 
                         {/* ── Panel 2: Vehicle Specifications ── */}
-                        <div className="space-y-6 bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex flex-col justify-between">
+                        <div className="space-y-6 bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/5 rounded-2xl p-6 flex flex-col justify-between">
                             <div>
-                                <div className="flex items-center gap-3 pb-4 mb-6 border-b border-white/5">
-                                    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300">
+                                <div className="flex items-center gap-3 pb-4 mb-6 border-b border-slate-200/80 dark:border-white/5">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-700 dark:text-slate-300">
                                         <CarIcon size={20} />
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-display font-black text-white uppercase tracking-wider">
+                                        <h3 className="text-sm font-display font-black text-slate-900 dark:text-white uppercase tracking-wider">
                                             02. Vehicle Identification
                                         </h3>
-                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                                        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
                                             Make, Model & Plate
                                         </p>
                                     </div>
@@ -253,7 +253,7 @@ const VehicleForm = () => {
                                 <div className="space-y-5">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label htmlFor="vehicle-make" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                            <label htmlFor="vehicle-make" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                                 <span>Make *</span>
                                             </label>
                                             <input
@@ -269,7 +269,7 @@ const VehicleForm = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor="vehicle-model" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                            <label htmlFor="vehicle-model" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                                 <span>Model *</span>
                                             </label>
                                             <input
@@ -287,8 +287,8 @@ const VehicleForm = () => {
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label htmlFor="vehicle-year" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
-                                                <Calendar size={11} className="text-gray-400" />
+                                            <label htmlFor="vehicle-year" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                                <Calendar size={11} className="text-slate-500 dark:text-slate-400" />
                                                 <span>Year *</span>
                                             </label>
                                             <input
@@ -305,8 +305,8 @@ const VehicleForm = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor="vehicle-license-plate" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
-                                                <Hash size={11} className="text-gray-400" />
+                                            <label htmlFor="vehicle-license-plate" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                                <Hash size={11} className="text-slate-500 dark:text-slate-400" />
                                                 <span>License Plate</span>
                                             </label>
                                             <input
@@ -324,23 +324,23 @@ const VehicleForm = () => {
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-white/5 text-[10px] text-gray-500 font-mono">
+                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 text-[10px] text-slate-600 dark:text-slate-400 font-mono">
                                 ARABIC / ENGLISH PLATES SUPPORTED
                             </div>
                         </div>
 
                         {/* ── Panel 3: Telemetry & VIN Identifier ── */}
-                        <div className="space-y-6 bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex flex-col justify-between">
+                        <div className="space-y-6 bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/5 rounded-2xl p-6 flex flex-col justify-between">
                             <div>
-                                <div className="flex items-center gap-3 pb-4 mb-6 border-b border-white/5">
-                                    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300">
+                                <div className="flex items-center gap-3 pb-4 mb-6 border-b border-slate-200/80 dark:border-white/5">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-700 dark:text-slate-300">
                                         <Crosshair size={20} />
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-display font-black text-white uppercase tracking-wider">
+                                        <h3 className="text-sm font-display font-black text-slate-900 dark:text-white uppercase tracking-wider">
                                             03. Telemetry & VIN
                                         </h3>
-                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                                        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
                                             Odometer & Chassis Number
                                         </p>
                                     </div>
@@ -348,7 +348,7 @@ const VehicleForm = () => {
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
-                                        <label htmlFor="vehicle-current-mileage" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="vehicle-current-mileage" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <Gauge size={11} className="text-primary" />
                                             <span>Current Mileage (KM)</span>
                                         </label>
@@ -364,8 +364,8 @@ const VehicleForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="vehicle-vin" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
-                                            <Hash size={11} className="text-gray-400" />
+                                        <label htmlFor="vehicle-vin" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                            <Hash size={11} className="text-slate-500 dark:text-slate-400" />
                                             <span>VIN Chassis Code (17-Digit)</span>
                                         </label>
                                         <input
@@ -380,24 +380,24 @@ const VehicleForm = () => {
                                         />
                                     </div>
 
-                                    <div className="p-4 rounded-xl bg-black/40 border border-white/5 text-[11px] text-gray-400 space-y-1">
-                                        <div className="font-bold text-gray-300 uppercase">Automated Telemetry Sync</div>
+                                    <div className="p-4 rounded-xl bg-slate-100 dark:bg-black/40 border border-slate-200/80 dark:border-white/5 text-[11px] text-slate-700 dark:text-slate-300 space-y-1">
+                                        <div className="font-bold text-slate-900 dark:text-white uppercase">Automated Telemetry Sync</div>
                                         <div>Mileage updates will automatically synchronize with next scheduled maintenance cycles.</div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-[10px] text-gray-500 font-mono">
+                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-400 font-mono">
                                 <span>TELEMETRY: ACTIVE</span>
-                                <span className="text-emerald-400 font-bold">READY</span>
+                                <span className="text-emerald-600 dark:text-emerald-400 font-bold">READY</span>
                             </div>
                         </div>
 
                     </div>
 
                     {/* Bottom Action Footer */}
-                    <div className="flex items-center justify-between pt-6 border-t border-white/5">
-                        <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">
+                    <div className="flex items-center justify-between pt-6 border-t border-slate-200/80 dark:border-white/5">
+                        <span className="text-[11px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
                             Mandatory fields marked with <span className="text-primary">*</span>
                         </span>
                         <div className="flex items-center gap-4">

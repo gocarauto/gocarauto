@@ -137,7 +137,8 @@
     }
 
     html:not(.dark) .glass-card table th {
-        color: #64748b;
+        color: #334155;
+        font-weight: 800;
     }
 
     html:not(.dark) .glass-card table td .text-white {
@@ -146,6 +147,19 @@
 
     html:not(.dark) .glass-card table tr:hover {
         background-color: rgba(241, 245, 249, 0.7);
+    }
+
+    /* WCAG AA High Contrast Safeguards for Light Mode */
+    html:not(.dark) .text-slate-500 {
+        color: #475569; /* slate-600 (7.0:1 contrast on white) */
+    }
+
+    html:not(.dark) .text-gray-500 {
+        color: #4b5563; /* gray-600 */
+    }
+
+    html:not(.dark) .text-gray-400 {
+        color: #475569;
     }
 
     .glass-noir {

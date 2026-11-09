@@ -68,7 +68,7 @@ const CustomerList = () => {
                 </div>
 
                 {loading ? (
-                    <div className="p-20 text-center animate-glow text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
+                    <div className="p-20 text-center animate-glow text-slate-500 dark:text-slate-400 font-bold tracking-widest text-xs uppercase">
                         LOADING RECORDS...
                     </div>
                 ) : (
@@ -76,7 +76,7 @@ const CustomerList = () => {
                         {/* Mobile Responsive Cards (< md screens) */}
                         <div className="md:hidden divide-y divide-slate-200/80 dark:divide-white/5">
                             {customers.length === 0 ? (
-                                <div className="p-12 text-center text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
+                                <div className="p-12 text-center text-slate-500 dark:text-slate-400 font-bold tracking-widest text-xs uppercase">
                                     DATABASE EMPTY: NO CLIENTS FOUND.
                                 </div>
                             ) : (
@@ -124,16 +124,16 @@ const CustomerList = () => {
                             <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-slate-200/80 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Client Name</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Contact</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Total Spent</th>
-                                    <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">Actions</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Client Name</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Contact</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Total Spent</th>
+                                    <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-200/80 dark:divide-white/5">
                                 {customers.length === 0 ? (
                                     <tr>
-                                        <td colSpan="4" className="text-center p-20 text-slate-400 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
+                                        <td colSpan="4" className="text-center p-20 text-slate-400 dark:text-slate-500 font-bold tracking-widest text-xs uppercase">
                                             DATABASE EMPTY: NO CLIENTS FOUND.
                                         </td>
                                     </tr>
@@ -142,11 +142,11 @@ const CustomerList = () => {
                                         <tr key={customer.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors group">
                                             <td className="px-8 py-5">
                                                 <div className="font-black text-slate-900 dark:text-white text-lg tracking-tight uppercase">{customer.full_name}</div>
-                                                <div className="text-xs text-slate-500 dark:text-gray-500 font-bold uppercase mt-1">ID: {String(customer.id).padStart(4, '0')}</div>
+                                                <div className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase mt-1">ID: {String(customer.id).padStart(4, '0')}</div>
                                             </td>
                                             <td className="px-8 py-5">
                                                 <div className="text-sm font-bold text-amber-500 dark:text-primary">{customer.phone}</div>
-                                                <div className="text-xs text-slate-500 dark:text-gray-500 mt-1">{customer.email || '---'}</div>
+                                                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{customer.email || '---'}</div>
                                             </td>
                                             <td className="px-8 py-5">
                                                 <div className="text-base font-black text-slate-900 dark:text-white">

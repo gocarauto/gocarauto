@@ -86,7 +86,7 @@ const ReportsDashboard = () => {
     const displayFeeRevenue = summary?.calculatedFees || 0;
 
     if (loading) return (
-        <div className="p-20 text-center animate-glow text-gray-500 font-bold tracking-widest text-xs uppercase">
+        <div className="p-20 text-center animate-glow text-slate-500 dark:text-gray-500 font-bold tracking-widest text-xs uppercase">
             DECRYPTING ANALYTICS...
         </div>
     );
