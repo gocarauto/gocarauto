@@ -46,6 +46,7 @@ router.use('/service-records', serviceRecordRoutes);
 router.use('/financial', financialRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/customer-portal', customerPortalRoutes);
+router.use('/customer', customerPortalRoutes);
 router.use('/reports', reportRoutes);
 router.use('/service-items', serviceItemRoutes);
 router.use('/uploads', uploadRoutes);

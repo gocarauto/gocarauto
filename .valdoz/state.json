@@ -23,7 +23,7 @@
       "name": "Intake",
       "status": "approved",
       "approved_by": "auto-scanner",
-      "approved_at": "2026-11-02T00:03:56.742609+00:00",
+      "approved_at": "2026-11-02T00:03:56.742577+00:00",
       "approval_hash": null,
       "deliverable_hashes": {}
     },
@@ -34,14 +34,14 @@
       "approved_at": "2026-11-06T01:43:23+00:00",
       "approval_hash": null,
       "deliverable_hashes": {
-        "docs/02-requirements.md": "cd2c98a778892450c6541e61a4ec0f78107d47496bf882186dc75cd84819ea8a"
+        "docs/02-requirements.md": "dcbfbd7e111ec1ef387ff85934c5d82f5876c7ff019ea91da27b7cbe810ce332"
       }
     },
     "3": {
       "name": "Stack Decision",
       "status": "approved",
       "approved_by": "auto-scanner",
-      "approved_at": "2026-11-02T00:03:56.742617+00:00",
+      "approved_at": "2026-11-02T00:03:56.742577+00:00",
       "approval_hash": null,
       "deliverable_hashes": {}
     },
@@ -49,7 +49,7 @@
       "name": "Architecture and Plan",
       "status": "approved",
       "approved_by": "auto-scanner",
-      "approved_at": "2026-11-02T00:03:56.742623+00:00",
+      "approved_at": "2026-11-02T00:03:56.742577+00:00",
       "approval_hash": null,
       "deliverable_hashes": {
         "docs/04-architecture.md": "8d56d892a5e105c8443c6525e538537a4bcfdfe81849a1e05bbfe11f4efa9dee",
@@ -60,7 +60,7 @@
       "name": "Project Setup",
       "status": "approved",
       "approved_by": "auto-scanner",
-      "approved_at": "2026-11-02T00:03:56.742628+00:00",
+      "approved_at": "2026-11-02T00:03:56.742577+00:00",
       "approval_hash": null,
       "deliverable_hashes": {
         "README.md": "a0fd5fc61c682882c93b2019f3554ed79154e47f6d1638a3e752469a15b1fd8c"
@@ -70,7 +70,7 @@
       "name": "Build",
       "status": "approved",
       "approved_by": "auto-scanner",
-      "approved_at": "2026-11-02T00:03:56.742633+00:00",
+      "approved_at": "2026-11-02T00:03:56.742577+00:00",
       "approval_hash": null,
       "deliverable_hashes": {}
     },
@@ -91,7 +91,7 @@
       "approved_at": "2026-11-02T00:03:56.742638+00:00",
       "approval_hash": null,
       "deliverable_hashes": {
-        "docs/08-deploy.md": "710279170da33848fb548919f4205b3bb97bc5c28b3f0225adadc5a32ec135dc"
+        "docs/08-deploy.md": "0e1ece5dd85700c438a5a7a1b68193d46193b84fb4bd270aae2a7e272c863dac"
       }
     },
     "9": {

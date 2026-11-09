@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 import { Search, Car, Settings, ChevronRight, Activity, ShieldCheck } from 'lucide-react';
 import { formatDate, isOverdue } from '../utils/dateUtils';
 
+const API_BASE = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
+    ? 'https://gocar-backend-crtx.onrender.com/api'
+    : 'http://localhost:3000/api');
+
 const renderKmBadge = (km) => {
     if (km === null || km === undefined) return <span className="text-gray-500 text-sm">—</span>;
     let badgeClass = 'bg-green-500/10 text-green-500 border-green-500/20';
@@ -39,17 +43,17 @@ const VehicleList = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        const fetchVehicles = async () => {
+        const timer = setTimeout(async () => {
             try {
-                const response = await api.get(`/vehicles?search=${searchTerm}`);
-                setVehicles(response.data.data);
+                const response = await api.get(`/vehicles?search=${encodeURIComponent(searchTerm)}`);
+                setVehicles(response.data.data || []);
             } catch (error) {
                 console.error('Error fetching vehicles:', error);
             } finally {
                 setLoading(false);
             }
-        };
-        fetchVehicles();
+        }, 300);
+        return () => clearTimeout(timer);
     }, [searchTerm]);
 
     return (
@@ -99,8 +103,67 @@ const VehicleList = () => {
                         LOADING VEHICLES...
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                    <>
+                        {/* Mobile Responsive Cards (< md screens) */}
+                        <div className="md:hidden divide-y divide-white/5">
+                            {vehicles.length === 0 ? (
+                                <div className="p-12 text-center text-gray-500 font-bold tracking-widest text-xs uppercase">
+                                    REGISTRY EMPTY: NO VEHICLES FOUND.
+                                </div>
+                            ) : (
+                                vehicles.map((vehicle) => (
+                                    <div key={vehicle.id} className="p-4 space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <div className="font-bold text-white text-base uppercase">
+                                                    {vehicle.make} {vehicle.model}
+                                                    <span className="text-slate-400 text-xs ml-1.5 font-normal">[{vehicle.year}]</span>
+                                                </div>
+                                                <div className="text-xs text-amber-400 font-mono font-bold mt-0.5">
+                                                    {vehicle.license_plate || 'NO PLATE'}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                {renderHealthRing(vehicle.health_score)}
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center justify-between text-xs pt-1 border-t border-white/5">
+                                            <div>
+                                                <span className="text-[10px] text-slate-400 uppercase font-bold block">CLIENT</span>
+                                                <span className="font-semibold text-slate-200">{vehicle.client_name}</span>
+                                            </div>
+                                            <div className="text-right">
+                                                <span className="text-[10px] text-slate-400 uppercase font-bold block">KM SINCE SERVICE</span>
+                                                {renderKmBadge(vehicle.km_since_last_service)}
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center justify-between gap-2 pt-1">
+                                            <a
+                                                href={`${API_BASE}/vehicles/${vehicle.id}/service-passport/pdf?token=${localStorage.getItem('token') || ''}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex-1 py-2 px-3 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 rounded-xl font-bold text-xs uppercase flex items-center justify-center gap-1.5 transition-all"
+                                            >
+                                                <ShieldCheck size={14} />
+                                                <span>PASSPORT</span>
+                                            </a>
+                                            <Link to={`/vehicles/${vehicle.id}`} className="flex-1">
+                                                <button className="w-full py-2 px-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all">
+                                                    <span>DETAILS</span>
+                                                    <ChevronRight size={14} className="text-amber-400" />
+                                                </button>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+
+                        {/* Desktop Master Table (md+ screens) */}
+                        <div className="hidden md:block overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-white/5 bg-white/[0.02]">
                                     <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-gray-500">Vehicle Info</th>
@@ -149,7 +212,7 @@ const VehicleList = () => {
                                             <td className="px-6 py-5 text-right">
                                                 <div className="flex items-center justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
                                                     <a
-                                                        href={`http://localhost:3000/api/vehicles/${vehicle.id}/service-passport/pdf?token=${localStorage.getItem('token') || ''}`}
+                                                        href={`${API_BASE}/vehicles/${vehicle.id}/service-passport/pdf?token=${localStorage.getItem('token') || ''}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="h-10 px-3 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 rounded-xl font-black text-[10px] tracking-widest uppercase flex items-center gap-1.5 transition-all"
@@ -172,6 +235,7 @@ const VehicleList = () => {
                             </tbody>
                         </table>
                     </div>
+                    </>
                 )}
             </div>
         </div>

@@ -1,15 +1,10 @@
 {
   "version": "3.0.0",
   "roles": {
-    "scribe": {
-      "agent_id": "agent-scribe-25",
-      "started_at": "2026-11-06T18:55:52.610120+00:00",
-      "pid": 25
-    },
     "builder": {
-      "agent_id": "agent-builder-23",
-      "started_at": "2026-11-06T18:46:51.560467+00:00",
-      "pid": 23
+      "agent_id": "agent-builder-24",
+      "started_at": "2026-11-09T21:40:39.044952+00:00",
+      "pid": 24
     }
   }
 }

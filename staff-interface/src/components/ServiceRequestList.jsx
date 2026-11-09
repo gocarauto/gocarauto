@@ -207,84 +207,147 @@ const ServiceRequestList = () => {
                         {error}
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse min-w-[850px]">
-                            <thead>
-                                <tr className="border-b border-white/10 bg-white/[0.03]">
-                                    <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">REQ ID / SRC</th>
-                                    <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Date</th>
-                                    <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Client / Vehicle</th>
-                                    <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Assigned To</th>
-                                    <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Status</th>
-                                    <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Total</th>
-                                    <th className="px-8 py-5 text-right text-xs font-black uppercase tracking-widest text-slate-400">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-white/5">
-                                {filteredRequests.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="7" className="text-center p-20 text-gray-500 font-bold tracking-widest text-xs uppercase">
-                                            {searchTerm ? 'NO MISSIONS MATCH YOUR SEARCH PARAMETERS.' : 'LOG EMPTY: NO REQUESTS FOUND.'}
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    filteredRequests.map((req) => (
-                                        <tr key={req.id} className="hover:bg-white/[0.02] transition-colors group">
-                                            <td className="px-8 py-5 align-middle">
-                                                <div className="font-mono font-black text-primary text-lg tracking-widest">
+                    <>
+                        {/* Mobile Responsive Cards (< md screens) */}
+                        <div className="md:hidden divide-y divide-white/5">
+                            {filteredRequests.length === 0 ? (
+                                <div className="p-12 text-center text-gray-500 font-bold tracking-widest text-xs uppercase">
+                                    {searchTerm ? 'NO MISSIONS MATCH YOUR SEARCH.' : 'LOG EMPTY: NO REQUESTS FOUND.'}
+                                </div>
+                            ) : (
+                                filteredRequests.map((req) => (
+                                    <div key={req.id} className="p-4 space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-mono font-black text-amber-400 text-base tracking-wider">
                                                     #{String(req.id).padStart(5, '0')}
-                                                </div>
-                                                <div className={`text-[10px] font-bold mt-1 tracking-widest uppercase ${req.source === 'PORTAL' ? 'text-primary font-black drop-shadow-[0_0_5px_currentColor]' : 'text-slate-400'}`}>
-                                                    {req.source === 'PORTAL' ? '✦ PORTAL' : '⚙ STAFF'}
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-5 text-sm font-bold text-slate-300">
-                                                <div className="flex items-center gap-2">
-                                                    <Clock size={12} className="text-amber-400" />
-                                                    {formatDate(req.request_date || req.created_at)}
-                                                </div>
-                                            </td>
-                                            <td className="px-8 py-5">
-                                                <div className="font-black text-white uppercase text-sm tracking-tight">{req.client_name}</div>
-                                                <div className="text-xs text-blue-400 font-bold mt-1 uppercase tracking-wider">{req.vehicle_info}</div>
-                                            </td>
-                                            <td className="px-8 py-5">
-                                                <div className="text-xs font-bold text-slate-300 uppercase tracking-widest">{req.assigned_to_name || 'Unassigned'}</div>
-                                            </td>
-                                            <td className="px-8 py-5">
-                                                <span className={`px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase border ${getStatusTheme(req.status)} inline-flex items-center gap-2`}>
-                                                    {req.status === 'Paid' && <CheckCircle2 size={12} />}
-                                                    {req.status}
                                                 </span>
-                                            </td>
-                                            <td className="px-8 py-5 align-middle">
-                                                {parseFloat(req.total_amount) > 0 ? (
-                                                    <div className="font-black text-white text-base">
-                                                        {parseFloat(req.total_amount).toLocaleString()} EGP
-                                                    </div>
-                                                ) : (
-                                                    <div>
-                                                        <div className={`text-base font-black ${parseFloat(req.running_total) > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
-                                                            {parseFloat(req.running_total) > 0 ? `${parseFloat(req.running_total).toLocaleString()} EGP` : '0 EGP'}
-                                                        </div>
-                                                        <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">LIVE TOTAL</div>
-                                                    </div>
-                                                )}
-                                            </td>
-                                            <td className="px-8 py-5 text-right">
-                                                <Link to={`/service-requests/${req.id}`}>
-                                                    <button className="h-10 px-5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-primary/50 text-white rounded-xl font-black text-[10px] tracking-widest uppercase flex items-center justify-center gap-2 ml-auto transition-all shadow-sm">
-                                                        MANAGE
-                                                        <ChevronRight size={14} className="text-primary" />
-                                                    </button>
-                                                </Link>
+                                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${req.source === 'PORTAL' ? 'bg-amber-400/20 text-amber-400' : 'bg-white/10 text-slate-400'}`}>
+                                                    {req.source === 'PORTAL' ? 'PORTAL' : 'STAFF'}
+                                                </span>
+                                            </div>
+                                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-black tracking-widest uppercase border ${getStatusTheme(req.status)} inline-flex items-center gap-1.5`}>
+                                                {req.status === 'Paid' && <CheckCircle2 size={11} />}
+                                                {req.status}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex items-center justify-between text-xs pt-1 border-t border-white/5">
+                                            <div>
+                                                <div className="font-bold text-white text-sm">{req.client_name}</div>
+                                                <div className="text-xs text-blue-400 font-medium">{req.vehicle_info}</div>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="text-[10px] text-slate-400 uppercase font-bold">TOTAL</div>
+                                                <div className="font-black text-white text-sm">
+                                                    {parseFloat(req.total_amount) > 0 
+                                                        ? `${parseFloat(req.total_amount).toLocaleString()} EGP` 
+                                                        : (parseFloat(req.running_total) > 0 ? `${parseFloat(req.running_total).toLocaleString()} EGP` : '0 EGP')}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center justify-between pt-1 text-xs text-slate-400">
+                                            <div className="flex items-center gap-1.5">
+                                                <Clock size={12} className="text-amber-400" />
+                                                <span>{formatDate(req.request_date || req.created_at)}</span>
+                                            </div>
+                                            <span className="text-[11px] text-slate-300">
+                                                {req.assigned_to_name || 'Unassigned'}
+                                            </span>
+                                        </div>
+
+                                        <Link to={`/service-requests/${req.id}`} className="block pt-1">
+                                            <button className="w-full py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all">
+                                                MANAGE WORK ORDER
+                                                <ChevronRight size={14} className="text-amber-400" />
+                                            </button>
+                                        </Link>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+
+                        {/* Desktop Master Table (md+ screens) */}
+                        <div className="hidden md:block overflow-x-auto">
+                            <table className="w-full text-left border-collapse min-w-[850px]">
+                                <thead>
+                                    <tr className="border-b border-white/10 bg-white/[0.03]">
+                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">REQ ID / SRC</th>
+                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Date</th>
+                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Client / Vehicle</th>
+                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Assigned To</th>
+                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Status</th>
+                                        <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-400">Total</th>
+                                        <th className="px-8 py-5 text-right text-xs font-black uppercase tracking-widest text-slate-400">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-white/5">
+                                    {filteredRequests.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="7" className="text-center p-20 text-gray-500 font-bold tracking-widest text-xs uppercase">
+                                                {searchTerm ? 'NO MISSIONS MATCH YOUR SEARCH PARAMETERS.' : 'LOG EMPTY: NO REQUESTS FOUND.'}
                                             </td>
                                         </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                    ) : (
+                                        filteredRequests.map((req) => (
+                                            <tr key={req.id} className="hover:bg-white/[0.02] transition-colors group">
+                                                <td className="px-8 py-5 align-middle">
+                                                    <div className="font-mono font-black text-primary text-lg tracking-widest">
+                                                        #{String(req.id).padStart(5, '0')}
+                                                    </div>
+                                                    <div className={`text-[10px] font-bold mt-1 tracking-widest uppercase ${req.source === 'PORTAL' ? 'text-primary font-black drop-shadow-[0_0_5px_currentColor]' : 'text-slate-400'}`}>
+                                                        {req.source === 'PORTAL' ? '✦ PORTAL' : '⚙ STAFF'}
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-5 text-sm font-bold text-slate-300">
+                                                    <div className="flex items-center gap-2">
+                                                        <Clock size={12} className="text-amber-400" />
+                                                        {formatDate(req.request_date || req.created_at)}
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-5">
+                                                    <div className="font-black text-white uppercase text-sm tracking-tight">{req.client_name}</div>
+                                                    <div className="text-xs text-blue-400 font-bold mt-1 uppercase tracking-wider">{req.vehicle_info}</div>
+                                                </td>
+                                                <td className="px-8 py-5">
+                                                    <div className="text-xs font-bold text-slate-300 uppercase tracking-widest">{req.assigned_to_name || 'Unassigned'}</div>
+                                                </td>
+                                                <td className="px-8 py-5">
+                                                    <span className={`px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase border ${getStatusTheme(req.status)} inline-flex items-center gap-2`}>
+                                                        {req.status === 'Paid' && <CheckCircle2 size={12} />}
+                                                        {req.status}
+                                                    </span>
+                                                </td>
+                                                <td className="px-8 py-5 align-middle">
+                                                    {parseFloat(req.total_amount) > 0 ? (
+                                                        <div className="font-black text-white text-base">
+                                                            {parseFloat(req.total_amount).toLocaleString()} EGP
+                                                        </div>
+                                                    ) : (
+                                                        <div>
+                                                            <div className={`text-base font-black ${parseFloat(req.running_total) > 0 ? 'text-slate-200' : 'text-slate-500'}`}>
+                                                                {parseFloat(req.running_total) > 0 ? `${parseFloat(req.running_total).toLocaleString()} EGP` : '0 EGP'}
+                                                            </div>
+                                                            <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">LIVE TOTAL</div>
+                                                        </div>
+                                                    )}
+                                                </td>
+                                                <td className="px-8 py-5 text-right">
+                                                    <Link to={`/service-requests/${req.id}`}>
+                                                        <button className="h-10 px-5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-primary/50 text-white rounded-xl font-black text-[10px] tracking-widest uppercase flex items-center justify-center gap-2 ml-auto transition-all shadow-sm">
+                                                            MANAGE
+                                                            <ChevronRight size={14} className="text-primary" />
+                                                        </button>
+                                                    </Link>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </>
                 )}
             </div>
         </div>

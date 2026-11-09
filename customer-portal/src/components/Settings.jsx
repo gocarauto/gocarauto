@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
@@ -15,14 +14,18 @@ import {
     Save,
     Key,
     Smartphone,
-    Languages
+    Languages,
+    CheckCircle2,
+    AlertCircle,
+    Loader2
 } from 'lucide-react';
 
 const Settings = () => {
     const { user, setAuth } = useAuth();
     const { lang, toggleLanguage } = useLanguage();
     const { darkMode, toggleTheme } = useTheme();
-    // WHY: Support both user.phone and user.mobile to prevent erasing phone number on save
+    const isAr = lang === 'ar';
+
     const [formData, setFormData] = useState({
         full_name: user?.name || '',
         email: user?.email || '',
@@ -30,6 +33,16 @@ const Settings = () => {
     });
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
+    const [error, setError] = useState('');
+
+    const [passwordData, setPasswordData] = useState({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+    });
+    const [passwordLoading, setPasswordLoading] = useState(false);
+    const [passwordMessage, setPasswordMessage] = useState('');
+    const [passwordError, setPasswordError] = useState('');
 
     React.useEffect(() => {
         if (user) {
@@ -44,6 +57,9 @@ const Settings = () => {
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError('');
+        setMessage('');
+
         try {
             await api.put('/customer-portal/profile', formData);
             if (user && setAuth) {
@@ -56,148 +72,330 @@ const Settings = () => {
                     mobile: formData.phone
                 });
             }
-            setMessage('Profile Intelligence Synchronized.');
+            setMessage(isAr ? 'تم تحديث بيانات الحساب بنجاح.' : 'Profile settings updated successfully.');
         } catch {
-            setMessage('Transmission Error.');
+            setError(isAr ? 'حدث خطأ أثناء حفظ التعديلات.' : 'Failed to update profile settings.');
         } finally {
             setLoading(false);
-            setTimeout(() => setMessage(''), 3000);
+            setTimeout(() => {
+                setMessage('');
+                setError('');
+            }, 3000);
+        }
+    };
+
+    const handleChangePassword = async (e) => {
+        e.preventDefault();
+        setPasswordError('');
+        setPasswordMessage('');
+
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            setPasswordError(isAr ? 'كلمتا المرور غير متطابقتين.' : 'New passwords do not match.');
+            return;
+        }
+
+        if (passwordData.newPassword.length < 6) {
+            setPasswordError(isAr ? 'يجب أن لا تقل كلمة المرور عن 6 أحرف.' : 'Password must be at least 6 characters.');
+            return;
+        }
+
+        setPasswordLoading(true);
+        try {
+            await api.put('/customer-portal/password', {
+                currentPassword: passwordData.currentPassword,
+                newPassword: passwordData.newPassword
+            });
+            setPasswordMessage(isAr ? 'تم تحديث كلمة المرور بنجاح.' : 'Password updated successfully.');
+            setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        } catch (err) {
+            setPasswordError(err.response?.data?.error || (isAr ? 'فشل تحديث كلمة المرور.' : 'Failed to update password.'));
+        } finally {
+            setPasswordLoading(false);
+            setTimeout(() => {
+                setPasswordMessage('');
+                setPasswordError('');
+            }, 3000);
         }
     };
 
     return (
-        <div className="max-w-5xl mx-auto space-y-12 pb-20">
-            <header>
-                <h1 className="text-4xl font-black text-black dark:text-white uppercase tracking-tighter mb-2">Systems Intelligence</h1>
-                <p className="text-gray-400 dark:text-gray-500 font-bold tracking-tight italic">Manage your profile and protocol preferences.</p>
+        <div className="max-w-4xl mx-auto space-y-6 pb-16">
+            
+            {/* Header */}
+            <header className="border-b border-slate-200/80 dark:border-white/[0.08] pb-5">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-950 dark:text-white">
+                    {isAr ? 'إعدادات الحساب والتفضيلات' : 'Account & Preferences'}
+                </h1>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {isAr ? 'تعديل بيانات الاتصال، تفضيلات العرض واللغة' : 'Manage your contact details, language, and interface theme'}
+                </p>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                {/* Profile Form */}
-                <div className="lg:col-span-2 space-y-10">
-                    <section className="bg-white dark:bg-[#0a0a0a] rounded-[3rem] border border-gray-100 dark:border-white/5 p-12 shadow-2xl space-y-8">
-                        <div className="flex items-center gap-4 mb-4">
-                            <div className="w-12 h-12 bg-primary text-black rounded-2xl flex items-center justify-center">
-                                <User size={24} />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                {/* Profile Form (2 cols) */}
+                <div className="lg:col-span-2 space-y-5">
+                    <section className="bg-white dark:bg-[#0c0d12] rounded-3xl border border-slate-200/80 dark:border-white/[0.08] p-6 sm:p-8 shadow-sm space-y-5">
+                        <div className="flex items-center gap-3 border-b border-slate-100 dark:border-white/[0.06] pb-4">
+                            <div className="w-10 h-10 bg-amber-400/10 text-amber-500 rounded-xl flex items-center justify-center">
+                                <User size={20} />
                             </div>
-                            <h2 className="text-2xl font-black text-black dark:text-white uppercase tracking-tighter leading-none">Identity Core</h2>
+                            <div>
+                                <h2 className="text-base font-bold text-slate-950 dark:text-white">
+                                    {isAr ? 'البيانات الشخصية' : 'Personal Information'}
+                                </h2>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                    {isAr ? 'بيانات التواصل لتأكيد المواعيد والفواتير' : 'Used for appointment confirmations and billing'}
+                                </p>
+                            </div>
                         </div>
 
-                        <form onSubmit={handleUpdateProfile} className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-3">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4 flex items-center gap-1.5">
-                                        <Shield size={10} /> Designation
+                        <form onSubmit={handleUpdateProfile} className="space-y-4 text-xs">
+                            <div>
+                                <label htmlFor="settings-full-name" className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                                    {isAr ? 'الاسم بالكامل' : 'Full Name'}
+                                </label>
+                                <input
+                                    id="settings-full-name"
+                                    type="text"
+                                    required
+                                    value={formData.full_name}
+                                    onChange={e => setFormData({ ...formData, full_name: e.target.value })}
+                                    className="w-full bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-xl py-2.5 px-3.5 font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-400"
+                                    placeholder={isAr ? 'الاسم' : 'Full Name'}
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label htmlFor="settings-email" className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                                        {isAr ? 'البريد الإلكتروني' : 'Email Address'}
                                     </label>
                                     <input
-                                        type="text"
-                                        value={formData.full_name}
-                                        onChange={e => setFormData({ ...formData, full_name: e.target.value })}
-                                        className="w-full bg-gray-50 dark:bg-black/20 border-none rounded-[1.5rem] py-4 px-6 text-sm font-bold text-black dark:text-white outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                                        placeholder="Full Name"
-                                    />
-                                </div>
-                                <div className="space-y-3">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4 flex items-center gap-1.5">
-                                        <Mail size={10} /> Contact Manifold
-                                    </label>
-                                    <input
+                                        id="settings-email"
                                         type="email"
+                                        required
                                         value={formData.email}
                                         onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                        className="w-full bg-gray-50 dark:bg-black/20 border-none rounded-[1.5rem] py-4 px-6 text-sm font-bold text-black dark:text-white outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                                        placeholder="Email Address"
+                                        className="w-full bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-xl py-2.5 px-3.5 font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-400"
+                                        placeholder="email@example.com"
                                     />
                                 </div>
-                                <div className="space-y-3 md:col-span-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4 flex items-center gap-1.5">
-                                        <Smartphone size={10} /> Comms Vector
+
+                                <div>
+                                    <label htmlFor="settings-phone" className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                                        {isAr ? 'رقم الهاتف المحمول' : 'Phone Number'}
                                     </label>
                                     <input
+                                        id="settings-phone"
                                         type="tel"
                                         value={formData.phone}
                                         onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                                        className="w-full bg-gray-50 dark:bg-black/20 border-none rounded-[1.5rem] py-4 px-6 text-sm font-bold text-black dark:text-white outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                                        placeholder="Mobile Number"
+                                        className="w-full bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-xl py-2.5 px-3.5 font-mono text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-400"
+                                        placeholder="+20 1..."
                                     />
                                 </div>
                             </div>
 
-                            <div className="pt-6 flex items-center justify-between">
-                                <p className={`text-[10px] font-black uppercase tracking-widest transition-opacity ${message ? 'opacity-100 text-primary' : 'opacity-0'}`}>
-                                    {message}
-                                </p>
+                            {message && (
+                                <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20 font-semibold">
+                                    <CheckCircle2 size={16} />
+                                    <span>{message}</span>
+                                </div>
+                            )}
+
+                            {error && (
+                                <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 bg-rose-500/10 p-3 rounded-xl border border-rose-500/20 font-semibold">
+                                    <AlertCircle size={16} />
+                                    <span>{error}</span>
+                                </div>
+                            )}
+
+                            <div className="pt-2 flex justify-end">
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="px-10 py-4 bg-black dark:bg-white text-white dark:text-black rounded-full font-black text-xs uppercase tracking-widest flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/20"
+                                    className="py-2.5 px-6 bg-amber-400 hover:bg-amber-300 text-slate-950 rounded-xl font-bold text-xs flex items-center gap-2 shadow-sm transition-colors disabled:opacity-50"
                                 >
-                                    <Save size={16} />
-                                    Update Identity
+                                    {loading ? (
+                                        <>
+                                            <Loader2 size={15} className="animate-spin" />
+                                            <span>{isAr ? 'جاري الحفظ...' : 'Saving...'}</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Save size={15} />
+                                            <span>{isAr ? 'حفظ التعديلات' : 'Save Changes'}</span>
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </form>
                     </section>
 
-                    <section className="bg-red-50 dark:bg-red-900/10 rounded-[2.5rem] border border-red-100 dark:border-red-900/20 p-10 flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
-                         <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2"></div>
-                         <div className="space-y-2 relative z-10 text-center md:text-left">
-                            <h3 className="text-xl font-black text-red-600 dark:text-red-400 uppercase tracking-tighter">Access Key Management</h3>
-                            <p className="text-xs text-red-500/80 font-bold">Rotate your authentication frequency for maximum security.</p>
-                         </div>
-                         <button className="px-8 py-3.5 bg-red-600 text-white rounded-full font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-red-700 transition-all relative z-10">
-                            <Key size={14} /> Reset Pass-protocol
-                         </button>
+                    {/* Change Password Section */}
+                    <section className="bg-white dark:bg-[#0c0d12] rounded-3xl border border-slate-200/80 dark:border-white/[0.08] p-6 sm:p-8 shadow-sm space-y-5">
+                        <div className="flex items-center gap-3 border-b border-slate-100 dark:border-white/[0.06] pb-4">
+                            <div className="w-10 h-10 bg-amber-400/10 text-amber-500 rounded-xl flex items-center justify-center">
+                                <Key size={20} />
+                            </div>
+                            <div>
+                                <h2 className="text-base font-bold text-slate-950 dark:text-white">
+                                    {isAr ? 'الأمان وتغيير كلمة المرور' : 'Security & Password'}
+                                </h2>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                    {isAr ? 'قم بتحديث كلمة المرور الخاصة بحسابك لحمايته' : 'Update your personal passcode to keep your account safe'}
+                                </p>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleChangePassword} className="space-y-4 text-xs">
+                            <div>
+                                <label htmlFor="settings-current-password" className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                                    {isAr ? 'كلمة المرور الحالية' : 'Current Password'}
+                                </label>
+                                <input
+                                    id="settings-current-password"
+                                    type="password"
+                                    required
+                                    value={passwordData.currentPassword}
+                                    onChange={e => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                                    className="w-full bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-xl py-2.5 px-3.5 font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-400"
+                                    placeholder="••••••••"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label htmlFor="settings-new-password" className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                                        {isAr ? 'كلمة المرور الجديدة' : 'New Password'}
+                                    </label>
+                                    <input
+                                        id="settings-new-password"
+                                        type="password"
+                                        required
+                                        minLength={6}
+                                        value={passwordData.newPassword}
+                                        onChange={e => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                                        className="w-full bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-xl py-2.5 px-3.5 font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-400"
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="settings-confirm-password" className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                                        {isAr ? 'تأكيد كلمة المرور' : 'Confirm New Password'}
+                                    </label>
+                                    <input
+                                        id="settings-confirm-password"
+                                        type="password"
+                                        required
+                                        minLength={6}
+                                        value={passwordData.confirmPassword}
+                                        onChange={e => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                                        className="w-full bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-xl py-2.5 px-3.5 font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-400"
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+                            </div>
+
+                            {passwordMessage && (
+                                <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20 font-semibold">
+                                    <CheckCircle2 size={16} />
+                                    <span>{passwordMessage}</span>
+                                </div>
+                            )}
+
+                            {passwordError && (
+                                <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 bg-rose-500/10 p-3 rounded-xl border border-rose-500/20 font-semibold">
+                                    <AlertCircle size={16} />
+                                    <span>{passwordError}</span>
+                                </div>
+                            )}
+
+                            <div className="pt-2 flex justify-end">
+                                <button
+                                    type="submit"
+                                    disabled={passwordLoading}
+                                    className="py-2.5 px-6 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 rounded-xl font-bold text-xs flex items-center gap-2 shadow-sm transition-colors disabled:opacity-50"
+                                >
+                                    {passwordLoading ? (
+                                        <>
+                                            <Loader2 size={15} className="animate-spin" />
+                                            <span>{isAr ? 'جاري التحديث...' : 'Updating...'}</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Key size={15} />
+                                            <span>{isAr ? 'تحديث كلمة المرور' : 'Update Password'}</span>
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </form>
                     </section>
                 </div>
 
-                {/* Vertical Preference Sidebar */}
-                <div className="space-y-10">
-                    <section className="bg-white dark:bg-[#0a0a0a] rounded-[2.5rem] border border-gray-100 dark:border-white/5 p-8 shadow-xl">
-                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-8 border-b border-gray-50 dark:border-white/5 pb-4">UI Protocol</h3>
-                        <div className="space-y-4">
+                {/* Preference Sidebar (1 col) */}
+                <div className="space-y-5">
+                    <section className="bg-white dark:bg-[#0c0d12] rounded-3xl border border-slate-200/80 dark:border-white/[0.08] p-6 shadow-sm space-y-4">
+                        <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-100 dark:border-white/[0.06] pb-3">
+                            {isAr ? 'تفضيلات الواجهة' : 'Display Preferences'}
+                        </h3>
+                        
+                        <div className="space-y-2.5">
                             <button
                                 onClick={toggleTheme}
-                                className="w-full flex items-center justify-between p-5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-transparent hover:border-primary transition-all group"
+                                className="w-full flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200/60 dark:border-white/[0.06] hover:border-amber-400 transition-all text-xs"
                             >
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-black dark:bg-white text-white dark:text-black rounded-xl flex items-center justify-center transition-transform group-hover:scale-110">
-                                        {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+                                <div className="flex items-center gap-2.5">
+                                    <div className="w-8 h-8 bg-slate-200 dark:bg-white/[0.08] text-slate-700 dark:text-slate-200 rounded-lg flex items-center justify-center">
+                                        {darkMode ? <Sun size={16} className="text-amber-400" /> : <Moon size={16} />}
                                     </div>
-                                    <span className="text-xs font-black uppercase tracking-widest text-black dark:text-white">Design Mode</span>
+                                    <span className="font-bold text-slate-900 dark:text-white">
+                                        {isAr ? 'مظهر الواجهة' : 'Theme Mode'}
+                                    </span>
                                 </div>
-                                <span className="text-[8px] font-black uppercase tracking-widest text-gray-400">{darkMode ? 'Aether' : 'Lumos'}</span>
+                                <span className="font-semibold text-slate-500">
+                                    {darkMode ? (isAr ? 'الوضع الليلي' : 'Dark') : (isAr ? 'الوضع النهاري' : 'Light')}
+                                </span>
                             </button>
 
                             <button
                                 onClick={toggleLanguage}
-                                className="w-full flex items-center justify-between p-5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-transparent hover:border-primary transition-all group"
+                                className="w-full flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200/60 dark:border-white/[0.06] hover:border-amber-400 transition-all text-xs"
                             >
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-[#fbbf24] text-black rounded-xl flex items-center justify-center transition-transform group-hover:scale-110">
-                                        <Languages size={18} />
+                                <div className="flex items-center gap-2.5">
+                                    <div className="w-8 h-8 bg-amber-400/10 text-amber-500 rounded-lg flex items-center justify-center">
+                                        <Globe size={16} />
                                     </div>
-                                    <span className="text-xs font-black uppercase tracking-widest text-black dark:text-white">Linguistic Core</span>
+                                    <span className="font-bold text-slate-900 dark:text-white">
+                                        {isAr ? 'لغة الواجهة' : 'Language'}
+                                    </span>
                                 </div>
-                                <span className="text-[8px] font-black uppercase tracking-widest text-gray-400">{lang === 'en' ? 'LAT-ALPH' : 'ARAB-ALPH'}</span>
+                                <span className="font-semibold text-slate-500">
+                                    {lang === 'en' ? 'English (LTR)' : 'العربية (RTL)'}
+                                </span>
                             </button>
                         </div>
                     </section>
 
-                    <section className="bg-black text-white rounded-[2.5rem] p-10 flex flex-col items-center text-center gap-6 shadow-2xl relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent"></div>
-                        <div className="w-16 h-16 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center text-primary mb-2 group-hover:scale-110 duration-500">
-                            <Shield size={32} />
+                    {/* Support Card */}
+                    <section className="bg-slate-100 dark:bg-white/[0.02] border border-slate-200/60 dark:border-white/[0.06] rounded-3xl p-6 text-center space-y-2">
+                        <div className="w-10 h-10 bg-amber-400/10 text-amber-500 rounded-xl flex items-center justify-center mx-auto">
+                            <Shield size={20} />
                         </div>
-                        <div>
-                            <h3 className="font-black text-lg uppercase tracking-tighter leading-none mb-2">Protocol Verified</h3>
-                            <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest leading-relaxed">System identity is confirmed. All transmission lines are encrypted at 2048-bit standards.</p>
-                        </div>
-                        <div className="pt-4 border-t border-white/10 w-full flex items-center justify-center gap-2 text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                            <Smartphone size={12} /> Registered Device Map
-                        </div>
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-white">
+                            {isAr ? 'حساب معتمد ومؤمن' : 'Verified Member Account'}
+                        </h4>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                            {isAr
+                                ? 'جميع بياناتك وفواتيرك ومستندات مركباتك مشفرة ومحمية وفق أعلى معايير الخصوصية.'
+                                : 'All your vehicle telemetry, records, and digital documents are securely protected.'}
+                        </p>
                     </section>
                 </div>
+
             </div>
         </div>
     );

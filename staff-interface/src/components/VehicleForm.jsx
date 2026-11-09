@@ -185,10 +185,11 @@ const VehicleForm = () => {
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="vehicle-client-id" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                             <span>Registered Client *</span>
                                         </label>
                                         <select
+                                            id="vehicle-client-id"
                                             name="client_id"
                                             value={formData.client_id}
                                             onChange={handleChange}
@@ -252,10 +253,11 @@ const VehicleForm = () => {
                                 <div className="space-y-5">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                            <label htmlFor="vehicle-make" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                                 <span>Make *</span>
                                             </label>
                                             <input
+                                                id="vehicle-make"
                                                 type="text"
                                                 name="make"
                                                 value={formData.make}
@@ -267,10 +269,11 @@ const VehicleForm = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                            <label htmlFor="vehicle-model" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                                 <span>Model *</span>
                                             </label>
                                             <input
+                                                id="vehicle-model"
                                                 type="text"
                                                 name="model"
                                                 value={formData.model}
@@ -284,11 +287,12 @@ const VehicleForm = () => {
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                            <label htmlFor="vehicle-year" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                                 <Calendar size={11} className="text-gray-400" />
                                                 <span>Year *</span>
                                             </label>
                                             <input
+                                                id="vehicle-year"
                                                 type="number"
                                                 name="year"
                                                 value={formData.year}
@@ -301,11 +305,12 @@ const VehicleForm = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                            <label htmlFor="vehicle-license-plate" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                                 <Hash size={11} className="text-gray-400" />
                                                 <span>License Plate</span>
                                             </label>
                                             <input
+                                                id="vehicle-license-plate"
                                                 type="text"
                                                 name="license_plate"
                                                 value={formData.license_plate}
@@ -343,11 +348,12 @@ const VehicleForm = () => {
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="vehicle-current-mileage" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                             <Gauge size={11} className="text-primary" />
                                             <span>Current Mileage (KM)</span>
                                         </label>
                                         <input
+                                            id="vehicle-current-mileage"
                                             type="number"
                                             name="current_mileage"
                                             value={formData.current_mileage}
@@ -358,11 +364,12 @@ const VehicleForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="vehicle-vin" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                             <Hash size={11} className="text-gray-400" />
                                             <span>VIN Chassis Code (17-Digit)</span>
                                         </label>
                                         <input
+                                            id="vehicle-vin"
                                             type="text"
                                             name="vin"
                                             value={formData.vin}

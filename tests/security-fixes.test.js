@@ -19,6 +19,10 @@ describe('Security Audit Regression & Fixes Verification', () => {
     before(async () => {
         await database.connect();
 
+        // Clean up any stale records from interrupted prior runs
+        await database.run(`DELETE FROM clients WHERE email = 'sec@test.com'`);
+        await database.run(`DELETE FROM users WHERE email = 'secadmin@gocarauto.com'`);
+
         // Seed test client and vehicle
         const clientRes = await database.run(
             `INSERT INTO clients (full_name, phone, email) VALUES ('Sec Test User', '01011112222', 'sec@test.com')`

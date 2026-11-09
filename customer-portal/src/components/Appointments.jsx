@@ -27,15 +27,34 @@ const Appointments = () => {
     const { lang } = useLanguage();
     const isAr = lang === 'ar';
     const navigate = useNavigate();
-    const [appointments, setAppointments] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [appointments, setAppointments] = useState(() => {
+        try {
+            const cached = sessionStorage.getItem('gocar_appointments_cache');
+            return cached ? JSON.parse(cached) : [];
+        } catch {
+            return [];
+        }
+    });
+    const [loading, setLoading] = useState(() => {
+        try {
+            return !sessionStorage.getItem('gocar_appointments_cache');
+        } catch {
+            return true;
+        }
+    });
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchAppointments = async () => {
             try {
                 const response = await api.get('/customer-portal/appointments');
-                setAppointments(response.data?.data || []);
+                const list = response.data?.data || [];
+                setAppointments(list);
+                try {
+                    sessionStorage.setItem('gocar_appointments_cache', JSON.stringify(list));
+                } catch {
+                    // ignore storage quota issues
+                }
             } catch (err) {
                 console.error('Failed to retrieve appointments', err);
                 setError(isAr ? 'تعذر جلب المواعيد. يرجى إعادة المحاولة.' : 'Could not load appointments. Please try again.');
@@ -45,16 +64,6 @@ const Appointments = () => {
         };
         fetchAppointments();
     }, [isAr]);
-
-    if (loading) {
-        return (
-            <div className="space-y-4 animate-pulse">
-                {[1, 2, 3].map(i => (
-                    <div key={i} className="h-32 bg-slate-200 dark:bg-white/[0.04] rounded-2xl" />
-                ))}
-            </div>
-        );
-    }
 
     return (
         <div className="space-y-6 pb-16 max-w-5xl">
@@ -83,18 +92,22 @@ const Appointments = () => {
                 </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {appointments.map((apt, idx) => {
-                    const statusInfo = STATUS_STYLE[apt.status] || STATUS_STYLE['Scheduled'];
-                    const StatusIcon = statusInfo.icon;
-                    return (
-                        <motion.div
-                            key={apt.id || idx}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.18, delay: idx * 0.04 }}
-                            className="bg-white dark:bg-[#0c0d12] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] p-5 shadow-sm hover:border-slate-300 dark:hover:border-white/20 transition-all space-y-4"
-                        >
+            {loading && appointments.length === 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
+                    {[1, 2, 3, 4].map(i => (
+                        <div key={i} className="h-40 bg-slate-200 dark:bg-white/[0.04] rounded-2xl" />
+                    ))}
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {appointments.map((apt, idx) => {
+                        const statusInfo = STATUS_STYLE[apt.status] || STATUS_STYLE['Scheduled'];
+                        const StatusIcon = statusInfo.icon;
+                        return (
+                            <div
+                                key={apt.id || idx}
+                                className="bg-white dark:bg-[#0c0d12] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] p-5 shadow-sm hover:border-slate-300 dark:hover:border-white/20 transition-all space-y-4"
+                            >
                             <div className="flex items-start justify-between gap-3">
                                 <div className="space-y-1 min-w-0">
                                     <div className="flex items-center gap-2">
@@ -147,7 +160,7 @@ const Appointments = () => {
                                     {apt.notes}
                                 </p>
                             )}
-                        </motion.div>
+                        </div>
                     );
                 })}
 
@@ -175,7 +188,8 @@ const Appointments = () => {
                         </button>
                     </div>
                 )}
-            </div>
+                </div>
+            )}
         </div>
     );
 };

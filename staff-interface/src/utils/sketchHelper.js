@@ -2,8 +2,18 @@
  * Utility to get the appropriate vehicle sketch based on make and model.
  * Falls back to a generic sketch if a specific one isn't found.
  */
-export const getVehicleSketch = (make, model, year) => {
-    if (!make) return '/sketches/generic-car.png';
+export const getVehicleSketch = (makeOrVehicle, modelArg, yearArg) => {
+    let make = makeOrVehicle;
+    let model = modelArg;
+    let year = yearArg;
+
+    if (typeof makeOrVehicle === 'object' && makeOrVehicle !== null) {
+        make = makeOrVehicle.make;
+        model = makeOrVehicle.model;
+        year = makeOrVehicle.year;
+    }
+
+    if (!make || typeof make !== 'string') return '/sketches/generic-car.png';
 
     const normalizedMake = make.toLowerCase().trim().replace(/[^a-z0-9]/g, '-');
     const normalizedModel = model ? model.toLowerCase().trim().replace(/[^a-z0-9]/g, '-') : '';

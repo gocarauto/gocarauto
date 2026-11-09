@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import database from '../database/db.js';
 
 /**
@@ -107,7 +108,7 @@ const customerPortalController = {
         try {
             const customerId = req.user.id;
             const appointments = await database.query(
-                `SELECT sr.id, sr.service_type, sr.status, sr.scheduled_date, sr.scheduled_time, sr.notes,
+                `SELECT sr.id, sr.vehicle_id, sr.service_type, sr.status, sr.scheduled_date, sr.scheduled_time, sr.notes,
                         v.make, v.model, v.year, v.license_plate
                  FROM service_requests sr
                  JOIN vehicles v ON sr.vehicle_id = v.id
@@ -130,7 +131,7 @@ const customerPortalController = {
         try {
             const customerId = req.user.id;
             const reminders = await database.query(
-                `SELECT r.id, r.service_type, r.due_date, r.notes, r.status,
+                `SELECT r.id, r.vehicle_id, r.service_type, r.due_date, r.notes, r.status,
                         r.interval_km, r.interval_months,
                         v.make, v.model, v.year, v.license_plate
                  FROM service_reminders r
@@ -164,6 +165,42 @@ const customerPortalController = {
         } catch (error) {
             console.error('SERVER_PORTAL_ERROR:', error);
             res.status(500).json({ error: 'Failed to update profile' });
+        }
+    },
+
+    /**
+     * Update customer self-service password.
+     */
+    changePassword: async (req, res) => {
+        try {
+            const customerId = req.user.id;
+            const { currentPassword, newPassword } = req.body;
+
+            if (!currentPassword || !newPassword) {
+                return res.status(400).json({ error: 'Current password and new password are required' });
+            }
+
+            if (newPassword.length < 6) {
+                return res.status(400).json({ error: 'New password must be at least 6 characters' });
+            }
+
+            const customer = await database.get('SELECT password_hash FROM clients WHERE id = ?', [customerId]);
+            if (!customer || !customer.password_hash) {
+                return res.status(400).json({ error: 'Account does not have a set password' });
+            }
+
+            const isValid = await bcrypt.compare(currentPassword, customer.password_hash);
+            if (!isValid) {
+                return res.status(401).json({ error: 'Current password is incorrect' });
+            }
+
+            const newHash = await bcrypt.hash(newPassword, 10);
+            await database.run('UPDATE clients SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [newHash, customerId]);
+
+            res.json({ success: true, message: 'Password updated successfully' });
+        } catch (error) {
+            console.error('SERVER_PORTAL_PASSWORD_ERROR:', error);
+            res.status(500).json({ error: 'Failed to update password' });
         }
     },
 

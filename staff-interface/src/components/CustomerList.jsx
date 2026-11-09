@@ -10,17 +10,17 @@ const CustomerList = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        const fetchCustomers = async () => {
+        const timer = setTimeout(async () => {
             try {
-                const response = await api.get(`/clients?search=${searchTerm}`);
-                setCustomers(response.data.data);
+                const response = await api.get(`/clients?search=${encodeURIComponent(searchTerm)}`);
+                setCustomers(response.data.data || []);
             } catch (error) {
                 console.error('Error fetching customers:', error);
             } finally {
                 setLoading(false);
             }
-        };
-        fetchCustomers();
+        }, 300);
+        return () => clearTimeout(timer);
     }, [searchTerm]);
 
     return (
@@ -72,8 +72,56 @@ const CustomerList = () => {
                         LOADING RECORDS...
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                    <>
+                        {/* Mobile Responsive Cards (< md screens) */}
+                        <div className="md:hidden divide-y divide-white/5">
+                            {customers.length === 0 ? (
+                                <div className="p-12 text-center text-gray-500 font-bold tracking-widest text-xs uppercase">
+                                    DATABASE EMPTY: NO CLIENTS FOUND.
+                                </div>
+                            ) : (
+                                customers.map((customer) => (
+                                    <div key={customer.id} className="p-4 space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <div className="font-bold text-white text-base uppercase">
+                                                    {customer.full_name}
+                                                </div>
+                                                <div className="text-xs text-slate-400 font-mono mt-0.5">
+                                                    ID: #{String(customer.id).padStart(4, '0')}
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <span className="text-[10px] text-slate-400 uppercase font-bold block">TOTAL SPENT</span>
+                                                <span className="font-black text-amber-400 text-sm font-mono">
+                                                    {customer.total_spent ? `${parseFloat(customer.total_spent).toLocaleString()} EGP` : '0 EGP'}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center justify-between text-xs pt-1 border-t border-white/5">
+                                            <div>
+                                                <div className="text-sm font-bold text-amber-400 font-mono">{customer.phone}</div>
+                                                <div className="text-xs text-slate-400">{customer.email || '—'}</div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                {customer.phone && <WhatsAppButton phone={customer.phone} clientName={customer.full_name} />}
+                                                <Link to={`/customers/${customer.id}`}>
+                                                    <button className="h-9 px-3 bg-amber-400 text-slate-950 rounded-xl font-bold text-xs uppercase flex items-center gap-1 transition-all">
+                                                        <span>PROFILE</span>
+                                                        <ChevronRight size={14} />
+                                                    </button>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+
+                        {/* Desktop Master Table (md+ screens) */}
+                        <div className="hidden md:block overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-white/5 bg-white/[0.02]">
                                     <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-500">Client Name</th>
@@ -121,6 +169,7 @@ const CustomerList = () => {
                             </tbody>
                         </table>
                     </div>
+                    </>
                 )}
             </div>
         </div>

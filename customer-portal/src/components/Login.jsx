@@ -45,7 +45,7 @@ const Login = () => {
             <div className="absolute top-6 right-6 z-20">
                 <button
                     onClick={toggleLanguage}
-                    className="px-4 py-2 rounded-2xl bg-white/5 border border-white/10 text-xs font-bold text-gray-400 hover:text-white flex items-center gap-2 backdrop-blur-md transition-colors"
+                    className="px-4 py-2 rounded-2xl bg-slate-200/80 dark:bg-white/5 border border-slate-300 dark:border-white/10 text-xs font-bold text-slate-700 dark:text-gray-300 hover:text-slate-950 dark:hover:text-white flex items-center gap-2 backdrop-blur-md transition-colors"
                 >
                     <Globe size={15} />
                     <span>{lang === 'en' ? 'عربي' : 'English'}</span>

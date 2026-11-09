@@ -26,20 +26,12 @@ const FinancialList = () => {
         }
     };
 
-    const handleViewInvoice = async (transactionId) => {
-        try {
-            const response = await api.get(`/financial/${transactionId}/view`);
-            const newWindow = window.open('', '_blank');
-            if (!newWindow) {
-                alert('Please allow pop-ups for this site to view the invoice.');
-                return;
-            }
-            newWindow.document.write(response.data);
-            newWindow.document.close();
-        } catch (error) {
-            console.error('Error viewing invoice:', error);
-            alert(`Failed to view invoice: ${error.response?.data?.error || error.message}`);
-        }
+    const handleViewInvoice = (transactionId) => {
+        const token = localStorage.getItem('token');
+        const baseUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
+            ? 'https://gocar-backend-crtx.onrender.com/api'
+            : 'http://localhost:3000/api');
+        window.open(`${baseUrl}/financial/${transactionId}/view${token ? `?token=${encodeURIComponent(token)}` : ''}`, '_blank', 'noopener,noreferrer');
     };
 
     const handleOpenPaymentModal = (invoice) => {

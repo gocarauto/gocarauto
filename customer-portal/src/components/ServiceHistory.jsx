@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 import api from '../utils/api';
@@ -26,9 +27,24 @@ const ServiceHistory = () => {
     const { lang } = useLanguage();
     const isAr = lang === 'ar';
 
-    const [history, setHistory] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchParams] = useSearchParams();
+    const querySearch = searchParams.get('search') || '';
+    const [history, setHistory] = useState(() => {
+        try {
+            const cached = sessionStorage.getItem('gocar_history_cache');
+            return cached ? JSON.parse(cached) : [];
+        } catch {
+            return [];
+        }
+    });
+    const [loading, setLoading] = useState(() => {
+        try {
+            return !sessionStorage.getItem('gocar_history_cache');
+        } catch {
+            return true;
+        }
+    });
+    const [searchTerm, setSearchTerm] = useState(querySearch);
     const [activeTab, setActiveTab] = useState('All');
     const [sortField, setSortField] = useState('service_date');
     const [sortDir, setSortDir] = useState('desc');
@@ -36,10 +52,20 @@ const ServiceHistory = () => {
     const [page, setPage] = useState(1);
 
     useEffect(() => {
+        if (querySearch) setSearchTerm(querySearch);
+    }, [querySearch]);
+
+    useEffect(() => {
         const fetchHistory = async () => {
             try {
                 const response = await api.get('/customer-portal/service-history');
-                setHistory(response.data?.data || []);
+                const list = response.data?.data || [];
+                setHistory(list);
+                try {
+                    sessionStorage.setItem('gocar_history_cache', JSON.stringify(list));
+                } catch {
+                    // ignore storage quota issues
+                }
             } catch (error) {
                 console.error('Failed to fetch history:', error);
             } finally {
@@ -70,28 +96,28 @@ const ServiceHistory = () => {
         return raw;
     };
 
-    const handleViewInvoice = async (invoiceId) => {
+    const [toast, setToast] = useState(null);
+
+    const showToast = (msg) => {
+        setToast(msg);
+        setTimeout(() => setToast(null), 3500);
+    };
+
+    const handleViewInvoice = (invoiceId) => {
         if (!invoiceId) {
-            alert(isAr ? 'لم تصدر فاتورة لهذا السجل بعد.' : 'No invoice generated for this record yet.');
+            showToast(isAr ? 'لم تصدر فاتورة لهذا السجل بعد.' : 'No invoice generated for this record yet.');
             return;
         }
-        try {
-            const response = await api.get(`/financial/${invoiceId}/view`);
-            const newWindow = window.open('', '_blank');
-            if (newWindow) {
-                newWindow.document.write(response.data);
-                newWindow.document.close();
-            }
-        } catch {
-            const token = localStorage.getItem('token');
-            const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-            window.open(`${baseUrl}/financial/${invoiceId}/view${token ? `?token=${token}` : ''}`, '_blank');
-        }
+        const token = localStorage.getItem('token');
+        const baseUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
+            ? 'https://gocar-backend-crtx.onrender.com/api'
+            : 'http://localhost:3000/api');
+        window.open(`${baseUrl}/financial/${invoiceId}/view${token ? `?token=${encodeURIComponent(token)}` : ''}`, '_blank', 'noopener,noreferrer');
     };
 
     const handleDownloadPDF = async (invoiceId, invoiceNumber) => {
         if (!invoiceId) {
-            alert(isAr ? 'لم تصدر فاتورة لهذا السجل بعد.' : 'No invoice generated for this record yet.');
+            showToast(isAr ? 'لم تصدر فاتورة لهذا السجل بعد.' : 'No invoice generated for this record yet.');
             return;
         }
         try {
@@ -172,17 +198,6 @@ const ServiceHistory = () => {
         return { icon: FileText, color: 'text-slate-500 dark:text-slate-400', bg: 'bg-slate-100 dark:bg-white/[0.06]' };
     };
 
-    if (loading) {
-        return (
-            <div className="space-y-6 animate-pulse">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {[1, 2, 3].map(i => <div key={i} className="h-24 bg-slate-200 dark:bg-white/[0.04] rounded-2xl" />)}
-                </div>
-                <div className="h-96 bg-slate-200 dark:bg-white/[0.04] rounded-3xl" />
-            </div>
-        );
-    }
-
     return (
         <div className="space-y-6 pb-16">
             
@@ -195,6 +210,19 @@ const ServiceHistory = () => {
                     {isAr ? 'سجل رقمي موثق لكل زيارة وفحص وقطعة غيار معتمدة' : 'Official digital service ledger with itemized parts and verified invoices'}
                 </p>
             </header>
+
+            {/* Notification Toast */}
+            {toast && (
+                <div className="bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 p-4 rounded-2xl text-xs font-bold flex items-center justify-between shadow-sm animate-in fade-in duration-200">
+                    <div className="flex items-center gap-2.5">
+                        <CheckCircle2 size={16} />
+                        <span>{toast}</span>
+                    </div>
+                    <button onClick={() => setToast(null)} className="text-xs underline cursor-pointer">
+                        {isAr ? 'إغلاق' : 'Dismiss'}
+                    </button>
+                </div>
+            )}
 
             {/* Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -299,8 +327,98 @@ const ServiceHistory = () => {
                     </div>
                 </div>
 
-                {/* Table */}
-                <div className="overflow-x-auto">
+                {/* Mobile Responsive Cards (< md screens) */}
+                <div className="md:hidden divide-y divide-slate-100 dark:divide-white/[0.06]">
+                    {loading && history.length === 0 ? (
+                        [1, 2, 3].map(i => (
+                            <div key={i} className="p-4 space-y-2 animate-pulse">
+                                <div className="h-4 bg-slate-200 dark:bg-white/[0.04] rounded w-3/4" />
+                                <div className="h-3 bg-slate-200 dark:bg-white/[0.04] rounded w-1/2" />
+                            </div>
+                        ))
+                    ) : paginatedHistory.length > 0 ? (
+                        paginatedHistory.map((item, idx) => {
+                            const title = getItemTitle(item);
+                            const vehicle = getItemVehicle(item);
+                            const cost = getItemCost(item);
+                            const statusLabel = getItemStatus(item);
+                            const rawStatus = item.request_status || item.payment_status || item.status || 'Completed';
+                            const style = getIcon(title);
+                            const vinDisplay = item.vin ? `VIN: ...${item.vin.slice(-4)}` : (item.license_plate ? `Plate: ${item.license_plate}` : '');
+
+                            return (
+                                <div key={item.record_id || item.id || idx} className="p-4 space-y-2.5">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2.5 min-w-0">
+                                            <div className={`w-8 h-8 rounded-lg ${style.bg} ${style.color} flex items-center justify-center shrink-0`}>
+                                                <style.icon size={15} />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <span className="font-bold text-slate-900 dark:text-white block text-sm truncate">{title}</span>
+                                                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">{formatDate(item.service_date)}</span>
+                                            </div>
+                                        </div>
+                                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold shrink-0 ${
+                                            ['Completed', 'Complete', 'Paid'].includes(rawStatus) 
+                                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
+                                                : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                                        }`}>
+                                            {statusLabel}
+                                        </span>
+                                    </div>
+
+                                    <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100/60 dark:border-white/[0.04]">
+                                        <div>
+                                            <span className="text-slate-400 text-[10px] uppercase font-bold block">{isAr ? 'المركبة' : 'Vehicle'}</span>
+                                            <span className="font-semibold text-slate-800 dark:text-slate-200">{vehicle}</span>
+                                            {vinDisplay && <span className="text-[10px] text-slate-400 font-mono block">{vinDisplay}</span>}
+                                        </div>
+                                        <div className="text-right rtl:text-left">
+                                            <span className="text-slate-400 text-[10px] uppercase font-bold block">{isAr ? 'التكلفة' : 'Cost'}</span>
+                                            <span className="font-bold text-slate-950 dark:text-white font-mono tabular-nums">
+                                                {cost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} EGP
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-between pt-1">
+                                        <span className="text-[11px] text-slate-400 font-mono">
+                                            {(item.mileage || 0).toLocaleString()} km
+                                        </span>
+                                        <div className="flex items-center gap-2">
+                                            {item.invoice_id && (
+                                                <>
+                                                    <button 
+                                                        onClick={() => handleViewInvoice(item.invoice_id)}
+                                                        className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-amber-400/10 text-amber-600 dark:text-amber-400 border border-amber-400/20 flex items-center gap-1 active:scale-95 transition-all"
+                                                    >
+                                                        <Eye size={12} />
+                                                        <span>{isAr ? 'عرض' : 'View'}</span>
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => handleDownloadPDF(item.invoice_id, item.invoice_number)}
+                                                        className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 flex items-center gap-1 active:scale-95 transition-all"
+                                                    >
+                                                        <Download size={12} />
+                                                        <span>PDF</span>
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <div className="p-8 text-center text-slate-400 text-xs">
+                            <FileText size={20} className="mx-auto mb-1.5 opacity-40" />
+                            <span>{isAr ? 'لم يتم العثور على سجلات' : 'No maintenance records found'}</span>
+                        </div>
+                    )}
+                </div>
+
+                {/* Desktop Full Data Table (md+ screens) */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full border-collapse text-left rtl:text-right">
                         <thead>
                             <tr className="border-b border-slate-100 dark:border-white/[0.06] bg-slate-50/60 dark:bg-white/[0.02]">
@@ -329,7 +447,15 @@ const ServiceHistory = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-white/[0.06] text-xs">
-                            {paginatedHistory.length > 0 ? paginatedHistory.map((item, idx) => {
+                            {loading && history.length === 0 ? (
+                                [1, 2, 3, 4, 5].map(i => (
+                                    <tr key={i} className="animate-pulse border-b border-slate-100 dark:border-white/[0.04]">
+                                        <td colSpan={7} className="px-5 py-4">
+                                            <div className="h-4 bg-slate-200 dark:bg-white/[0.04] rounded-md w-full" />
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : paginatedHistory.length > 0 ? paginatedHistory.map((item, idx) => {
                                 const title = getItemTitle(item);
                                 const vehicle = getItemVehicle(item);
                                 const cost = getItemCost(item);

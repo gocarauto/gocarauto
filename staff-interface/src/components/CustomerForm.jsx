@@ -146,11 +146,12 @@ const CustomerForm = () => {
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="customer-full-name" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                             <span>Full Legal Name</span>
                                             <span className="text-primary">*</span>
                                         </label>
                                         <input
+                                            id="customer-full-name"
                                             type="text"
                                             name="full_name"
                                             value={formData.full_name}
@@ -162,12 +163,13 @@ const CustomerForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="customer-phone" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                             <Phone size={11} className="text-primary" />
                                             <span>Primary Phone (WhatsApp)</span>
                                             <span className="text-primary">*</span>
                                         </label>
                                         <input
+                                            id="customer-phone"
                                             type="tel"
                                             name="phone"
                                             value={formData.phone}
@@ -179,11 +181,12 @@ const CustomerForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="customer-email" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                             <Mail size={11} className="text-gray-400" />
                                             <span>Email Address</span>
                                         </label>
                                         <input
+                                            id="customer-email"
                                             type="email"
                                             name="email"
                                             value={formData.email}
@@ -220,11 +223,12 @@ const CustomerForm = () => {
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="customer-referral-source" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                             <Share2 size={11} className="text-gray-400" />
                                             <span>Referral Source</span>
                                         </label>
                                         <select
+                                            id="customer-referral-source"
                                             name="referral_source"
                                             value={formData.referral_source}
                                             onChange={handleChange}
@@ -239,10 +243,11 @@ const CustomerForm = () => {
 
                                     {/* ── Referred By Client Linkage ── */}
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-amber-400 flex items-center gap-1.5">
+                                        <label htmlFor="customer-referred-by" className="text-[10px] font-black uppercase tracking-widest text-amber-400 flex items-center gap-1.5">
                                             <span>⭐ Referred By Existing Client</span>
                                         </label>
                                         <select
+                                            id="customer-referred-by"
                                             name="referred_by_client_id"
                                             value={formData.referred_by_client_id}
                                             onChange={handleChange}
@@ -261,11 +266,12 @@ const CustomerForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="customer-address" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                             <MapPin size={11} className="text-gray-400" />
                                             <span>Physical / Workshop Address</span>
                                         </label>
                                         <textarea
+                                            id="customer-address"
                                             name="address"
                                             value={formData.address}
                                             onChange={handleChange}
@@ -300,11 +306,12 @@ const CustomerForm = () => {
                                 </div>
 
                                 <div className="space-y-2 flex-1 flex flex-col">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                    <label htmlFor="customer-notes" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                         <Settings size={11} className="text-gray-400" />
                                         <span>Customer Directives, VIP Tags, or Preferences</span>
                                     </label>
                                     <textarea
+                                        id="customer-notes"
                                         name="notes"
                                         value={formData.notes}
                                         onChange={handleChange}

@@ -1,5 +1,15 @@
-export const getVehicleSketch = (make, model, year) => {
-    if (!make) return '/sketches/generic-car.png';
+export const getVehicleSketch = (makeOrVehicle, modelArg, yearArg) => {
+    let make = makeOrVehicle;
+    let model = modelArg;
+    let year = yearArg;
+
+    if (typeof makeOrVehicle === 'object' && makeOrVehicle !== null) {
+        make = makeOrVehicle.make;
+        model = makeOrVehicle.model;
+        year = makeOrVehicle.year;
+    }
+
+    if (!make || typeof make !== 'string') return '/sketches/generic-car.png';
 
     const normalizedMake = make.toLowerCase()
         .replace('mercedes-benz', 'mercedes')
@@ -17,6 +27,7 @@ export const getVehicleSketch = (make, model, year) => {
         'mercedes-s-class-2022',
         'geely-pandino-2015',
         'kia-cerato-2023',
+        'honda-civic-2018',
     ];
 
     const specificPath = `${normalizedMake}-${normalizedModel}-${normalizedYear}`;

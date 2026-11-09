@@ -19,7 +19,8 @@ import {
     AlertCircle,
     Calendar,
     FileText,
-    Loader2
+    Loader2,
+    Plus
 } from 'lucide-react';
 
 const SERVICE_CATEGORIES = [
@@ -80,20 +81,48 @@ const ServiceBooking = () => {
     const [searchParams] = useSearchParams();
     const paramVehicleId = searchParams.get('vehicleId');
     const paramServiceType = searchParams.get('serviceType');
+    const paramNotes = searchParams.get('notes');
 
     const [step, setStep] = useState(1);
-    const [vehicles, setVehicles] = useState([]);
+    const [vehicles, setVehicles] = useState(() => {
+        try {
+            const cached = sessionStorage.getItem('gocar_fleet_cache');
+            return cached ? JSON.parse(cached) : [];
+        } catch {
+            return [];
+        }
+    });
+    const [loadingVehicles, setLoadingVehicles] = useState(() => {
+        try {
+            return !sessionStorage.getItem('gocar_fleet_cache');
+        } catch {
+            return true;
+        }
+    });
 
-    const [formData, setFormData] = useState({
-        vehicleId: paramVehicleId || '',
-        serviceType: paramServiceType || 'صيانة دورية داخل التوكيل',
-        notes: '',
-        scheduledDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], // Tomorrow
-        scheduledTime: '09:00 AM'
+    const [formData, setFormData] = useState(() => {
+        let initialVehId = paramVehicleId || '';
+        if (!initialVehId) {
+            try {
+                const cached = sessionStorage.getItem('gocar_fleet_cache');
+                const list = cached ? JSON.parse(cached) : [];
+                if (list.length > 0) initialVehId = list[0].id;
+            } catch {
+                // ignore session storage read errors
+            }
+        }
+        return {
+            vehicleId: initialVehId,
+            serviceType: paramServiceType || 'صيانة دورية داخل التوكيل',
+            notes: paramNotes || '',
+            scheduledDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], // Tomorrow
+            scheduledTime: '09:00 AM'
+        };
     });
 
     const [submitting, setSubmitting] = useState(false);
     const [successData, setSuccessData] = useState(null);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const fetchVehicles = async () => {
@@ -101,6 +130,11 @@ const ServiceBooking = () => {
                 const response = await api.get('/customer-portal/vehicles');
                 const fleet = response.data?.data || [];
                 setVehicles(fleet);
+                try {
+                    sessionStorage.setItem('gocar_fleet_cache', JSON.stringify(fleet));
+                } catch {
+                    // ignore quota errors
+                }
                 if (fleet.length > 0) {
                     const matched = paramVehicleId && fleet.find(v => String(v.id) === String(paramVehicleId));
                     setFormData(prev => ({ 
@@ -110,6 +144,8 @@ const ServiceBooking = () => {
                 }
             } catch (err) {
                 console.error('Failed to fetch vehicles', err);
+            } finally {
+                setLoadingVehicles(false);
             }
         };
         fetchVehicles();
@@ -143,7 +179,7 @@ const ServiceBooking = () => {
             });
         } catch (err) {
             console.error('Booking failed', err);
-            alert(isAr ? 'تعذر إتمام الحجز. يرجى المحاولة مرة أخرى.' : 'Booking failed. Please try again.');
+            setError(err.response?.data?.error || (isAr ? 'تعذر إتمام الحجز. يرجى المحاولة مرة أخرى.' : 'Booking failed. Please try again.'));
         } finally {
             setSubmitting(false);
         }
@@ -187,7 +223,7 @@ const ServiceBooking = () => {
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-slate-500 font-medium">{isAr ? 'باقة الخدمة:' : 'Service Package:'}</span>
-                            <span className="font-bold text-amber-500">{isAr ? selectedCategory?.ar : selectedCategory?.en}</span>
+                            <span className="font-bold text-amber-500">{isAr ? (selectedCategory?.ar || formData.serviceType) : (selectedCategory?.en || formData.serviceType)}</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-slate-500 font-medium">{isAr ? 'الموعد المحدد:' : 'Arrival Window:'}</span>
@@ -254,6 +290,18 @@ const ServiceBooking = () => {
                 </div>
             </header>
 
+            {error && (
+                <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <AlertCircle size={16} />
+                        <span>{error}</span>
+                    </div>
+                    <button type="button" onClick={() => setError('')} className="text-xs underline cursor-pointer">
+                        {isAr ? 'إغلاق' : 'Dismiss'}
+                    </button>
+                </div>
+            )}
+
             <form onSubmit={handleSubmit}>
                 <AnimatePresence mode="wait">
                     
@@ -274,43 +322,71 @@ const ServiceBooking = () => {
                                     <span>{isAr ? '١. حدد السيارة' : '1. Select Vehicle'}</span>
                                 </label>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-                                    {vehicles.map((v) => {
-                                        const isSelected = String(v.id) === String(formData.vehicleId);
-                                        const sketch = getVehicleSketch(v.make, v.model, v.year);
-                                        return (
-                                            <div
-                                                key={v.id}
-                                                onClick={() => handleSelectVehicle(v.id)}
-                                                className={`cursor-pointer p-4 rounded-2xl border transition-all relative overflow-hidden group ${
-                                                    isSelected
-                                                        ? 'bg-white dark:bg-[#12131a] border-amber-400 ring-2 ring-amber-400/20 shadow-sm'
-                                                        : 'bg-white dark:bg-[#0c0d12] border-slate-200/80 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/20'
-                                                }`}
-                                            >
-                                                {isSelected && (
-                                                    <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center">
-                                                        <Check size={12} strokeWidth={3} />
-                                                    </span>
-                                                )}
-                                                <div className="h-14 flex items-center justify-center mb-3">
-                                                    <img 
-                                                        src={sketch} 
-                                                        alt="" 
-                                                        className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform" 
-                                                    />
+                                {loadingVehicles && vehicles.length === 0 ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 animate-pulse">
+                                        {[1, 2, 3].map(i => (
+                                            <div key={i} className="h-36 bg-slate-200 dark:bg-white/[0.04] rounded-2xl" />
+                                        ))}
+                                    </div>
+                                ) : vehicles.length === 0 ? (
+                                    <div className="p-8 text-center rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-dashed border-slate-200 dark:border-white/10 space-y-3">
+                                        <Car size={32} className="mx-auto text-amber-500 opacity-60" />
+                                        <h4 className="font-bold text-slate-900 dark:text-white text-sm">
+                                            {isAr ? 'لم يتم العثور على سيارات مسجلة لحسابك' : 'No Vehicles Found in Your Garage'}
+                                        </h4>
+                                        <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                                            {isAr 
+                                                ? 'يرجى التواصل مع خدمة العملاء أو إضافة سيارتك لتتمكن من حجز موعد الصيانة.' 
+                                                : 'Please register your vehicle first so our workshop intake team can reserve the diagnostic bay.'}
+                                        </p>
+                                        <button
+                                            type="button"
+                                            onClick={() => navigate('/vehicles')}
+                                            className="py-2 px-4 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs inline-flex items-center gap-1.5"
+                                        >
+                                            <Plus size={14} />
+                                            <span>{isAr ? 'الذهاب لإدارة السيارات' : 'Manage Garage Vehicles'}</span>
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                                        {vehicles.map((v) => {
+                                            const isSelected = String(v.id) === String(formData.vehicleId);
+                                            const sketch = getVehicleSketch(v.make, v.model, v.year);
+                                            return (
+                                                <div
+                                                    key={v.id}
+                                                    onClick={() => handleSelectVehicle(v.id)}
+                                                    className={`cursor-pointer p-4 rounded-2xl border transition-all relative overflow-hidden group ${
+                                                        isSelected
+                                                            ? 'bg-white dark:bg-[#12131a] border-amber-400 ring-2 ring-amber-400/20 shadow-sm'
+                                                            : 'bg-white dark:bg-[#0c0d12] border-slate-200/80 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/20'
+                                                    }`}
+                                                >
+                                                    {isSelected && (
+                                                        <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center">
+                                                            <Check size={12} strokeWidth={3} />
+                                                        </span>
+                                                    )}
+                                                    <div className="h-14 flex items-center justify-center mb-3">
+                                                        <img 
+                                                            src={sketch} 
+                                                            alt="" 
+                                                            className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform" 
+                                                        />
+                                                    </div>
+                                                    <h3 className="font-bold text-slate-950 dark:text-white text-sm">
+                                                        {v.make} {v.model}
+                                                    </h3>
+                                                    <div className="flex items-center justify-between text-xs mt-1.5 text-slate-500 font-mono">
+                                                        <span>{v.year}</span>
+                                                        <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-white/[0.06] text-slate-900 dark:text-white font-bold">{v.license_plate || 'No Plate'}</span>
+                                                    </div>
                                                 </div>
-                                                <h3 className="font-bold text-slate-950 dark:text-white text-sm">
-                                                    {v.make} {v.model}
-                                                </h3>
-                                                <div className="flex items-center justify-between text-xs mt-1.5 text-slate-500 font-mono">
-                                                    <span>{v.year}</span>
-                                                    <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-white/[0.06] text-slate-900 dark:text-white font-bold">{v.license_plate || 'No Plate'}</span>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Service Category Picker */}
@@ -354,8 +430,12 @@ const ServiceBooking = () => {
                             <div className="flex justify-end pt-3">
                                 <button
                                     type="button"
-                                    onClick={() => setStep(2)}
-                                    className="py-3 px-6 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-sm transition-colors"
+                                    disabled={!formData.vehicleId}
+                                    onClick={() => {
+                                        if (!formData.vehicleId) return;
+                                        setStep(2);
+                                    }}
+                                    className="py-3 px-6 rounded-xl bg-amber-400 hover:bg-amber-300 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 font-bold text-xs flex items-center gap-2 shadow-sm transition-colors"
                                 >
                                     <span>{isAr ? 'متابعة: الموعد والوقت' : 'Continue to Schedule'}</span>
                                     <ArrowRight size={15} className={isAr ? 'rotate-180' : ''} />
@@ -375,11 +455,12 @@ const ServiceBooking = () => {
                             className="bg-white dark:bg-[#0c0d12] rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-white/[0.08] shadow-sm space-y-6"
                         >
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                                <label htmlFor="service-scheduled-date" className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
                                     <Calendar size={15} className="text-amber-500" />
                                     <span>{isAr ? 'تاريخ الوصول المفضل للمركز' : 'Preferred Arrival Date'}</span>
                                 </label>
                                 <input
+                                    id="service-scheduled-date"
                                     type="date"
                                     required
                                     min={new Date().toISOString().split('T')[0]}
@@ -476,11 +557,12 @@ const ServiceBooking = () => {
 
                             {/* Additional Notes */}
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                                <label htmlFor="service-additional-notes" className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
                                     <FileText size={15} className="text-amber-500" />
                                     <span>{isAr ? 'ملاحظات إضافية أو أعطال تود فحصها' : 'Additional Notes / Symptoms'}</span>
                                 </label>
                                 <textarea
+                                    id="service-additional-notes"
                                     rows={4}
                                     value={formData.notes}
                                     onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}

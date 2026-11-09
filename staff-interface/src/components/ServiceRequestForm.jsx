@@ -14,6 +14,7 @@ const ServiceRequestForm = () => {
     const [vehicles, setVehicles] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [error, setError] = useState('');
 
     const [selectedClient, setSelectedClient] = useState(null);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
@@ -39,6 +40,7 @@ const ServiceRequestForm = () => {
     const handleClientSelect = async (clientId) => {
         const client = clients.find(c => c.id === parseInt(clientId));
         setSelectedClient(client);
+        setError('');
 
         if (!client) return;
 
@@ -49,16 +51,18 @@ const ServiceRequestForm = () => {
             if (vehicleData.length > 0) {
                 setStep(2);
             } else {
-                alert('ALERT: No vehicles assigned to this client. Register a vehicle first.');
+                setError(`Client "${client.full_name}" has no registered vehicles. Please register a vehicle for this client first.`);
             }
         } catch (error) {
             console.error('Error fetching client vehicles:', error);
+            setError('Could not retrieve client vehicle assets.');
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError('');
 
         try {
             const payload = {
@@ -77,6 +81,7 @@ const ServiceRequestForm = () => {
             navigate(`/service-requests/${newRequestId}`);
         } catch (error) {
             console.error('Error creating service request:', error);
+            setError(error.response?.data?.error || 'Failed to dispatch work order. Please verify parameters and try again.');
         } finally {
             setLoading(false);
         }
@@ -112,6 +117,18 @@ const ServiceRequestForm = () => {
                     <StepIndicator num="02" label="VEHICLE ASSET" active={step >= 2} current={step === 2} />
                     <StepIndicator num="03" label="WORK ORDER PARAMETERS" active={step >= 3} current={step === 3} />
                 </div>
+
+                {error && (
+                    <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-2xl flex items-center justify-between gap-3 text-xs font-bold mb-8 animate-in fade-in">
+                        <div className="flex items-center gap-3">
+                            <span className="w-2 h-2 rounded-full bg-red-400 animate-ping"></span>
+                            <span>{error}</span>
+                        </div>
+                        <button type="button" onClick={() => setError('')} className="text-gray-400 hover:text-white p-1">
+                            <X size={15} />
+                        </button>
+                    </div>
+                )}
 
                 {/* ── STEP 1: CLIENT SELECTION ── */}
                 {step === 1 && (
@@ -330,10 +347,11 @@ const ServiceRequestForm = () => {
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="service-classification" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                             <span>Service Classification *</span>
                                         </label>
                                         <select
+                                            id="service-classification"
                                             className="input-glass appearance-none bg-black/40"
                                             value={serviceType}
                                             onChange={(e) => setServiceType(e.target.value)}
@@ -346,10 +364,11 @@ const ServiceRequestForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="initial-floor-status" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                             <span>Initial Floor Status</span>
                                         </label>
                                         <select
+                                            id="initial-floor-status"
                                             className="input-glass appearance-none bg-black/40"
                                             value={status}
                                             onChange={(e) => setStatus(e.target.value)}
@@ -360,11 +379,12 @@ const ServiceRequestForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="service-intake-mileage" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                             <Gauge size={11} className="text-primary" />
                                             <span>Current Mileage (KM)</span>
                                         </label>
                                         <input
+                                            id="service-intake-mileage"
                                             type="number"
                                             className="input-glass font-mono tracking-widest"
                                             value={mileage}
@@ -374,11 +394,12 @@ const ServiceRequestForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                                        <label htmlFor="service-intake-date" className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
                                             <Calendar size={11} className="text-gray-400" />
                                             <span>Intake Arrival Date *</span>
                                         </label>
                                         <input
+                                            id="service-intake-date"
                                             type="date"
                                             className="input-glass font-mono tracking-widest"
                                             value={requestDate}
@@ -396,12 +417,13 @@ const ServiceRequestForm = () => {
                                         <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-300">
                                             <Target size={16} />
                                         </div>
-                                        <h4 className="text-sm font-display font-black text-white uppercase tracking-wider">
+                                        <label htmlFor="service-workshop-notes" className="text-sm font-display font-black text-white uppercase tracking-wider cursor-pointer">
                                             Workshop Directives & Complaint
-                                        </h4>
+                                        </label>
                                     </div>
 
                                     <textarea
+                                        id="service-workshop-notes"
                                         className="input-glass resize-none p-4 leading-relaxed flex-1 min-h-[170px]"
                                         value={notes}
                                         onChange={(e) => setNotes(e.target.value)}

@@ -139,34 +139,34 @@ const Dashboard = () => {
             )}
             
             {/* ── Rapid Dispatch Bar (Top Level Actions) ── */}
-            <section className="bg-white/5 border border-white/10 rounded-[2.2rem] p-5 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 backdrop-blur-xl">
+            <section className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-5 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 backdrop-blur-xl">
                 <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
                     <Link
                         to="/service-requests/new"
-                        className="flex-1 sm:flex-none py-3 px-5 rounded-2xl bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-yellow-500/20 active:scale-95 transition-all"
+                        className="flex-1 sm:flex-none py-3 px-5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-amber-400/20 active:scale-95 transition-all"
                     >
-                        <Plus size={16} strokeWidth={3} />
+                        <Plus size={16} strokeWidth={2.5} />
                         <span>New Work Order</span>
                     </Link>
                     <Link
                         to="/customers/new"
-                        className="flex-1 sm:flex-none py-3 px-5 rounded-2xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs uppercase tracking-wider border border-white/10 flex items-center justify-center gap-2 transition-all"
+                        className="flex-1 sm:flex-none py-3 px-5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-white font-semibold text-sm border border-white/10 flex items-center justify-center gap-2 transition-all"
                     >
-                        <Users size={15} />
+                        <Users size={16} />
                         <span>Register Client</span>
                     </Link>
                     <Link
                         to="/vehicles/new"
-                        className="flex-1 sm:flex-none py-3 px-5 rounded-2xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs uppercase tracking-wider border border-white/10 flex items-center justify-center gap-2 transition-all"
+                        className="flex-1 sm:flex-none py-3 px-5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-white font-semibold text-sm border border-white/10 flex items-center justify-center gap-2 transition-all"
                     >
-                        <Car size={15} />
+                        <Car size={16} />
                         <span>Intake Vehicle</span>
                     </Link>
                 </div>
 
-                <div className="flex items-center gap-3 text-xs font-mono font-bold text-gray-300">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                    <span className="text-emerald-400">FLOOR STATUS:</span>
+                <div className="flex items-center gap-2.5 text-sm font-mono font-medium text-slate-300">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span className="text-emerald-400 font-bold">FLOOR STATUS:</span>
                     <span>{summary.inProgressRequests} In Progress • {summary.openRequests} Pending Intake</span>
                 </div>
             </section>
@@ -250,9 +250,9 @@ const Dashboard = () => {
                     title="UPCOMING APPOINTMENTS"
                     value={summary.upcomingServices}
                     sub="Workshop Arrival Due ≤ 7 Days"
-                    color="text-blue-400"
-                    bgColor="bg-blue-400/10"
-                    borderColor="border-blue-400/20"
+                    color="text-sky-400"
+                    bgColor="bg-sky-400/10"
+                    borderColor="border-sky-400/20"
                     icon={Clock}
                     progress={Math.min(100, Math.round((summary.upcomingServices / (summary.totalVehicles || 1)) * 100))}
                 />
@@ -455,7 +455,7 @@ const Dashboard = () => {
                                         </div>
                                         <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
                                             <div 
-                                                className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all duration-700 ease-out"
+                                                className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full transition-all duration-700 ease-out"
                                                 style={{ width: `${percentage}%` }}
                                             />
                                         </div>
@@ -464,7 +464,7 @@ const Dashboard = () => {
                             })}
                         </div>
                     ) : (
-                        <div className="text-center text-gray-500 text-xs font-bold uppercase tracking-widest py-6">
+                        <div className="text-center text-slate-400 text-xs font-semibold uppercase tracking-wider py-6">
                             No forecast data available for current cycle
                         </div>
                     )}
@@ -476,18 +476,18 @@ const Dashboard = () => {
 };
 
 const MetricCard = ({ title, value, sub, color, bgColor, borderColor, icon: Icon, progress }) => (
-    <div className={`glass-card p-6 md:p-8 border ${borderColor} relative overflow-hidden group`}>
-        <div className={`absolute -right-6 -top-6 w-28 h-28 ${bgColor} rounded-full opacity-40 group-hover:opacity-70 transition-opacity`}></div>
-        <Icon className={`absolute right-6 top-6 ${color} opacity-20 w-14 h-14 group-hover:scale-110 transition-transform`} />
+    <div className={`glass-card p-5 sm:p-6 rounded-2xl border ${borderColor} relative overflow-hidden group`}>
+        <div className={`absolute -right-6 -top-6 w-24 h-24 ${bgColor} rounded-full opacity-40 group-hover:opacity-70 transition-opacity`}></div>
+        <Icon className={`absolute right-5 top-5 ${color} opacity-20 w-12 h-12 group-hover:scale-110 transition-transform`} />
         
-        <div className="relative z-10 flex flex-col h-full space-y-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+        <div className="relative z-10 flex flex-col h-full space-y-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                 {title}
             </span>
-            <div className="text-3xl md:text-4xl font-display font-black text-white tracking-tighter">
+            <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono tabular-nums">
                 {value}
             </div>
-            <p className="text-xs font-semibold text-gray-400 max-w-[85%] pb-4">
+            <p className="text-xs text-slate-400 max-w-[85%] pb-3 font-normal">
                 {sub}
             </p>
 

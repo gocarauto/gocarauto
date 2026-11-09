@@ -298,7 +298,7 @@ const AIAdvisor = () => {
                                     </div>
 
                                     <Link
-                                        to={`/book-service`}
+                                        to={`/book-service?notes=${encodeURIComponent(msg.recommendation || '')}`}
                                         className="w-full h-11 bg-white hover:bg-[#fbbf24] text-black font-black text-xs uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 transition-all"
                                     >
                                         <CheckCircle size={15} />
@@ -329,11 +329,13 @@ const AIAdvisor = () => {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder={isAr ? 'اكتب ما تلاحظه هنا... (مثال: عندي صوت خبط في العفشة مع المطبات)' : "Describe symptoms... (e.g. 'Squeaking brake pads when stopping')"}
+                            aria-label={isAr ? 'وصف أعطال أو أعراض السيارة' : 'Describe vehicle symptoms'}
                             className="w-full bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-full py-4 px-6 ltr:pr-14 rtl:pl-14 text-sm font-medium outline-none focus:ring-2 focus:ring-[#fbbf24]/30 text-black dark:text-white transition-all shadow-sm"
                         />
                         <button 
                             type="submit"
                             disabled={!input.trim() || isTyping}
+                            aria-label={isAr ? 'إرسال الاستفسار' : 'Send symptom description'}
                             className={`absolute w-10 h-10 bg-[#fbbf24] hover:bg-[#d97706] text-black rounded-full flex items-center justify-center transition-all disabled:opacity-40 shadow-md ${
                                 isAr ? 'left-2.5' : 'right-2.5'
                             }`}

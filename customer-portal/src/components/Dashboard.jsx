@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 import { getVehicleSketch } from '../utils/sketchHelper';
@@ -10,22 +10,14 @@ import {
     TrendingUp,
     Calendar,
     FolderLock,
-    Bot,
-    Wrench,
-    CheckCircle,
-    Shield,
-    Sparkles,
-    Activity,
-    Fuel,
-    Gauge,
-    AlertCircle,
+    Droplet,
+    Cog,
     ArrowUpRight,
     Tag,
     Clock,
     ChevronRight,
     Plus,
-    AlertTriangle,
-    ShieldCheck
+    Activity
 } from 'lucide-react';
 import SellCarModal from './SellCarModal';
 
@@ -33,121 +25,191 @@ const Dashboard = () => {
     const { t, lang } = useLanguage();
     const isAr = lang === 'ar';
 
-    const [data, setData] = useState(null);
-    const [vehicles, setVehicles] = useState([]);
-    const [appointments, setAppointments] = useState([]);
-    const [selectedVehicleId, setSelectedVehicleId] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [vehicles, setVehicles] = useState(() => {
+        try {
+            const cached = sessionStorage.getItem('gocar_fleet_cache');
+            return cached ? JSON.parse(cached) : [];
+        } catch {
+            return [];
+        }
+    });
+    const [data, setData] = useState(() => {
+        try {
+            const cached = sessionStorage.getItem('gocar_dash_cache');
+            return cached ? JSON.parse(cached) : null;
+        } catch {
+            return null;
+        }
+    });
+    const [appointments, setAppointments] = useState(() => {
+        try {
+            const cached = sessionStorage.getItem('gocar_appointments_cache');
+            return cached ? JSON.parse(cached) : [];
+        } catch {
+            return [];
+        }
+    });
+    const [selectedVehicleId, setSelectedVehicleId] = useState(() => {
+        try {
+            const saved = localStorage.getItem('gocar_active_vehicle_id') || sessionStorage.getItem('gocar_active_vehicle_id');
+            if (saved) return Number(saved) || saved;
+            const cached = sessionStorage.getItem('gocar_fleet_cache');
+            const fleet = cached ? JSON.parse(cached) : [];
+            return fleet[0]?.id || null;
+        } catch {
+            return null;
+        }
+    });
+    const [loading, setLoading] = useState(() => {
+        try {
+            return !sessionStorage.getItem('gocar_dash_cache');
+        } catch {
+            return true;
+        }
+    });
     const [sellModalOpen, setSellModalOpen] = useState(false);
+
+    // Refs for precision dynamic laser line tracking across any screen width
+    const stageRef = useRef(null);
+    const oilCardRef = useRef(null);
+    const teleCardRef = useRef(null);
+    const transCardRef = useRef(null);
+    const carImgRef = useRef(null);
+    const [lineCoords, setLineCoords] = useState(null);
 
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const [dashRes, remRes, vehRes, apptRes] = await Promise.all([
+                const [dashRes, fleetRes, apptRes, remRes] = await Promise.all([
                     api.get('/customer-portal/dashboard'),
-                    api.get('/customer-portal/reminders').catch(() => ({ data: { data: [] } })),
-                    api.get('/customer-portal/vehicles').catch(() => ({ data: { data: [] } })),
-                    api.get('/customer-portal/appointments').catch(() => ({ data: { data: [] } }))
+                    api.get('/customer-portal/vehicles'),
+                    api.get('/customer-portal/appointments'),
+                    api.get('/customer-portal/reminders')
                 ]);
 
-                const fleet = vehRes.data?.data || [];
+                const fleet = fleetRes.data?.data || [];
                 setVehicles(fleet);
 
                 const dashData = dashRes.data?.data || {};
                 const upcoming = dashData.upcomingService || [];
                 const initialCarId = upcoming[0]?.id || fleet[0]?.id || null;
-                setSelectedVehicleId(initialCarId);
+                setSelectedVehicleId(prev => prev || initialCarId);
 
-                setAppointments(apptRes.data?.data || []);
-                setData({
+                const apptList = apptRes.data?.data || [];
+                setAppointments(apptList);
+                const fullDash = {
                     ...dashData,
                     reminders: remRes.data?.data || []
-                });
+                };
+                setData(fullDash);
+
+                try {
+                    sessionStorage.setItem('gocar_fleet_cache', JSON.stringify(fleet));
+                    sessionStorage.setItem('gocar_appointments_cache', JSON.stringify(apptList));
+                    sessionStorage.setItem('gocar_dash_cache', JSON.stringify(fullDash));
+                } catch {
+                    // ignore quota errors
+                }
             } catch (error) {
                 console.error('Failed to fetch dashboard data:', error);
             } finally {
                 setLoading(false);
             }
         };
+
         fetchDashboardData();
     }, []);
 
-    if (loading) {
+    const activeVehicle = vehicles.find(v => v.id === selectedVehicleId) || vehicles[0];
+
+    // Automotive telemetry & interval calculations
+    const stats = data?.stats || {};
+    const mileage = activeVehicle?.current_mileage || stats.mileage || 0;
+    const kmUntilService = activeVehicle ? Math.max(0, 10000 - (mileage % 10000)) : 10000;
+    const oilLifePercent = Math.min(100, Math.max(0, Math.round((kmUntilService / 10000) * 100)));
+    const transmissionLifePercent = activeVehicle ? (activeVehicle.services_count > 0 ? 92 : 100) : 100;
+    const sketch = activeVehicle ? getVehicleSketch(activeVehicle.make, activeVehicle.model, activeVehicle.year) : null;
+
+    // Check for an active ongoing appointment
+    const activeAppointment = appointments.find(a => 
+        a.status === 'In Progress' || a.status === 'Scheduled' || a.status === 'Open' || a.status === 'Inspection'
+    );
+
+    // Dynamic stage height: expands to accommodate enlarged vehicle hero presence on desktop, compact on mobile
+    const stageHeightClass = activeAppointment ? 'h-[360px] sm:h-[440px] md:h-[530px]' : 'h-[380px] sm:h-[460px] md:h-[620px]';
+
+    // Dynamic precision calculation of leader lines locking card borders directly to vehicle coordinates
+    const updateLineCoords = () => {
+        if (!stageRef.current || !oilCardRef.current || !teleCardRef.current || !transCardRef.current || !carImgRef.current) return;
+        const stage = stageRef.current.getBoundingClientRect();
+        const oil = oilCardRef.current.getBoundingClientRect();
+        const tele = teleCardRef.current.getBoundingClientRect();
+        const trans = transCardRef.current.getBoundingClientRect();
+        const car = carImgRef.current.getBoundingClientRect();
+
+        setLineCoords({
+            oil: {
+                x1: oil.right - stage.left,
+                y1: oil.top - stage.top + oil.height / 2,
+                x2: car.left - stage.left + car.width * 0.33,
+                y2: car.top - stage.top + car.height * 0.40
+            },
+            tele: {
+                x1: tele.left - stage.left,
+                y1: tele.top - stage.top + tele.height / 2,
+                x2: car.left - stage.left + car.width * 0.65,
+                y2: car.top - stage.top + car.height * 0.26
+            },
+            trans: {
+                x1: trans.left - stage.left,
+                y1: trans.top - stage.top + trans.height / 2,
+                x2: car.left - stage.left + car.width * 0.42,
+                y2: car.top - stage.top + car.height * 0.48
+            },
+            width: stage.width,
+            height: stage.height
+        });
+    };
+
+    useEffect(() => {
+        updateLineCoords();
+        window.addEventListener('resize', updateLineCoords);
+        const timer = setTimeout(updateLineCoords, 100);
+        return () => {
+            window.removeEventListener('resize', updateLineCoords);
+            clearTimeout(timer);
+        };
+    }, [activeVehicle, stageHeightClass, sketch]);
+
+    if (loading && !data && vehicles.length === 0) {
         return (
-            <div className="space-y-6 animate-pulse">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {[1, 2, 3].map(i => (
-                        <div key={i} className="h-24 bg-slate-200 dark:bg-white/[0.04] rounded-2xl" />
-                    ))}
-                </div>
-                <div className="h-96 bg-slate-200 dark:bg-white/[0.04] rounded-3xl" />
+            <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+                <div className="w-10 h-10 border-4 border-amber-400 border-t-transparent rounded-full animate-spin" />
+                <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+                    {t('loading')}
+                </p>
             </div>
         );
     }
 
-    const activeVehicle = vehicles.find(v => v.id === selectedVehicleId) 
-        || data?.upcomingService?.[0] 
-        || vehicles[0] 
-        || null;
-
-    const stats = data?.stats || { totalVehicles: vehicles.length || 0, totalServices: 0, totalSpent: 0 };
-    const sketch = activeVehicle ? getVehicleSketch(activeVehicle.make, activeVehicle.model, activeVehicle.year) : null;
-    const mileage = activeVehicle?.current_mileage || activeVehicle?.mileage || 0;
-
-    // Derived telemetry metrics
-    const oilCycle = mileage % 10000;
-    const oilLifePercent = Math.max(12, Math.min(100, Math.round(100 - (oilCycle / 100))));
-    const brakeCycle = mileage % 25000;
-    const brakeLifePercent = Math.max(20, Math.min(100, Math.round(100 - (brakeCycle / 250))));
-    const kmUntilService = Math.max(250, 10000 - oilCycle);
-
-    // Filter appointments for the active vehicle or latest scheduled
-    const activeAppointment = appointments.find(a => 
-        (activeVehicle && a.vehicle_id === activeVehicle.id) || a.status === 'In Progress' || a.status === 'Scheduled'
-    ) || appointments[0];
-
-    const reminders = data?.reminders || [];
-
-    // Service workflow pipeline definition
-    const serviceStages = [
-        { key: 'Scheduled', label: t('scheduled') || 'Scheduled' },
-        { key: 'Inspection', label: t('inspection') || 'Inspection' },
-        { key: 'In Progress', label: t('in_repair') || 'In Repair' },
-        { key: 'Quality Check', label: t('quality_check') || 'Quality Check' },
-        { key: 'Completed', label: t('ready_pickup') || 'Ready' }
-    ];
-
-    const getCurrentStageIndex = (status) => {
-        if (!status) return 0;
-        const normalized = status.toLowerCase();
-        if (normalized.includes('sched')) return 0;
-        if (normalized.includes('inspect')) return 1;
-        if (normalized.includes('prog') || normalized.includes('repair')) return 2;
-        if (normalized.includes('check') || normalized.includes('qual')) return 3;
-        if (normalized.includes('ready') || normalized.includes('comp')) return 4;
-        return 0;
-    };
-
-    const currentStageIdx = activeAppointment ? getCurrentStageIndex(activeAppointment.status) : -1;
-
     return (
         <div className="space-y-6 pb-12">
             
-            {/* ── Key Metrics Overview ── */}
+            {/* ── ZONE 3: Top 3 KPI Metric Cards ── */}
             <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <Link
                     to="/vehicles"
-                    className="p-5 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm hover:border-slate-300 dark:hover:border-white/20 transition-all flex items-center justify-between group"
+                    className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm hover:border-slate-300 dark:hover:border-white/20 transition-all flex items-center justify-between group"
                 >
                     <div className="space-y-1">
-                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 block">
                             {t('registered_vehicles')}
                         </span>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-black text-slate-950 dark:text-white tabular-nums">
+                            <span className="text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white tabular-nums tracking-tight">
                                 {stats.totalVehicles || vehicles.length}
                             </span>
-                            <span className="text-xs text-slate-500 font-medium">{isAr ? 'سيارات' : 'Cars'}</span>
+                            <span className="text-xs sm:text-sm text-slate-400 font-medium">{isAr ? 'سيارات' : 'Cars'}</span>
                         </div>
                     </div>
                     <div className="w-11 h-11 rounded-xl bg-amber-400/10 text-amber-500 dark:text-amber-400 border border-amber-400/20 flex items-center justify-center group-hover:scale-105 transition-transform">
@@ -157,17 +219,17 @@ const Dashboard = () => {
 
                 <Link
                     to="/history"
-                    className="p-5 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm hover:border-slate-300 dark:hover:border-white/20 transition-all flex items-center justify-between group"
+                    className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm hover:border-slate-300 dark:hover:border-white/20 transition-all flex items-center justify-between group"
                 >
                     <div className="space-y-1">
-                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 block">
                             {t('total_visits')}
                         </span>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-black text-slate-950 dark:text-white tabular-nums">
-                                {stats.totalServices}
+                            <span className="text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white tabular-nums tracking-tight">
+                                {stats.totalServices || 0}
                             </span>
-                            <span className="text-xs text-slate-500 font-medium">{isAr ? 'زيارة صيانة' : 'Visits'}</span>
+                            <span className="text-xs sm:text-sm text-slate-400 font-medium">{isAr ? 'زيارات' : 'Visits'}</span>
                         </div>
                     </div>
                     <div className="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
@@ -177,17 +239,17 @@ const Dashboard = () => {
 
                 <Link
                     to="/invoices"
-                    className="p-5 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm hover:border-slate-300 dark:hover:border-white/20 transition-all flex items-center justify-between group"
+                    className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm hover:border-slate-300 dark:hover:border-white/20 transition-all flex items-center justify-between group"
                 >
                     <div className="space-y-1">
-                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                            {t('egp_invested') || 'Maintenance Invested'}
+                        <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 block">
+                            {t('egp_invested') || 'EGP Invested'}
                         </span>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-black text-slate-950 dark:text-white tabular-nums">
+                            <span className="text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white tabular-nums tracking-tight">
                                 {stats.totalSpent?.toLocaleString() || 0}
                             </span>
-                            <span className="text-xs text-slate-500 font-medium">{isAr ? 'ج.م' : 'EGP'}</span>
+                            <span className="text-xs sm:text-sm text-slate-400 font-medium">{isAr ? 'ج.م' : 'EGP'}</span>
                         </div>
                     </div>
                     <div className="w-11 h-11 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
@@ -196,225 +258,359 @@ const Dashboard = () => {
                 </Link>
             </section>
 
-            {/* ── Cockpit Vehicle Stage ── */}
-            <section className="bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] rounded-3xl overflow-hidden shadow-sm">
+            {/* ── ZONE 4: Garage Fleet Hero Stage (Full-Width Responsive Arena) ── */}
+            <section className="bg-[#0a0c14] border border-slate-800/80 dark:border-white/[0.08] rounded-3xl overflow-hidden shadow-2xl relative">
                 
                 {/* Fleet Switcher Tab Bar */}
-                <div className="px-6 py-3.5 border-b border-slate-100 dark:border-white/[0.06] bg-slate-50/70 dark:bg-white/[0.02] flex items-center justify-between gap-4 overflow-x-auto">
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider shrink-0">
+                <div className="px-6 sm:px-8 py-3.5 border-b border-white/[0.06] bg-black/20 flex items-center justify-between gap-4 overflow-x-auto relative z-30">
+                    <div className="flex items-center gap-2.5">
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider shrink-0 font-sans">
                             {t('garage_fleet')}:
                         </span>
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-2">
                             {vehicles.map((v) => {
                                 const isSelected = v.id === selectedVehicleId;
                                 return (
                                     <button
                                         key={v.id}
-                                        onClick={() => setSelectedVehicleId(v.id)}
-                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
+                                        type="button"
+                                        onClick={() => {
+                                            setSelectedVehicleId(v.id);
+                                            try { localStorage.setItem('gocar_active_vehicle_id', v.id); } catch (err) { void err; }
+                                        }}
+                                        className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
                                             isSelected
-                                                ? 'bg-amber-400 text-slate-950 shadow-sm'
-                                                : 'bg-white dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.1] border border-slate-200 dark:border-white/[0.08]'
+                                                ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20'
+                                                : 'bg-white/[0.04] text-slate-300 hover:bg-white/[0.08] border border-white/[0.06]'
                                         }`}
                                     >
-                                        <Car size={13} />
+                                        <Car size={14} />
                                         <span>{v.make} {v.model}</span>
-                                        {v.license_plate && (
-                                            <span className="text-[10px] opacity-75 font-mono">({v.license_plate})</span>
-                                        )}
                                     </button>
                                 );
                             })}
+
+                            <Link
+                                to="/vehicles"
+                                className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white bg-transparent hover:bg-white/[0.04] border border-dashed border-white/20 flex items-center gap-1.5 shrink-0 transition-colors"
+                            >
+                                <Plus size={13} />
+                                <span>{isAr ? 'إضافة سيارة' : 'Add Vehicle'}</span>
+                            </Link>
                         </div>
                     </div>
 
                     <Link
                         to="/vehicles"
-                        className="text-xs font-semibold text-amber-500 hover:text-amber-600 dark:text-amber-400 flex items-center gap-1 shrink-0"
+                        className="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1 shrink-0 transition-colors"
                     >
                         <span>{t('manage_fleet')}</span>
                         <ArrowUpRight size={13} />
                     </Link>
                 </div>
 
-                {/* Main Vehicle Cockpit Content */}
+                {/* Main Vehicle Cinematic Stage (Full Width Uncaged Layout) */}
                 {activeVehicle ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[420px]">
+                    <div 
+                        ref={stageRef}
+                        className={`relative w-full ${stageHeightClass} overflow-hidden select-none transition-[height] duration-300`}
+                    >
                         
-                        {/* Left Details & Telemetry Gauges */}
-                        <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between border-b lg:border-b-0 ltr:lg:border-r rtl:lg:border-l border-slate-100 dark:border-white/[0.06] space-y-6">
-                            
-                            <div>
-                                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-400/10 text-amber-600 dark:text-amber-400 border border-amber-400/20 mb-3">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                                    <span>{t('active_vehicle')}</span>
-                                </div>
+                        {/* Ambient Showroom Radial Glow & Floor Halo */}
+                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/[0.08] via-transparent to-transparent pointer-events-none" />
+                        <div className="absolute bottom-[13%] left-1/2 -translate-x-1/2 w-[720px] sm:w-[780px] max-w-[88%] h-[95px] bg-amber-500/[0.13] rounded-[100%] blur-3xl pointer-events-none" />
 
-                                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white">
-                                    {activeVehicle.make} {activeVehicle.model}
-                                </h2>
+                        {/* Idea D: Ambient Showroom Stardust Micro-Particles */}
+                        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
+                            {[
+                                { top: '22%', left: '26%', size: 3, delay: 0, dur: 6, opacity: 0.4 },
+                                { top: '35%', left: '40%', size: 2, delay: 1.2, dur: 7, opacity: 0.5 },
+                                { top: '18%', left: '55%', size: 3.5, delay: 2.5, dur: 5.5, opacity: 0.35 },
+                                { top: '48%', left: '68%', size: 2.5, delay: 0.8, dur: 8, opacity: 0.45 },
+                                { top: '28%', left: '76%', size: 3, delay: 3.1, dur: 6.5, opacity: 0.3 },
+                                { top: '65%', left: '36%', size: 2, delay: 1.8, dur: 7.5, opacity: 0.4 },
+                                { top: '72%', left: '64%', size: 3, delay: 2.2, dur: 6, opacity: 0.35 },
+                                { top: '16%', left: '48%', size: 2.5, delay: 4, dur: 7, opacity: 0.5 },
+                                { top: '55%', left: '22%', size: 3, delay: 1.5, dur: 6.2, opacity: 0.3 },
+                                { top: '42%', left: '84%', size: 2, delay: 2.9, dur: 7.8, opacity: 0.4 },
+                                { top: '62%', left: '78%', size: 2.5, delay: 0.5, dur: 6.8, opacity: 0.35 },
+                                { top: '30%', left: '32%', size: 3.5, delay: 3.5, dur: 5.8, opacity: 0.45 }
+                            ].map((p, idx) => (
+                                <motion.div
+                                    key={idx}
+                                    animate={{
+                                        y: [-6, 6, -6],
+                                        x: [-3, 3, -3],
+                                        opacity: [p.opacity * 0.4, p.opacity, p.opacity * 0.4]
+                                    }}
+                                    transition={{
+                                        duration: p.dur,
+                                        repeat: Infinity,
+                                        ease: 'easeInOut',
+                                        delay: p.delay
+                                    }}
+                                    style={{
+                                        top: p.top,
+                                        left: p.left,
+                                        width: p.size,
+                                        height: p.size
+                                    }}
+                                    className="absolute rounded-full bg-amber-300 shadow-[0_0_8px_rgba(251,191,36,0.8)]"
+                                />
+                            ))}
+                        </div>
 
-                                <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                                    <span className="font-semibold text-slate-700 dark:text-slate-300">
-                                        {activeVehicle.year}
-                                    </span>
-                                    <span>•</span>
-                                    <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-white/[0.06] font-mono text-slate-800 dark:text-slate-200">
-                                        {activeVehicle.license_plate || (isAr ? 'بدون لوحة' : 'No Plate')}
-                                    </span>
-                                    <span>•</span>
-                                    <span className="font-mono text-[11px]">
-                                        VIN: {activeVehicle.vin || '—'}
-                                    </span>
-                                </div>
+                        {/* Top-Left Active Vehicle Identity (Anchored cleanly to container margin) */}
+                        <div className="absolute top-6 left-6 sm:left-10 rtl:right-6 rtl:sm:right-10 rtl:left-auto z-20 pointer-events-auto">
+                            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md text-[12px] font-bold bg-amber-400/10 text-amber-400 border border-amber-400/20 mb-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                                <span>{t('active_vehicle')}</span>
                             </div>
 
-                            {/* Telemetry Indicator Dials */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06] space-y-2.5">
-                                    <div className="flex items-center justify-between text-xs">
-                                        <span className="font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
-                                            <Fuel size={14} className="text-amber-500" />
-                                            {t('oil_life')}
-                                        </span>
-                                        <span className="font-bold tabular-nums text-slate-950 dark:text-white">{oilLifePercent}%</span>
-                                    </div>
-                                    <div className="w-full bg-slate-200 dark:bg-white/[0.08] rounded-full h-2 overflow-hidden">
-                                        <div 
-                                            className={`h-full rounded-full transition-all duration-500 ${
-                                                oilLifePercent > 30 ? 'bg-emerald-500' : 'bg-rose-500'
-                                            }`}
-                                            style={{ width: `${oilLifePercent}%` }}
-                                        />
-                                    </div>
-                                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                                        {isAr ? `الصيانة القادمة خلال ~${kmUntilService.toLocaleString()} كم` : `Next due in ~${kmUntilService.toLocaleString()} km`}
-                                    </p>
-                                </div>
+                            <h2 className="text-[25px] sm:text-[31px] font-extrabold text-white tracking-tight">
+                                {activeVehicle.make} {activeVehicle.model}
+                            </h2>
 
-                                <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06] space-y-2.5">
-                                    <div className="flex items-center justify-between text-xs">
-                                        <span className="font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
-                                            <Activity size={14} className="text-amber-500" />
-                                            {t('brake_health')}
-                                        </span>
-                                        <span className="font-bold tabular-nums text-slate-950 dark:text-white">{brakeLifePercent}%</span>
-                                    </div>
-                                    <div className="w-full bg-slate-200 dark:bg-white/[0.08] rounded-full h-2 overflow-hidden">
-                                        <div 
-                                            className="h-full rounded-full bg-amber-400 transition-all duration-500"
-                                            style={{ width: `${brakeLifePercent}%` }}
-                                        />
-                                    </div>
-                                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                                        {isAr ? 'فحص البطانات وتيل الفرامل معتمد' : 'Pads & hydraulic system verified'}
-                                    </p>
-                                </div>
+                            <div className="flex items-center gap-2 text-[13px] text-slate-400 font-sans mt-1">
+                                <span className="text-slate-300 font-bold">{activeVehicle.year}</span>
+                                <span>•</span>
+                                <span>{activeVehicle.license_plate || (isAr ? 'بدون لوحة' : 'No Plate')}</span>
+                                <span>•</span>
+                                <span>VIN: {activeVehicle.vin || '—'}</span>
                             </div>
+                        </div>
 
-                            {/* Odometer Strip */}
-                            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06] flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-slate-200 dark:bg-white/[0.08] flex items-center justify-center text-slate-700 dark:text-slate-200">
-                                        <Gauge size={16} />
+                        {/* Centered Vehicle Sketch Visualizer */}
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 px-6 sm:px-12">
+                            <div className="relative inline-flex items-center justify-center">
+                                <AnimatePresence mode="wait">
+                                    {sketch ? (
+                                        <motion.img
+                                            ref={carImgRef}
+                                            key={activeVehicle.id}
+                                            src={sketch}
+                                            alt={`${activeVehicle.make} ${activeVehicle.model}`}
+                                            onLoad={updateLineCoords}
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.95 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="h-[390px] sm:h-[470px] lg:h-[500px] w-auto max-w-[92%] sm:max-w-[80%] object-contain filter drop-shadow-[0_25px_50px_rgba(0,0,0,0.95)] contrast-[1.05]"
+                                        />
+                                    ) : (
+                                        <div className="text-center text-slate-500 text-xs">
+                                            <Car size={40} className="mx-auto mb-2 opacity-40 text-amber-500" />
+                                            <span>{isAr ? 'الرسم الهندسي قيد الإعداد' : 'Blueprint representation unavailable'}</span>
+                                        </div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        </div>
+
+                        {/* Dynamic Calibrated SVG Dotted Dashed Leader Lines (Pixel-locked to cards and car) */}
+                        {lineCoords && (
+                            <svg 
+                                className="absolute inset-0 pointer-events-none z-10 hidden sm:block"
+                                style={{ width: lineCoords.width, height: lineCoords.height }}
+                            >
+                                <defs>
+                                    <filter id="glow-hud" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur stdDeviation="2" result="blur" />
+                                        <feMerge>
+                                            <feMergeNode in="blur" />
+                                            <feMergeNode in="SourceGraphic" />
+                                        </feMerge>
+                                    </filter>
+                                </defs>
+
+                                {/* Point A: Left Engine Oil Line (Locked from card border -> Hood) */}
+                                <g filter="url(#glow-hud)">
+                                    <path
+                                        d={`M ${lineCoords.oil.x1} ${lineCoords.oil.y1} C ${(lineCoords.oil.x1 + lineCoords.oil.x2) / 2} ${lineCoords.oil.y1}, ${(lineCoords.oil.x1 + lineCoords.oil.x2) / 2} ${lineCoords.oil.y2}, ${lineCoords.oil.x2} ${lineCoords.oil.y2}`}
+                                        fill="none"
+                                        stroke="#10b981"
+                                        strokeWidth="1.5"
+                                        strokeDasharray="4 4"
+                                        opacity="0.9"
+                                    />
+                                    <circle cx={lineCoords.oil.x1} cy={lineCoords.oil.y1} r="3.5" fill="#10b981" />
+                                    <circle cx={lineCoords.oil.x2} cy={lineCoords.oil.y2} r="5" fill="#10b981" />
+                                    <circle cx={lineCoords.oil.x2} cy={lineCoords.oil.y2} r="10" fill="none" stroke="#10b981" strokeWidth="1" opacity="0.4" />
+                                </g>
+
+                                {/* Point B: Upper Right Telemetry Card Line (Locked from card border -> Roof/B-Pillar) */}
+                                <g filter="url(#glow-hud)">
+                                    <path
+                                        d={`M ${lineCoords.tele.x1} ${lineCoords.tele.y1} C ${(lineCoords.tele.x1 + lineCoords.tele.x2) / 2} ${lineCoords.tele.y1}, ${(lineCoords.tele.x1 + lineCoords.tele.x2) / 2} ${lineCoords.tele.y2}, ${lineCoords.tele.x2} ${lineCoords.tele.y2}`}
+                                        fill="none"
+                                        stroke="#cbd5e1"
+                                        strokeWidth="1.5"
+                                        strokeDasharray="4 4"
+                                        opacity="0.8"
+                                    />
+                                    <circle cx={lineCoords.tele.x1} cy={lineCoords.tele.y1} r="3.5" fill="#cbd5e1" />
+                                    <circle cx={lineCoords.tele.x2} cy={lineCoords.tele.y2} r="4.5" fill="#cbd5e1" />
+                                    <circle cx={lineCoords.tele.x2} cy={lineCoords.tele.y2} r="9" fill="none" stroke="#cbd5e1" strokeWidth="1" opacity="0.35" />
+                                </g>
+
+                                {/* Point C: Lower Right Transmission Oil Line (Locked from card border -> Front Wheel/Transmission) */}
+                                <g filter="url(#glow-hud)">
+                                    <path
+                                        d={`M ${lineCoords.trans.x1} ${lineCoords.trans.y1} C ${(lineCoords.trans.x1 + lineCoords.trans.x2) / 2} ${lineCoords.trans.y1}, ${(lineCoords.trans.x1 + lineCoords.trans.x2) / 2} ${lineCoords.trans.y2}, ${lineCoords.trans.x2} ${lineCoords.trans.y2}`}
+                                        fill="none"
+                                        stroke="#06b6d4"
+                                        strokeWidth="1.5"
+                                        strokeDasharray="4 4"
+                                        opacity="0.9"
+                                    />
+                                    <circle cx={lineCoords.trans.x1} cy={lineCoords.trans.y1} r="3.5" fill="#06b6d4" />
+                                    <circle cx={lineCoords.trans.x2} cy={lineCoords.trans.y2} r="5" fill="#06b6d4" />
+                                    <circle cx={lineCoords.trans.x2} cy={lineCoords.trans.y2} r="10" fill="none" stroke="#06b6d4" strokeWidth="1" opacity="0.4" />
+                                </g>
+                            </svg>
+                        )}
+
+                        {/* Point A: Left Telemetry - High-Contrast ENGINE OIL LIFE Capsule (Desktop HUD) */}
+                        <div 
+                            ref={oilCardRef}
+                            className="hidden md:block absolute left-6 sm:left-10 lg:left-14 top-[50%] -translate-y-1/2 z-20 pointer-events-auto"
+                        >
+                            <div className="relative p-3.5 sm:p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-2xl space-y-1.5 w-[210px]">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-sans">
+                                        {t('oil_life')}
+                                    </span>
+                                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                                </div>
+                                <div className="flex items-center gap-3 pt-0.5">
+                                    <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shrink-0">
+                                        <Droplet size={18} />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <span className="text-2xl font-extrabold text-white tabular-nums font-mono leading-none block">
+                                            {oilLifePercent}%
+                                        </span>
+                                        <div className="w-24 h-1.5 bg-slate-800 rounded-full mt-1.5 overflow-hidden border border-white/[0.05]">
+                                            <div
+                                                className="h-full bg-emerald-400 rounded-full transition-all duration-500"
+                                                style={{ width: `${oilLifePercent}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <span className="text-[11px] text-slate-300 font-sans block pt-1">
+                                    {isAr ? `الصيانة القادمة خلال ~${kmUntilService.toLocaleString()} كم` : `Next due in ~${kmUntilService.toLocaleString()} km`}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Point B: Upper Right - High-Contrast Telemetry & Activity (Desktop HUD) */}
+                        <div 
+                            ref={teleCardRef}
+                            className="hidden md:block absolute right-6 sm:right-10 lg:right-14 top-[14%] sm:top-[16%] z-20 pointer-events-auto"
+                        >
+                            <div className="relative p-3.5 sm:p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-2xl w-[230px] text-left rtl:text-right space-y-2.5">
+                                <div className="flex items-center justify-between text-xs font-bold text-white border-b border-slate-700/60 pb-2">
+                                    <span className="font-sans">{t('telemetry_activity')}</span>
+                                    <Activity size={13} className="text-amber-400" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-3 text-xs">
+                                    <div>
+                                        <span className="text-[10px] font-sans font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
+                                            {t('odometer')}:
+                                        </span>
+                                        <span className="font-mono font-bold text-white tabular-nums text-sm">
+                                            {mileage ? `${mileage.toLocaleString()} km` : '— km'}
+                                        </span>
                                     </div>
                                     <div>
-                                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block leading-none">
-                                            {t('odometer')}
+                                        <span className="text-[10px] font-sans font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
+                                            {t('services_logged')}:
                                         </span>
-                                        <span className="text-lg font-bold text-slate-950 dark:text-white font-mono tabular-nums">
-                                            {mileage ? mileage.toLocaleString() : '—'} <span className="text-xs font-sans text-slate-500">km</span>
+                                        <span className="font-mono font-bold text-white tabular-nums text-sm">
+                                            {activeVehicle.services_count || 0}
                                         </span>
                                     </div>
                                 </div>
-
-                                <div className="text-right rtl:text-left">
-                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block leading-none">
-                                        {t('services_logged')}
-                                    </span>
-                                    <span className="text-base font-bold text-slate-950 dark:text-white tabular-nums">
-                                        {activeVehicle.services_count || 0}
-                                    </span>
-                                </div>
                             </div>
+                        </div>
 
-                            {/* Fast Actions Bar */}
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
+                        {/* Point C: Lower Right - High-Contrast TRANSMISSION OIL LIFE Capsule (Desktop HUD) */}
+                        <div 
+                            ref={transCardRef}
+                            className="hidden md:block absolute right-6 sm:right-10 lg:right-14 top-[60%] sm:top-[62%] z-20 pointer-events-auto text-left rtl:text-right"
+                        >
+                            <div className="relative p-3.5 sm:p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-2xl space-y-1.5 w-[230px]">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-sans">
+                                        {t('transmission_oil')}
+                                    </span>
+                                    <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                                </div>
+                                <div className="flex items-center gap-3 pt-0.5">
+                                    <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center shrink-0">
+                                        <Cog size={18} />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <span className="text-2xl font-extrabold text-white tabular-nums font-mono leading-none block">
+                                            {transmissionLifePercent}%
+                                        </span>
+                                        <div className="w-24 h-1.5 bg-slate-800 rounded-full mt-1.5 overflow-hidden border border-white/[0.05]">
+                                            <div
+                                                className="h-full bg-cyan-400 rounded-full transition-all duration-500"
+                                                style={{ width: `${transmissionLifePercent}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <span className="text-[11px] text-slate-300 font-sans block pt-1">
+                                    {isAr ? 'تم التحقق من جدول الصيانة' : 'Scheduled interval verified'}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Bottom Unified Glass Segmented Action Dock (Responsive) */}
+                        <div className="absolute bottom-4 sm:bottom-5 left-1/2 -translate-x-1/2 z-30 pointer-events-auto max-w-[95%]">
+                            <div className="p-1 sm:p-1.5 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-slate-700/70 shadow-2xl flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full">
                                 <Link
                                     to={`/book-service?vehicleId=${activeVehicle.id}`}
-                                    className="p-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs flex flex-col items-center justify-center gap-1.5 transition-colors shadow-sm"
+                                    className="px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-950 font-bold text-xs sm:text-[13px] flex items-center gap-1.5 sm:gap-2 shadow-sm whitespace-nowrap transition-all duration-150 cursor-pointer"
                                 >
-                                    <Calendar size={16} />
+                                    <Calendar size={15} />
                                     <span>{t('booking')}</span>
                                 </Link>
+
+                                <div className="h-4 w-px bg-slate-700/70 mx-0.5 sm:mx-1 shrink-0" />
 
                                 <button
                                     type="button"
                                     onClick={() => setSellModalOpen(true)}
-                                    className="p-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-800 dark:text-white font-semibold text-xs border border-slate-200 dark:border-white/[0.08] flex flex-col items-center justify-center gap-1.5 transition-colors"
+                                    className="px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] font-semibold text-xs sm:text-[13px] flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-all duration-150 cursor-pointer"
                                 >
-                                    <Tag size={16} className="text-amber-500" />
+                                    <Tag size={15} className="text-amber-400" />
                                     <span>{t('sell_car')}</span>
                                 </button>
 
+                                <div className="h-4 w-px bg-slate-700/70 mx-0.5 sm:mx-1 shrink-0" />
+
                                 <Link
                                     to="/glovebox"
-                                    className="p-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-800 dark:text-white font-semibold text-xs border border-slate-200 dark:border-white/[0.08] flex flex-col items-center justify-center gap-1.5 transition-colors"
+                                    className="px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] font-semibold text-xs sm:text-[13px] flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-all duration-150 cursor-pointer"
                                 >
-                                    <FolderLock size={16} className="text-slate-500 dark:text-slate-400" />
-                                    <span>{t('digital_glovebox')}</span>
-                                </Link>
-
-                                <Link
-                                    to="/ai-advisor"
-                                    className="p-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-800 dark:text-white font-semibold text-xs border border-slate-200 dark:border-white/[0.08] flex flex-col items-center justify-center gap-1.5 transition-colors"
-                                >
-                                    <Bot size={16} className="text-amber-500" />
-                                    <span>{t('ai_advisor')}</span>
+                                    <FolderLock size={15} className="text-slate-400" />
+                                    <span>{t('car_documents')}</span>
                                 </Link>
                             </div>
-
-                        </div>
-
-                        {/* Right Vehicle Visualizer Stage */}
-                        <div className="lg:col-span-5 p-6 sm:p-8 flex flex-col items-center justify-center bg-slate-50/50 dark:bg-[#090a0f] relative overflow-hidden">
-                            <AnimatePresence mode="wait">
-                                {sketch ? (
-                                    <motion.div
-                                        key={activeVehicle.id}
-                                        initial={{ opacity: 0, scale: 0.94 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.94 }}
-                                        transition={{ duration: 0.25 }}
-                                        className="w-full flex flex-col items-center justify-center space-y-4"
-                                    >
-                                        <img 
-                                            src={sketch} 
-                                            alt={`${activeVehicle.make} ${activeVehicle.model}`}
-                                            className="w-full max-h-[260px] object-contain drop-shadow-md filter contrast-105"
-                                        />
-                                        <div className="px-3 py-1 rounded-full bg-slate-200/80 dark:bg-white/[0.06] text-[10px] font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-widest">
-                                            {activeVehicle.make} {activeVehicle.model} • {isAr ? 'رسم هندسي معتمد' : 'Verified Blueprint'}
-                                        </div>
-                                    </motion.div>
-                                ) : (
-                                    <div className="text-center py-12 text-slate-400 text-xs">
-                                        <Car size={32} className="mx-auto mb-2 opacity-40" />
-                                        <span>{isAr ? 'الرسم الهندسي قيد الإعداد' : 'Blueprint representation unavailable'}</span>
-                                    </div>
-                                )}
-                            </AnimatePresence>
                         </div>
 
                     </div>
                 ) : (
                     <div className="p-12 text-center space-y-3">
                         <Car size={36} className="mx-auto text-amber-500" />
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                        <h3 className="text-lg font-bold text-white">
                             {t('no_vehicles')}
                         </h3>
-                        <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                        <p className="text-xs text-slate-400 max-w-sm mx-auto">
                             {isAr 
                                 ? 'سجل سيارتك مع خدمة العملاء لتمكين العدادات الرقمية وتتبع الصيانات الدورية.' 
                                 : 'Add your first vehicle with our concierge to enable automated telemetry and digital service records.'}
@@ -428,131 +624,113 @@ const Dashboard = () => {
                         </Link>
                     </div>
                 )}
-            </section>
 
-            {/* ── Live Service Status Pipeline (if active appointment) ── */}
-            {activeAppointment && (
-                <section className="bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-white/[0.06] pb-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-500 flex items-center justify-center shrink-0">
-                                <Clock size={20} />
-                            </div>
-                            <div>
-                                <h3 className="text-base font-bold text-slate-950 dark:text-white flex items-center gap-2">
-                                    <span>{t('service_pipeline')}</span>
-                                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-700 dark:text-amber-300 font-semibold">
-                                        {activeAppointment.status || 'Active'}
+                {/* ── Responsive Mobile Vitals Tray (< md screens) ── */}
+                {activeVehicle && (
+                    <div className="md:hidden px-4 py-3.5 bg-black/40 border-t border-white/[0.08] grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        {/* Mobile Oil Life Card */}
+                        <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-between">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shrink-0">
+                                    <Droplet size={16} />
+                                </div>
+                                <div>
+                                    <span className="text-[11px] font-bold text-slate-300 uppercase block leading-tight font-sans">
+                                        {t('oil_life')}
                                     </span>
-                                </h3>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">
-                                    {activeAppointment.service_type || 'General Maintenance'} • {activeAppointment.make} {activeAppointment.model}
-                                </p>
+                                    <span className="text-[10px] text-slate-400">
+                                        ~{kmUntilService.toLocaleString()} km
+                                    </span>
+                                </div>
                             </div>
+                            <span className="text-xl font-extrabold text-white tabular-nums font-mono">
+                                {oilLifePercent}%
+                            </span>
                         </div>
 
-                        <Link
-                            to="/appointments"
-                            className="text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-amber-500 flex items-center gap-1 shrink-0"
-                        >
-                            <span>{isAr ? 'عرض تفاصيل الحجز' : 'View Appointment Details'}</span>
-                            <ChevronRight size={14} className={isAr ? 'rotate-180' : ''} />
-                        </Link>
-                    </div>
-
-                    {/* Stage Stepper */}
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
-                        {serviceStages.map((stage, idx) => {
-                            const isCompleted = idx < currentStageIdx;
-                            const isCurrent = idx === currentStageIdx;
-                            return (
-                                <div 
-                                    key={stage.key}
-                                    className={`p-3.5 rounded-xl border text-center transition-all ${
-                                        isCurrent 
-                                            ? 'bg-amber-400/10 border-amber-400 text-amber-700 dark:text-amber-300 ring-2 ring-amber-400/20' 
-                                            : isCompleted
-                                                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
-                                                : 'bg-slate-50 dark:bg-white/[0.02] border-slate-200/60 dark:border-white/[0.06] text-slate-400'
-                                    }`}
-                                >
-                                    <div className="flex items-center justify-center mb-1.5">
-                                        {isCompleted ? (
-                                            <CheckCircle size={16} className="text-emerald-500" />
-                                        ) : isCurrent ? (
-                                            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
-                                        ) : (
-                                            <span className="text-[11px] font-mono font-bold text-slate-400">{idx + 1}</span>
-                                        )}
-                                    </div>
-                                    <span className="text-xs font-bold block">{stage.label}</span>
+                        {/* Mobile Mileage & Services Card */}
+                        <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-between">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0">
+                                    <Activity size={16} />
                                 </div>
-                            );
-                        })}
-                    </div>
-                </section>
-            )}
-
-            {/* ── Maintenance Alerts & Reminders ── */}
-            <section className="bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.06] pb-3">
-                    <h3 className="text-base font-bold text-slate-950 dark:text-white flex items-center gap-2">
-                        <AlertTriangle size={17} className="text-amber-500" />
-                        <span>{t('reminders_alerts')}</span>
-                    </h3>
-                    <span className="text-xs text-slate-400 font-medium">
-                        {reminders.length} {isAr ? 'تنبيه' : 'pending'}
-                    </span>
-                </div>
-
-                {reminders.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-                        {reminders.map((rem) => (
-                            <div 
-                                key={rem.id}
-                                className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06] flex items-center justify-between gap-3"
-                            >
-                                <div className="space-y-1">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-xs font-bold text-slate-900 dark:text-white">
-                                            {rem.service_type}
-                                        </span>
-                                        <span className="text-[10px] px-2 py-0.5 rounded bg-amber-400/20 text-amber-700 dark:text-amber-300 font-medium">
-                                            {rem.due_date ? new Date(rem.due_date).toLocaleDateString() : (isAr ? 'مستحق قريباً' : 'Due Soon')}
-                                        </span>
-                                    </div>
-                                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                                        {rem.make} {rem.model} {rem.license_plate && `(${rem.license_plate})`}
-                                    </p>
+                                <div>
+                                    <span className="text-[11px] font-bold text-slate-300 uppercase block leading-tight font-sans">
+                                        {t('odometer')}
+                                    </span>
+                                    <span className="text-[10px] text-slate-400">
+                                        {activeVehicle.services_count || 0} {isAr ? 'صيانات' : 'services'}
+                                    </span>
                                 </div>
-
-                                <Link
-                                    to={`/book-service?vehicleId=${rem.vehicle_id || ''}&serviceType=${encodeURIComponent(rem.service_type || '')}`}
-                                    className="px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs shrink-0 transition-colors"
-                                >
-                                    {isAr ? 'حجز الآن' : 'Schedule'}
-                                </Link>
                             </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="py-6 flex items-center gap-3 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl">
-                        <ShieldCheck size={20} className="shrink-0" />
-                        <p className="text-xs font-semibold">
-                            {t('no_reminders')}
-                        </p>
+                            <span className="text-sm font-bold text-white tabular-nums font-mono">
+                                {mileage ? `${mileage.toLocaleString()} km` : '—'}
+                            </span>
+                        </div>
+
+                        {/* Mobile Transmission Card */}
+                        <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-between">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-8 h-8 rounded-lg bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center shrink-0">
+                                    <Cog size={16} />
+                                </div>
+                                <div>
+                                    <span className="text-[11px] font-bold text-slate-300 uppercase block leading-tight font-sans">
+                                        {t('transmission_oil')}
+                                    </span>
+                                    <span className="text-[10px] text-cyan-400 font-semibold">
+                                        {isAr ? 'تم الفحص' : 'Verified'}
+                                    </span>
+                                </div>
+                            </div>
+                            <span className="text-xl font-extrabold text-white tabular-nums font-mono">
+                                {transmissionLifePercent}%
+                            </span>
+                        </div>
                     </div>
                 )}
             </section>
 
+            {/* ── ZONE 5: Smart Contextual Lower Deck (Live Service Status) ── */}
+            {activeAppointment && (
+                <section className="bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                        <div className="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-500 border border-amber-400/20 flex items-center justify-center shrink-0">
+                            <Clock size={20} />
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <h3 className="text-sm sm:text-base font-bold text-slate-950 dark:text-white">
+                                    {t('service_pipeline')}
+                                </h3>
+                                <span className="text-[11px] px-2 py-0.5 rounded-md bg-amber-400/20 text-amber-700 dark:text-amber-300 font-bold">
+                                    {activeAppointment.status || 'Open'}
+                                </span>
+                            </div>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                {activeAppointment.mileage ? `${activeAppointment.mileage.toLocaleString()} km • ` : ''}
+                                {activeAppointment.service_type || 'General Maintenance'}
+                            </p>
+                        </div>
+                    </div>
+
+                    <Link
+                        to="/appointments"
+                        className="text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-amber-500 flex items-center gap-1 shrink-0 self-end sm:self-center transition-colors"
+                    >
+                        <span>{t('view_appointment_details') || 'View Appointment Details'}</span>
+                        <ChevronRight size={14} className={isAr ? 'rotate-180' : ''} />
+                    </Link>
+                </section>
+            )}
+
             {/* Sell Car Modal */}
             <SellCarModal
                 isOpen={sellModalOpen}
-                vehicle={activeVehicle}
                 onClose={() => setSellModalOpen(false)}
-                onSuccess={() => setSellModalOpen(false)}
+                vehicles={vehicles}
+                selectedVehicleId={selectedVehicleId}
             />
-
         </div>
     );
 };

@@ -55,7 +55,7 @@ const Login = () => {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="w-full max-w-[440px] relative z-10"
             >
-                <div className="bg-[#0f172a]/80 backdrop-p-10 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/10 relative overflow-hidden">
+                <div className="bg-[#0f172a]/80 backdrop-blur-xl p-10 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/10 relative overflow-hidden">
                     {/* Top Glow Edge */}
                     <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
 

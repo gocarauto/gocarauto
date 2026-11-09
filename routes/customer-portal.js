@@ -38,6 +38,7 @@ router.get('/reminders', verifyToken, isCustomer, customerPortalController.getRe
  * Intelligence updates for the customer profile
  */
 router.put('/profile', verifyToken, isCustomer, customerPortalController.updateProfile);
+router.put('/password', verifyToken, isCustomer, customerPortalController.changePassword);
 
 /**
  * Submit and retrieve Used Car Consignment / Sell requests
