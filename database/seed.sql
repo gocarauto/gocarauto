@@ -6,11 +6,11 @@
 
 -- Admin User: admin@gocar.com / password123 (hashed)
 INSERT INTO users (name, role, email, password_hash)
-VALUES ('System Admin', 'Admin', 'admin@gocar.com', '$2b$10$q2CBks8rr5dOf74pyaUPrOokEOiGNQBMieauzCnOertWjTqKmW096'); 
+VALUES ('System Admin', 'Admin', 'admin@gocar.com', '$2b$10$FY.HexMyvTQg2fBwmL0Mp.bdGGZvmkbRZnQyA/uzGx0i5kfSqu2i.'); 
 
--- Operator User
+-- Operator User: staff@gocar.com / password123 (hashed)
 INSERT INTO users (name, role, email, password_hash)
-VALUES ('Staff Operator', 'Operator', 'staff@gocar.com', '$2b$10$q2CBks8rr5dOf74pyaUPrOokEOiGNQBMieauzCnOertWjTqKmW096');
+VALUES ('Staff Operator', 'Operator', 'staff@gocar.com', '$2b$10$FY.HexMyvTQg2fBwmL0Mp.bdGGZvmkbRZnQyA/uzGx0i5kfSqu2i.');
 
 -- ============================================
 -- SERVICE ITEMS (Master List)
@@ -36,9 +36,9 @@ INSERT INTO service_items (item_name, item_name_ar, category, sale_price) VALUES
 -- CLIENTS (Sample Data)
 -- ============================================
 
-INSERT INTO clients (full_name, email, phone, address, referral_source, notes) VALUES
-('John Doe', 'john@example.com', '01012345678', '123 Main St, Cairo', 'Google', 'VIP Client'),
-('Jane Smith', 'jane@example.com', '01298765432', '456 Nile Corniche, Giza', 'Facebook', 'Preferred customer');
+INSERT INTO clients (full_name, email, phone, address, referral_source, notes, password_hash) VALUES
+('John Doe', 'john@example.com', '01012345678', '123 Main St, Cairo', 'Google', 'VIP Client', '$2b$10$FY.HexMyvTQg2fBwmL0Mp.bdGGZvmkbRZnQyA/uzGx0i5kfSqu2i.'),
+('Jane Smith', 'jane@example.com', '01298765432', '456 Nile Corniche, Giza', 'Facebook', 'Preferred customer', '$2b$10$FY.HexMyvTQg2fBwmL0Mp.bdGGZvmkbRZnQyA/uzGx0i5kfSqu2i.');
 
 -- ============================================
 -- VEHICLES (Sample Data)

@@ -75,6 +75,9 @@ CREATE TABLE IF NOT EXISTS service_items (
     category TEXT NOT NULL CHECK(category IN ('Parts', 'Oil', 'Service')),
     sale_price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     is_active BOOLEAN DEFAULT 1,
+    km_interval INTEGER,
+    month_interval INTEGER,
+    tracking_point TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -300,27 +303,52 @@ CREATE TABLE IF NOT EXISTS consignment_listings (
 
 CREATE INDEX IF NOT EXISTS idx_vehicles_client ON vehicles(client_id);
 CREATE INDEX IF NOT EXISTS idx_vehicles_license ON vehicles(license_plate);
+CREATE INDEX IF NOT EXISTS idx_vehicles_vin ON vehicles(vin);
+CREATE INDEX IF NOT EXISTS idx_vehicles_next_service_due ON vehicles(next_service_due);
+CREATE INDEX IF NOT EXISTS idx_vehicles_client_make_model ON vehicles(client_id, make, model);
+CREATE INDEX IF NOT EXISTS idx_clients_phone ON clients(phone);
+CREATE INDEX IF NOT EXISTS idx_clients_join_date ON clients(join_date);
+CREATE INDEX IF NOT EXISTS idx_clients_referred_by ON clients(referred_by_client_id);
+CREATE INDEX IF NOT EXISTS idx_service_items_category ON service_items(category, is_active);
+CREATE INDEX IF NOT EXISTS idx_service_items_tracking ON service_items(tracking_point);
 CREATE INDEX IF NOT EXISTS idx_service_requests_client ON service_requests(client_id);
 CREATE INDEX IF NOT EXISTS idx_service_requests_vehicle ON service_requests(vehicle_id);
 CREATE INDEX IF NOT EXISTS idx_service_requests_status ON service_requests(status);
+CREATE INDEX IF NOT EXISTS idx_service_requests_scheduled_date ON service_requests(scheduled_date);
+CREATE INDEX IF NOT EXISTS idx_service_requests_request_date ON service_requests(request_date DESC);
+CREATE INDEX IF NOT EXISTS idx_service_requests_client_date ON service_requests(client_id, request_date DESC);
+CREATE INDEX IF NOT EXISTS idx_service_requests_vehicle_date ON service_requests(vehicle_id, request_date DESC);
+CREATE INDEX IF NOT EXISTS idx_service_requests_status_date ON service_requests(status, request_date DESC);
+CREATE INDEX IF NOT EXISTS idx_service_requests_assigned ON service_requests(assigned_to_id, status);
 CREATE INDEX IF NOT EXISTS idx_service_records_request ON service_records(request_id);
 CREATE INDEX IF NOT EXISTS idx_service_records_item ON service_records(item_id);
+CREATE INDEX IF NOT EXISTS idx_service_records_service_date ON service_records(service_date DESC);
+CREATE INDEX IF NOT EXISTS idx_service_records_req_item ON service_records(request_id, item_id);
+CREATE INDEX IF NOT EXISTS idx_service_records_user ON service_records(user_id);
 CREATE INDEX IF NOT EXISTS idx_financial_transactions_request ON financial_transactions(request_id);
 CREATE INDEX IF NOT EXISTS idx_financial_transactions_invoice ON financial_transactions(invoice_number);
+CREATE INDEX IF NOT EXISTS idx_financial_transactions_status ON financial_transactions(payment_status);
+CREATE INDEX IF NOT EXISTS idx_financial_transactions_created_at ON financial_transactions(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_financial_transactions_status_date ON financial_transactions(payment_status, payment_date);
+CREATE INDEX IF NOT EXISTS idx_financial_transactions_status_created ON financial_transactions(payment_status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_notification_logs_client ON notification_logs(client_id);
+CREATE INDEX IF NOT EXISTS idx_notification_logs_vehicle ON notification_logs(vehicle_id);
+CREATE INDEX IF NOT EXISTS idx_notification_logs_status_sent ON notification_logs(status, sent_at DESC);
 CREATE INDEX IF NOT EXISTS idx_service_reminders_vehicle ON service_reminders(vehicle_id);
 CREATE INDEX IF NOT EXISTS idx_service_reminders_client ON service_reminders(client_id);
+CREATE INDEX IF NOT EXISTS idx_service_reminders_status ON service_reminders(status);
+CREATE INDEX IF NOT EXISTS idx_service_reminders_status_due ON service_reminders(status, due_date ASC);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_pending_vehicle_service ON service_reminders(vehicle_id, service_type) WHERE status = 'Pending';
+CREATE INDEX IF NOT EXISTS idx_customer_documents_client ON customer_documents(client_id);
+CREATE INDEX IF NOT EXISTS idx_customer_documents_file_url ON customer_documents(file_url);
 CREATE INDEX IF NOT EXISTS idx_consignment_requests_client ON consignment_requests(client_id);
 CREATE INDEX IF NOT EXISTS idx_consignment_requests_vehicle ON consignment_requests(vehicle_id);
 CREATE INDEX IF NOT EXISTS idx_consignment_requests_status ON consignment_requests(status);
-CREATE INDEX IF NOT EXISTS idx_clients_referred_by ON clients(referred_by_client_id);
+CREATE INDEX IF NOT EXISTS idx_consignment_requests_status_created ON consignment_requests(status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_consignment_listings_status ON consignment_listings(listing_status);
 CREATE INDEX IF NOT EXISTS idx_consignment_listings_vehicle ON consignment_listings(vehicle_id);
 CREATE INDEX IF NOT EXISTS idx_consignment_listings_client ON consignment_listings(client_id);
-CREATE INDEX IF NOT EXISTS idx_customer_documents_client ON customer_documents(client_id);
-CREATE INDEX IF NOT EXISTS idx_financial_transactions_status ON financial_transactions(payment_status);
-CREATE INDEX IF NOT EXISTS idx_service_requests_scheduled_date ON service_requests(scheduled_date);
+CREATE INDEX IF NOT EXISTS idx_consignment_listings_status_created ON consignment_listings(listing_status, created_at DESC);
 
 -- ============================================
 -- TRIGGERS FOR AUTOMATIC CALCULATIONS

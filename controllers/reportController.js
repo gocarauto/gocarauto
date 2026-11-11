@@ -1,5 +1,11 @@
 import database from '../database/db.js';
 
+const formatDateSql = (col, formatStr) => {
+    return process.env.DB_TYPE === 'mysql'
+        ? `DATE_FORMAT(${col}, '${formatStr}')`
+        : `strftime('${formatStr}', ${col})`;
+};
+
 /**
  * Report Controller
  * Manages complex data aggregation for business intelligence and dashboards.
@@ -20,9 +26,11 @@ const reportController = {
                 default: dateFormat = '%Y-%m';
             }
 
+            const periodExpr = formatDateSql('ft.payment_date', dateFormat);
+
             let query = `
                 SELECT 
-                    strftime('${dateFormat}', ft.payment_date) as period,
+                    ${periodExpr} as period,
                     COUNT(DISTINCT ft.request_id) as totalServices,
                     SUM(ft.total_amount_due) as totalRevenue,
                     COUNT(DISTINCT sr.client_id) as uniqueCustomers
@@ -119,8 +127,10 @@ const reportController = {
                 default: dateFormat = '%Y-%m';
             }
 
+            const periodExpr = formatDateSql('ft.payment_date', dateFormat);
+
             let query = `
-                SELECT strftime('${dateFormat}', ft.payment_date) as period,
+                SELECT ${periodExpr} as period,
                        COUNT(DISTINCT ft.request_id) as totalServices,
                        SUM(ft.total_amount_due) as totalRevenue,
                        COUNT(DISTINCT sr.client_id) as uniqueCustomers
@@ -171,8 +181,9 @@ const reportController = {
                  GROUP BY c.id ORDER BY c.total_spent DESC LIMIT 10`
             );
 
+            const periodExpr = formatDateSql('join_date', '%Y-%m');
             const acquisitionTrends = await database.query(
-                `SELECT strftime('%Y-%m', join_date) as period, COUNT(*) as newCustomers
+                `SELECT ${periodExpr} as period, COUNT(*) as newCustomers
                  FROM clients GROUP BY period ORDER BY period DESC LIMIT 12`
             );
 

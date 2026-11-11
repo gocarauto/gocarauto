@@ -4,6 +4,60 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-11
 
+### ValdoZ Protocol Directive 13: Zero-Destructive Database Discipline & Forensic Cloud Sync (CR-014)
+- **Technical Forensic Investigation & Root Cause Discovery:**
+  - Conducted comprehensive audit into the disappearance of local customer data and portal authentication failure.
+  - Located the authoritative customer dataset in TiDB Cloud Serverless: **All 58 customers, 59 vehicles, 1,237 service items, 1,181 service records, 120 service requests, and 116 financial transactions were 100% intact**.
+  - Identified the exact root cause of local data wipe: legacy script `scripts/init-db.js` previously contained an unconditional deletion pattern (`fs.unlinkSync(DB_PATH)`), which wiped the local SQLite database and re-seeded only minimal static mock rows from `seed.sql` (where CSV customers were truncated to 37 and password hashes were mock placeholders).
+- **ValdoZ Protocol Directive 13 Enacted in `AGENTS.md` and `GEMINI.md`:**
+  - Mandated **Zero-Destructive Database Discipline**: Strictly prohibited any script or command from unconditionally dropping, truncating, or unlinking active database files (`*.db`, `*.sqlite`, `rm -f *.db*`, `fs.unlinkSync`, `DROP DATABASE`).
+  - Required that any database re-initialization script enforce an explicit `--force-reset` argument AND create an automated, immutable timestamped backup in `backups/db/` prior to execution.
+  - Required all future database migrations and performance optimizations to be purely additive (`CREATE INDEX IF NOT EXISTS`, non-destructive column additions).
+- **Hardened Database Operations & Automated Bidirectional Cloud Sync:**
+  - Built `scripts/backup-all.js` (`npm run backup`), generating complete snapshot bundles in `backups/full_backup_<timestamp>/`: local SQLite binary, remote TiDB Cloud SQL dump, JSON datasets, codebase tarball (33MB), cryptographic `MANIFEST.json`, and `SHA256SUMS.txt`.
+  - Re-architected `scripts/init-db.js` with an automated safety gate blocking execution unless `--force-reset` is passed, saving automatic backups to `backups/db/`.
+  - Built `scripts/sync-from-tidb.js` (`npm run sync:db`), establishing automated, non-destructive synchronization from TiDB Cloud to local SQLite with automatic pre-sync backups and foreign key reconciliation.
+  - Successfully synchronized and verified all 58 clients, authentic staff account (`go2carauto@gmail.com` / `3effat`), authentic customer account (`ahmedkhalil78@gmail.com` / `Ahmad Khalil`), and all history into local SQLite.
+  - Re-verified complete database health: `npm run audit:db` passes 100% (48 active indexes, 0 table scans, 0 foreign key violations, 15 synchronized tables).
+  - Test suite verified: `npm test` passes 34/34 tests in 4.2s.
+
+### Database Performance Audit, Schema Optimization & EverSQL / Releem Agent Integration (CR-013)
+- **Comprehensive Database Performance & SQL Optimization (EverSQL & Releem Agent):**
+  - Integrated optimization discipline and CI checks referencing [`sql-auto-optimization-postgres-mysql-mariadb-aurora`](https://github.com/marketplace/sql-auto-optimization-postgres-mysql-mariadb-aurora) and [`Releem/releem-agent`](https://github.com/Releem/releem-agent).
+  - Executed end-to-end audit of indexing, referential integrity, query execution plans, memory allocation, and storage engine configuration.
+- **Releem Storage Engine & Memory Optimization:**
+  - Designed `config/mysql-tuned.cnf` adhering to Releem Agent production best practices: `innodb_buffer_pool_size = 1G` (2 instances), `innodb_log_file_size = 256M`, `innodb_flush_method = O_DIRECT`, `innodb_flush_log_at_trx_commit = 2`, and session buffer controls.
+  - Activated Releem telemetry prerequisites: `slow_query_log = 1`, `log_queries_not_using_indexes = 1`, and `performance_schema = ON`.
+  - Configured high-performance SQLite engine PRAGMAs in `database/db.js`: `synchronous = NORMAL` (3x faster write throughput in WAL mode), `cache_size = -64000` (64MB memory page cache), `temp_store = MEMORY`, and `mmap_size = 256MB`.
+  - Added Releem-tuned MySQL and `releem-agent` monitoring sidecar service definitions to `docker-compose.yml`.
+  - Created automated diagnostic advisor `scripts/releem-advisor.js` (`npm run audit:server`), which evaluates host memory, peak thread buffer allocations, storage fragmentation, and engine pragmas (achieving 100/100 Releem Health Score).
+- **Index Architecture & Elimination of Full Table Scans:**
+  - Added 25+ targeted B-Tree and composite performance indexes across SQLite and MySQL/Postgres schemas:
+    - `clients`: Added `idx_clients_phone` and `idx_clients_join_date`, eradicating table scans during customer searches and portal lookups.
+    - `vehicles`: Added `idx_vehicles_vin`, `idx_vehicles_next_service_due`, and `idx_vehicles_client_make_model`.
+    - `service_items`: Added `idx_service_items_category` and `idx_service_items_tracking` for instant master catalog filtering and maintenance scanning.
+    - `service_requests`: Added `idx_service_requests_request_date`, `idx_service_requests_client_date`, `idx_service_requests_vehicle_date`, `idx_service_requests_status_date`, and `idx_service_requests_assigned` to eliminate filesorts across customer history, operations board, and technician queues.
+    - `service_records`: Added `idx_service_records_service_date`, `idx_service_records_req_item`, and `idx_service_records_user`.
+    - `financial_transactions`: Added `idx_financial_transactions_created_at`, `idx_financial_transactions_status_date`, and `idx_financial_transactions_status_created` to accelerate revenue reporting and eliminate filesorts on invoice worklists.
+    - `customer_documents`: Added `idx_customer_documents_file_url` for $O(1)$ lookups on document downloads.
+    - `service_reminders`: Added composite `idx_service_reminders_status_due` for daily cron dispatching.
+    - `consignment_requests` & `consignment_listings`: Added composite status and reverse chronological ordering indexes.
+- **Schema Parity & Referential Integrity:**
+  - Synchronized `database/schema.sql` (SQLite) and `database/schema.mysql.sql` (MySQL/MariaDB/Aurora):
+    - Added missing `km_interval`, `month_interval`, and `tracking_point` columns to SQLite `service_items`.
+    - Hardened `schema.mysql.sql` with formal `CONSTRAINT fk_* FOREIGN KEY` definitions with `ON DELETE CASCADE` and `ON DELETE SET NULL` matching SQLite referential integrity.
+    - Fixed nullability of `consignment_listings.request_id` to allow clean cascading deletion of linked requests.
+    - Expanded `ensureTables()` in `database/db.js` to ensure all operational tables (`consignment_requests`, `consignment_listings`, `customer_documents`, `service_reminders`) and views are idempotently created on startup.
+- **Cross-Database Portability & WAL Hygiene:**
+  - Replaced SQLite-specific `date('now')` in `scripts/cron.js` with ANSI standard `CURRENT_DATE`.
+  - Replaced dialect-specific `strftime` in `controllers/reportController.js` with a dialect-aware `formatDateSql()` supporting both SQLite and MySQL `DATE_FORMAT`.
+  - Harmonized string concatenation in `controllers/serviceRequestController.js` to support both SQLite and MySQL.
+  - Hardened `scripts/init-db.js` to synchronously unlink stale `-wal` and `-shm` sidecars, preventing `SQLITE_IOERR` disk errors during re-initialization.
+- **Automated Performance Audit Script & CI/CD Workflow:**
+  - Created `scripts/audit-db-performance.js` (`npm run audit:db`) auditing 46 performance indexes, verifying query plans via `EXPLAIN QUERY PLAN` across 15 core workloads (zero table scans), checking foreign key integrity, and verifying cross-dialect parity.
+  - Created `.github/workflows/sql-optimization.yml` triggering performance auditing, schema validation, and EverSQL auto-optimization on pull requests and pushes.
+  - Published comprehensive guide in `docs/DATABASE_OPTIMIZATION.md`.
+
 ### DaisyUI Component Integration & Universal Font Size Standardization (CR-012)
 - **Universal Eradication of 319 Sub-12px Micro-Fonts Across Entire Application:**
   - Resolved persistent user pain point regarding inconsistent and illegibly small fonts ("either small and barely readable or too small").

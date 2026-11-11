@@ -1,0 +1,61 @@
+# ==============================================================================
+# GoCar Auto - Releem Tuned MySQL / MariaDB Server Configuration
+# Based on Releem Agent (https://github.com/Releem/releem-agent) Best Practices
+# ==============================================================================
+
+[mysqld]
+# --- Engine & Identity ---
+default_storage_engine          = InnoDB
+character_set_server            = utf8mb4
+collation_server                = utf8mb4_unicode_ci
+
+# --- Memory & InnoDB Buffer Pool ---
+# Releem recommends 60-75% of total server RAM for dedicated database instances
+innodb_buffer_pool_size         = 1G
+innodb_buffer_pool_instances   = 2
+innodb_log_file_size            = 256M
+innodb_log_buffer_size          = 16M
+innodb_file_per_table           = 1
+innodb_stats_on_metadata        = 0
+
+# --- Disk I/O & Durability ---
+# O_DIRECT prevents double-buffering between InnoDB and Linux OS page cache
+innodb_flush_method             = O_DIRECT
+# 1 = Full ACID durability; 2 = Flush to OS cache per transaction, fsync every 1s (high performance)
+innodb_flush_log_at_trx_commit  = 2
+innodb_read_io_threads          = 4
+innodb_write_io_threads         = 4
+innodb_io_capacity              = 1000
+innodb_io_capacity_max          = 2000
+
+# --- Connections & Threads ---
+max_connections                 = 150
+max_connect_errors              = 100000
+thread_cache_size               = 16
+thread_stack                    = 256K
+table_open_cache                = 4000
+table_definition_cache          = 2000
+open_files_limit                = 65535
+
+# --- Query Buffers & In-Memory Temp Tables ---
+# Bounded per-session buffers to prevent memory spikes under concurrency
+sort_buffer_size                = 2M
+join_buffer_size                = 2M
+read_buffer_size                = 1M
+read_rnd_buffer_size            = 2M
+tmp_table_size                  = 64M
+max_heap_table_size             = 64M
+
+# --- Slow Query Logging & Releem Telemetry ---
+slow_query_log                  = 1
+slow_query_log_file             = /var/log/mysql/slow.log
+long_query_time                 = 1.0
+log_queries_not_using_indexes   = 1
+min_examined_row_limit          = 100
+performance_schema              = ON
+
+[client]
+default-character-set           = utf8mb4
+
+[mysql]
+default-character-set           = utf8mb4

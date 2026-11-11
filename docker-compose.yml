@@ -59,6 +59,53 @@ services:
       - backend
     restart: unless-stopped
 
+  # Production MySQL Database with Releem Optimization Tuning
+  db:
+    image: mysql:8.0
+    container_name: gocar-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secure_password}
+      MYSQL_DATABASE: ${DB_NAME:-gocar_auto}
+      MYSQL_USER: ${DB_USER:-gocar_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-your_secure_db_password}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./config/mysql-tuned.cnf:/etc/mysql/conf.d/releem-tuned.cnf:ro
+      - ./database/schema.mysql.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "3306:3306"
+    networks:
+      - gocar-network
+    profiles:
+      - mysql
+      - full
+
+  # Releem Agent (https://github.com/Releem/releem-agent)
+  # AI-powered database performance tuning & metrics collection
+  releem-agent:
+    image: releem/releem-agent:latest
+    container_name: gocar-releem-agent
+    restart: unless-stopped
+    environment:
+      - RELEEM_API_KEY=${RELEEM_API_KEY:-}
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_USER=${DB_USER:-gocar_user}
+      - MYSQL_PASSWORD=${DB_PASSWORD:-your_secure_db_password}
+      - MYSQL_DATABASE=${DB_NAME:-gocar_auto}
+    depends_on:
+      - db
+    networks:
+      - gocar-network
+    profiles:
+      - releem
+      - full
+
+volumes:
+  mysql-data:
+    driver: local
+
 networks:
   gocar-network:
     driver: bridge

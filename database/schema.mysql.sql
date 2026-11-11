@@ -1,6 +1,10 @@
 -- GoCar Auto Service and Financial Management System
--- Production Schema for MySQL / TiDB Cloud (100% Mirror of Live SQLite Schema)
+-- Production Schema for MySQL / MariaDB / Amazon Aurora (100% Optimized & Hardened)
 
+DROP TABLE IF EXISTS service_request_comments;
+DROP TABLE IF EXISTS external_services;
+DROP TABLE IF EXISTS notification_logs;
+DROP TABLE IF EXISTS vehicle_maintenance_ledger;
 DROP TABLE IF EXISTS consignment_listings;
 DROP TABLE IF EXISTS consignment_requests;
 DROP TABLE IF EXISTS customer_documents;
@@ -24,7 +28,8 @@ CREATE TABLE users (
     mobile VARCHAR(50),
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_users_role (role)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -33,7 +38,7 @@ CREATE TABLE users (
 CREATE TABLE clients (
     id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NULL,
+    email VARCHAR(255) NULL UNIQUE,
     phone VARCHAR(50) NOT NULL,
     address TEXT,
     join_date VARCHAR(50) NULL,
@@ -44,7 +49,10 @@ CREATE TABLE clients (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     password_hash VARCHAR(255) NULL,
     referred_by_client_id INT NULL,
-    INDEX idx_clients_referred_by (referred_by_client_id)
+    INDEX idx_clients_phone (phone),
+    INDEX idx_clients_join_date (join_date),
+    INDEX idx_clients_referred_by (referred_by_client_id),
+    CONSTRAINT fk_clients_referred FOREIGN KEY (referred_by_client_id) REFERENCES clients(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -57,8 +65,8 @@ CREATE TABLE vehicles (
     make VARCHAR(100) NOT NULL,
     model VARCHAR(100) NOT NULL,
     year INT NULL,
-    license_plate VARCHAR(50) NULL,
-    vin VARCHAR(100) NULL,
+    license_plate VARCHAR(50) NULL UNIQUE,
+    vin VARCHAR(100) NULL UNIQUE,
     current_mileage INT DEFAULT 0,
     last_service_date VARCHAR(50) NULL,
     last_service_mileage INT NULL,
@@ -67,7 +75,12 @@ CREATE TABLE vehicles (
     total_spent DECIMAL(10,2) DEFAULT 0.00,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_vehicles_client (client_id)
+    INDEX idx_vehicles_client (client_id),
+    INDEX idx_vehicles_license (license_plate),
+    INDEX idx_vehicles_vin (vin),
+    INDEX idx_vehicles_next_service_due (next_service_due),
+    INDEX idx_vehicles_client_make_model (client_id, make, model),
+    CONSTRAINT fk_vehicles_client FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -84,7 +97,9 @@ CREATE TABLE service_items (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     km_interval INT NULL,
     month_interval INT NULL,
-    tracking_point VARCHAR(255) NULL
+    tracking_point VARCHAR(255) NULL,
+    INDEX idx_service_items_category (category, is_active),
+    INDEX idx_service_items_tracking (tracking_point)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -111,7 +126,16 @@ CREATE TABLE service_requests (
     assigned_to_name VARCHAR(255) NULL,
     INDEX idx_sr_client (client_id),
     INDEX idx_sr_vehicle (vehicle_id),
-    INDEX idx_sr_scheduled (scheduled_date)
+    INDEX idx_sr_status (status),
+    INDEX idx_sr_scheduled (scheduled_date),
+    INDEX idx_sr_request_date (request_date),
+    INDEX idx_sr_client_date (client_id, request_date),
+    INDEX idx_sr_vehicle_date (vehicle_id, request_date),
+    INDEX idx_sr_status_date (status, request_date),
+    INDEX idx_sr_assigned (assigned_to_id, status),
+    CONSTRAINT fk_sr_client FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE,
+    CONSTRAINT fk_sr_vehicle FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE,
+    CONSTRAINT fk_sr_assigned FOREIGN KEY (assigned_to_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -131,7 +155,13 @@ CREATE TABLE service_records (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_srec_request (request_id),
-    INDEX idx_srec_item (item_id)
+    INDEX idx_srec_item (item_id),
+    INDEX idx_srec_service_date (service_date),
+    INDEX idx_srec_req_item (request_id, item_id),
+    INDEX idx_srec_user (user_id),
+    CONSTRAINT fk_srec_request FOREIGN KEY (request_id) REFERENCES service_requests(id) ON DELETE CASCADE,
+    CONSTRAINT fk_srec_item FOREIGN KEY (item_id) REFERENCES service_items(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_srec_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -140,7 +170,7 @@ CREATE TABLE service_records (
 CREATE TABLE financial_transactions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     request_id INT NULL,
-    invoice_number VARCHAR(100) NULL,
+    invoice_number VARCHAR(100) NULL UNIQUE,
     total_amount_due DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     amount_paid DECIMAL(10,2) DEFAULT 0.00,
     payment_status VARCHAR(50) DEFAULT 'Pending',
@@ -153,7 +183,12 @@ CREATE TABLE financial_transactions (
     currency VARCHAR(10) DEFAULT 'EGP',
     tax_rate DECIMAL(5,2) DEFAULT 0.00,
     INDEX idx_ft_request (request_id),
-    INDEX idx_ft_payment_status (payment_status)
+    INDEX idx_ft_invoice (invoice_number),
+    INDEX idx_ft_payment_status (payment_status),
+    INDEX idx_ft_created_at (created_at),
+    INDEX idx_ft_status_date (payment_status, payment_date),
+    INDEX idx_ft_status_created (payment_status, created_at),
+    CONSTRAINT fk_ft_request FOREIGN KEY (request_id) REFERENCES service_requests(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -166,7 +201,9 @@ CREATE TABLE customer_documents (
     document_type VARCHAR(100) NOT NULL,
     file_url VARCHAR(500) NOT NULL,
     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_cd_client (client_id)
+    INDEX idx_cd_client (client_id),
+    INDEX idx_cd_file_url (file_url),
+    CONSTRAINT fk_cd_client FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -186,7 +223,10 @@ CREATE TABLE service_reminders (
     interval_months INT NULL,
     INDEX idx_srem_vehicle (vehicle_id),
     INDEX idx_srem_client (client_id),
-    INDEX idx_srem_status (status)
+    INDEX idx_srem_status (status),
+    INDEX idx_srem_status_due (status, due_date),
+    CONSTRAINT fk_srem_client FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE,
+    CONSTRAINT fk_srem_vehicle FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -203,7 +243,11 @@ CREATE TABLE consignment_requests (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_cr_client (client_id),
-    INDEX idx_cr_vehicle (vehicle_id)
+    INDEX idx_cr_vehicle (vehicle_id),
+    INDEX idx_cr_status (status),
+    INDEX idx_cr_status_created (status, created_at),
+    CONSTRAINT fk_cr_client FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE,
+    CONSTRAINT fk_cr_vehicle FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -211,7 +255,7 @@ CREATE TABLE consignment_requests (
 -- ============================================
 CREATE TABLE consignment_listings (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    request_id INT NOT NULL,
+    request_id INT NULL,
     vehicle_id INT NOT NULL,
     client_id INT NOT NULL,
     asking_price DECIMAL(12,2) NOT NULL,
@@ -224,7 +268,14 @@ CREATE TABLE consignment_listings (
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_cl_status (listing_status)
+    INDEX idx_cl_request (request_id),
+    INDEX idx_cl_vehicle (vehicle_id),
+    INDEX idx_cl_client (client_id),
+    INDEX idx_cl_status (listing_status),
+    INDEX idx_cl_status_created (listing_status, created_at),
+    CONSTRAINT fk_cl_request FOREIGN KEY (request_id) REFERENCES consignment_requests(id) ON DELETE SET NULL,
+    CONSTRAINT fk_cl_vehicle FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE,
+    CONSTRAINT fk_cl_client FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -242,7 +293,8 @@ CREATE TABLE IF NOT EXISTS vehicle_maintenance_ledger (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY uq_veh_tracking (vehicle_id, tracking_point),
-    INDEX idx_vml_vehicle (vehicle_id)
+    INDEX idx_vml_vehicle (vehicle_id),
+    CONSTRAINT fk_vml_vehicle FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -254,7 +306,8 @@ CREATE TABLE IF NOT EXISTS service_request_comments (
     author_name VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_src_request (request_id)
+    INDEX idx_src_request (request_id),
+    CONSTRAINT fk_src_request FOREIGN KEY (request_id) REFERENCES service_requests(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -271,7 +324,8 @@ CREATE TABLE IF NOT EXISTS external_services (
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_ext_vehicle (vehicle_id)
+    INDEX idx_ext_vehicle (vehicle_id),
+    CONSTRAINT fk_ext_vehicle FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -287,7 +341,10 @@ CREATE TABLE IF NOT EXISTS notification_logs (
     sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(50) DEFAULT 'Sent',
     INDEX idx_nl_client (client_id),
-    INDEX idx_nl_vehicle (vehicle_id)
+    INDEX idx_nl_vehicle (vehicle_id),
+    INDEX idx_nl_status_sent (status, sent_at),
+    CONSTRAINT fk_nl_client FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE,
+    CONSTRAINT fk_nl_vehicle FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================

@@ -124,7 +124,7 @@ cron.schedule('30 9 * * *', async () => {
             FROM service_reminders r
             JOIN vehicles v ON r.vehicle_id = v.id
             JOIN clients c ON r.client_id = c.id
-            WHERE r.status = 'Pending' AND r.due_date <= date('now')
+            WHERE r.status = 'Pending' AND r.due_date <= CURRENT_DATE
         `);
 
         let sentCount = 0;

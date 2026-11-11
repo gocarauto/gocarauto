@@ -11,12 +11,16 @@ const serviceRequestController = {
     getAllRequests: async (req, res) => {
         try {
             const { status, clientId, vehicleId } = req.query;
+            const isMySQL = process.env.DB_TYPE === 'mysql';
+            const vehicleConcat = isMySQL
+                ? "CONCAT(COALESCE(v.make, ''), ' ', COALESCE(v.model, ''), ' (', COALESCE(v.year, ''), ')')"
+                : "(COALESCE(v.make, '') || ' ' || COALESCE(v.model, '') || ' (' || COALESCE(v.year, '') || ')')";
 
             let query = `
                 SELECT 
                     sr.*,
                     c.full_name as client_name_joined,
-                    (v.make || ' ' || v.model || ' (' || v.year || ')') as vehicle_name_joined,
+                    ${vehicleConcat} as vehicle_name_joined,
                     v.license_plate,
                     ft.invoice_number,
                     ft.total_amount_due as total_amount,

@@ -38,18 +38,20 @@ class Database {
                     password: process.env.DB_PASSWORD || '',
                     database: process.env.DB_NAME || 'gocar_auto',
                     waitForConnections: true,
-                    connectionLimit: 10,
-                    maxIdle: 10,
-                    idleTimeout: 60000,
+                    connectionLimit: parseInt(process.env.DB_POOL_LIMIT, 10) || 20,
+                    maxIdle: parseInt(process.env.DB_POOL_MAX_IDLE, 10) || 10,
+                    idleTimeout: parseInt(process.env.DB_POOL_IDLE_TIMEOUT, 10) || 60000,
                     enableKeepAlive: true,
                     keepAliveInitialDelay: 10000,
                     queueLimit: 0,
+                    timezone: '+00:00',
+                    dateStrings: true
                 };
                 if (process.env.DB_SSL === 'true') {
                     poolConfig.ssl = { minVersion: 'TLSv1.2', rejectUnauthorized: true };
                 }
                 this.client = await mysql.createPool(poolConfig);
-                console.log('Connected to MySQL database');
+                console.log('Connected to MySQL database with Releem-tuned connection pool');
             } catch (err) {
                 console.error('Error connecting to MySQL database:', err);
                 throw err;
@@ -65,6 +67,10 @@ class Database {
                         this.db.serialize(() => {
                             this.db.run('PRAGMA foreign_keys = ON');
                             this.db.run('PRAGMA journal_mode = WAL');
+                            this.db.run('PRAGMA synchronous = NORMAL');
+                            this.db.run('PRAGMA cache_size = -64000'); // 64MB memory page cache
+                            this.db.run('PRAGMA temp_store = MEMORY');  // In-memory temp tables & sorts
+                            this.db.run('PRAGMA mmap_size = 268435456'); // 256MB memory-mapped I/O
                             this.db.run('PRAGMA busy_timeout = 5000', (err) => {
                                 if (err) reject(err);
                                 else resolve();
@@ -139,6 +145,73 @@ class Database {
     async ensureTables() {
         if (DB_TYPE === 'mysql') {
             const tableQueries = [
+                `CREATE TABLE IF NOT EXISTS customer_documents (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    client_id INT NOT NULL,
+                    title VARCHAR(255) NULL,
+                    document_type VARCHAR(100) NOT NULL,
+                    file_url VARCHAR(500) NOT NULL,
+                    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    INDEX idx_cd_client (client_id),
+                    INDEX idx_cd_file_url (file_url)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+
+                `CREATE TABLE IF NOT EXISTS service_reminders (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    client_id INT NOT NULL,
+                    vehicle_id INT NOT NULL,
+                    service_type VARCHAR(100) NOT NULL,
+                    due_date VARCHAR(50) NULL,
+                    notes TEXT,
+                    status VARCHAR(50) DEFAULT 'Pending',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    interval_km INT NULL,
+                    interval_months INT NULL,
+                    INDEX idx_srem_vehicle (vehicle_id),
+                    INDEX idx_srem_client (client_id),
+                    INDEX idx_srem_status (status),
+                    INDEX idx_srem_status_due (status, due_date)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+
+                `CREATE TABLE IF NOT EXISTS consignment_requests (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    client_id INT NOT NULL,
+                    vehicle_id INT NOT NULL,
+                    asking_price DECIMAL(12,2) NOT NULL,
+                    current_mileage INT DEFAULT 0,
+                    notes TEXT,
+                    status VARCHAR(50) DEFAULT 'Submitted',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    INDEX idx_cr_client (client_id),
+                    INDEX idx_cr_vehicle (vehicle_id),
+                    INDEX idx_cr_status (status),
+                    INDEX idx_cr_status_created (status, created_at)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+
+                `CREATE TABLE IF NOT EXISTS consignment_listings (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    request_id INT NULL,
+                    vehicle_id INT NOT NULL,
+                    client_id INT NOT NULL,
+                    asking_price DECIMAL(12,2) NOT NULL,
+                    sold_price DECIMAL(12,2) NULL,
+                    commission_type VARCHAR(50) NULL,
+                    commission_rate DECIMAL(5,2) DEFAULT 2.50,
+                    commission_amount DECIMAL(10,2) DEFAULT 0.00,
+                    listing_status VARCHAR(50) DEFAULT 'Active',
+                    fb_marketplace_url VARCHAR(500) NULL,
+                    notes TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    INDEX idx_cl_request (request_id),
+                    INDEX idx_cl_vehicle (vehicle_id),
+                    INDEX idx_cl_client (client_id),
+                    INDEX idx_cl_status (listing_status),
+                    INDEX idx_cl_status_created (listing_status, created_at)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+
                 `CREATE TABLE IF NOT EXISTS vehicle_maintenance_ledger (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     vehicle_id INT NOT NULL,
@@ -187,7 +260,8 @@ class Database {
                     sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     status VARCHAR(50) DEFAULT 'Sent',
                     INDEX idx_nl_client (client_id),
-                    INDEX idx_nl_vehicle (vehicle_id)
+                    INDEX idx_nl_vehicle (vehicle_id),
+                    INDEX idx_nl_status_sent (status, sent_at)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
 
                 `CREATE OR REPLACE VIEW service_history AS
