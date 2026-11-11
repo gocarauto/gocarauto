@@ -28,7 +28,7 @@ const customerPortalController = {
 
             const upcomingService = await database.query(
                 `SELECT * FROM vehicles WHERE client_id = ? 
-                 ORDER BY next_service_due ASC NULLS LAST, id DESC LIMIT 3`,
+                 ORDER BY CASE WHEN next_service_due IS NULL THEN 1 ELSE 0 END, next_service_due ASC, id DESC LIMIT 3`,
                 [customerId]
             );
 

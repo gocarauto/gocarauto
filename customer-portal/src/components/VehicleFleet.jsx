@@ -118,46 +118,46 @@ const VehicleFleet = () => {
     const effectiveActiveId = activeVehicleId || (vehicles[0]?.id ?? null);
 
     return (
-        <div className="space-y-6 pb-16">
+        <div className="max-w-7xl mx-auto space-y-7 pb-16">
             
             {/* Header */}
             <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-white/[0.08] pb-5">
                 <div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-slate-950 dark:text-white">
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white tracking-tight">
                         {isAr ? 'أسطول السيارات في الجراج' : 'Registered Garage Fleet'}
                     </h1>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mt-1">
                         {isAr ? 'إدارة وتتبع مواصفات وصيانات وأوراق كل مركبة' : 'Manage telemetry, certified service passports, and digital logbooks for each asset'}
                     </p>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <div className="relative w-48 sm:w-64">
-                        <Search className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
+                    <div className="relative w-52 sm:w-72">
+                        <Search className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-slate-400" size={17} />
                         <input
                             type="text"
                             placeholder={isAr ? 'البحث بالماركة، الموديل أو اللوحة...' : 'Search make, model, plate, VIN...'}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-xl py-2 ltr:pl-8 rtl:pr-8 px-3 text-xs font-medium outline-none focus:ring-2 focus:ring-amber-400 text-slate-900 dark:text-white placeholder:text-slate-400 shadow-xs"
+                            className="w-full bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-2xl py-2.5 ltr:pl-9 rtl:pr-9 px-4 text-sm font-medium outline-none focus:ring-2 focus:ring-amber-400 text-slate-900 dark:text-white placeholder:text-slate-400 shadow-xs"
                         />
                     </div>
-                    <div className="bg-white dark:bg-[#0c0d12] px-3.5 py-1.5 rounded-xl border border-slate-200/80 dark:border-white/10 shadow-xs text-center shrink-0">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block leading-none">{isAr ? 'العدد' : 'Cars'}</span>
-                        <span className="text-sm font-black text-slate-950 dark:text-white tabular-nums leading-tight">{vehicles.length}</span>
+                    <div className="bg-white dark:bg-[#0c0d12] px-4 py-2 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs text-center shrink-0">
+                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block leading-none">{isAr ? 'العدد' : 'Cars'}</span>
+                        <span className="text-base font-bold text-slate-950 dark:text-white tabular-nums leading-tight mt-0.5 block">{vehicles.length}</span>
                     </div>
                 </div>
             </header>
 
             {/* Make Filter Pills */}
             {uniqueMakes.length > 2 && (
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+                <div className="flex items-center gap-2 overflow-x-auto pb-1">
                     {uniqueMakes.map(m => (
                         <button
                             key={m}
                             type="button"
                             onClick={() => setSelectedMake(m)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap cursor-pointer ${
+                            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer ${
                                 selectedMake === m
                                     ? 'bg-amber-400 text-slate-950 shadow-xs font-bold'
                                     : 'bg-white dark:bg-[#0c0d12] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/[0.08]'
@@ -189,7 +189,7 @@ const VehicleFleet = () => {
                         return (
                             <div
                                 key={v.id || i}
-                                className="bg-white dark:bg-[#0c0d12] rounded-3xl border border-slate-200/80 dark:border-white/[0.08] p-5 sm:p-7 shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col lg:flex-row gap-6 lg:gap-8 items-stretch group"
+                                className="bg-white dark:bg-[#0c0d12] rounded-3xl border border-slate-200/80 dark:border-white/[0.08] p-6 sm:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col lg:flex-row gap-6 lg:gap-8 items-stretch group"
                             >
                                 {/* Left Column: The Visual Hero Showcase Pod */}
                                 <div className="w-full lg:w-[48%] min-h-[320px] sm:min-h-[360px] rounded-2xl bg-gradient-to-b from-[#181a24] via-[#10121a] to-[#08090d] border border-slate-800 dark:border-white/10 relative overflow-hidden flex flex-col justify-between p-6 sm:p-7 shadow-2xl shrink-0">
@@ -226,7 +226,7 @@ const VehicleFleet = () => {
                                 </div>
 
                                 {/* Right Column: Telemetry Matrix & Two-Tier Actions */}
-                                <div className="w-full lg:w-[52%] flex flex-col justify-between space-y-5">
+                                <div className="w-full lg:w-[52%] flex flex-col justify-between space-y-6">
                                     
                                     {/* Vehicle Heading & Active Status Badge */}
                                     <div className="flex items-start justify-between gap-3">
@@ -240,7 +240,7 @@ const VehicleFleet = () => {
                                         </div>
 
                                         {isActive ? (
-                                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20 shrink-0 shadow-xs">
+                                            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20 shrink-0 shadow-xs">
                                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                                 <span>{isAr ? 'السيارة النشطة' : 'Active Vehicle'}</span>
                                             </span>
@@ -248,7 +248,7 @@ const VehicleFleet = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => handleSetActive(v.id)}
-                                                className="px-3 py-1 rounded-full text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-amber-500 hover:border-amber-400/40 bg-slate-100 dark:bg-white/[0.05] border border-slate-200/80 dark:border-white/10 transition-colors shrink-0 cursor-pointer"
+                                                className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-amber-500 hover:border-amber-400/40 bg-slate-100 dark:bg-white/[0.05] border border-slate-200/80 dark:border-white/10 transition-colors shrink-0 cursor-pointer"
                                                 title={isAr ? 'تعيين كسيارة رئيسية في لوحة القيادة' : 'Set as primary vehicle on Dashboard'}
                                             >
                                                 {isAr ? 'تعيين كنشطة' : 'Set as Active'}
@@ -257,53 +257,53 @@ const VehicleFleet = () => {
                                     </div>
 
                                     {/* 2x2 Telemetry Matrix */}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                         
                                         {/* Box 1: Odometer */}
-                                        <div className="bg-slate-50/80 dark:bg-white/[0.03] p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] space-y-1">
-                                            <span className="text-xs font-bold text-slate-400 dark:text-slate-500 flex items-center gap-1.5 font-sans">
-                                                <Gauge size={13} className="text-slate-400" />
+                                        <div className="bg-slate-50/80 dark:bg-white/[0.03] p-4 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] space-y-1">
+                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5 font-sans">
+                                                <Gauge size={14} className="text-slate-400" />
                                                 <span>{isAr ? 'العداد' : 'Odometer'}</span>
                                             </span>
-                                            <p className="font-mono font-bold text-slate-900 dark:text-white text-lg sm:text-xl tabular-nums leading-tight">
+                                            <p className="font-semibold text-slate-900 dark:text-white text-xl sm:text-2xl tabular-nums leading-tight">
                                                 {mileage ? mileage.toLocaleString() : '—'} <span className="text-xs text-slate-400 font-sans font-normal">km</span>
                                             </p>
                                         </div>
 
                                         {/* Box 2: Next Due Date */}
-                                        <div className="bg-slate-50/80 dark:bg-white/[0.03] p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] space-y-1">
-                                            <span className="text-xs font-bold text-slate-400 dark:text-slate-500 flex items-center gap-1.5 font-sans">
-                                                <Calendar size={13} className="text-slate-400" />
+                                        <div className="bg-slate-50/80 dark:bg-white/[0.03] p-4 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] space-y-1">
+                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5 font-sans">
+                                                <Calendar size={14} className="text-slate-400" />
                                                 <span>{isAr ? 'الموعد القادم' : 'Next Due'}</span>
                                             </span>
-                                            <p className="font-bold text-slate-900 dark:text-white text-base sm:text-lg leading-tight truncate">
+                                            <p className="font-semibold text-slate-900 dark:text-white text-lg sm:text-xl leading-tight truncate">
                                                 {v.next_service_due ? formatDate(v.next_service_due) : (isAr ? 'محدث' : 'Up to date')}
                                             </p>
                                         </div>
 
                                         {/* Box 3: Service Visits */}
-                                        <div className="bg-slate-50/80 dark:bg-white/[0.03] p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] space-y-1">
-                                            <span className="text-xs font-bold text-slate-400 dark:text-slate-500 flex items-center gap-1.5 font-sans">
-                                                <Activity size={13} className="text-slate-400" />
+                                        <div className="bg-slate-50/80 dark:bg-white/[0.03] p-4 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] space-y-1">
+                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5 font-sans">
+                                                <Activity size={14} className="text-slate-400" />
                                                 <span>{isAr ? 'الزيارات' : 'Visits'}</span>
                                             </span>
-                                            <p className="font-bold text-slate-900 dark:text-white text-lg sm:text-xl tabular-nums leading-tight">
+                                            <p className="font-semibold text-slate-900 dark:text-white text-xl sm:text-2xl tabular-nums leading-tight">
                                                 {v.services_count || 0} <span className="text-xs text-slate-400 font-sans font-normal">{isAr ? 'زيارة' : 'Visits'}</span>
                                             </p>
                                         </div>
 
                                         {/* Box 4: Dual Health Capsules (Engine Oil Life & Transmission Oil Life) */}
-                                        <div className="grid grid-cols-2 gap-2">
+                                        <div className="grid grid-cols-2 gap-2.5">
                                             {/* Engine Oil Life */}
-                                            <div className="bg-slate-50/80 dark:bg-white/[0.03] p-2.5 sm:p-3 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] flex flex-col justify-between">
-                                                <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider block font-sans">
-                                                    {isAr ? 'زيت المحرك' : 'ENGINE OIL LIFE'}
+                                            <div className="bg-slate-50/80 dark:bg-white/[0.03] p-3 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] flex flex-col justify-between">
+                                                <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block font-sans truncate">
+                                                    {isAr ? 'زيت المحرك' : 'ENGINE OIL'}
                                                 </span>
-                                                <div className="flex items-center gap-1.5 my-1">
-                                                    <div className="w-5 h-5 rounded-full bg-emerald-500/15 text-emerald-500 flex items-center justify-center shrink-0">
-                                                        <Droplet size={11} />
+                                                <div className="flex items-center gap-1.5 my-1.5">
+                                                    <div className="w-6 h-6 rounded-full bg-emerald-500/15 text-emerald-500 flex items-center justify-center shrink-0">
+                                                        <Droplet size={13} />
                                                     </div>
-                                                    <span className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white font-mono">
+                                                    <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tabular-nums">
                                                         {oilLifePercent}%
                                                     </span>
                                                 </div>
@@ -313,15 +313,15 @@ const VehicleFleet = () => {
                                             </div>
 
                                             {/* Transmission Oil Life */}
-                                            <div className="bg-slate-50/80 dark:bg-white/[0.03] p-2.5 sm:p-3 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] flex flex-col justify-between">
-                                                <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider block font-sans">
-                                                    {isAr ? 'ناقل الحركة' : 'TRANSMISSION OIL LIFE'}
+                                            <div className="bg-slate-50/80 dark:bg-white/[0.03] p-3 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] flex flex-col justify-between">
+                                                <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block font-sans truncate">
+                                                    {isAr ? 'ناقل الحركة' : 'TRANS OIL'}
                                                 </span>
-                                                <div className="flex items-center gap-1.5 my-1">
-                                                    <div className="w-5 h-5 rounded-full bg-cyan-500/15 text-cyan-500 flex items-center justify-center shrink-0">
-                                                        <Cog size={11} />
+                                                <div className="flex items-center gap-1.5 my-1.5">
+                                                    <div className="w-6 h-6 rounded-full bg-cyan-500/15 text-cyan-500 flex items-center justify-center shrink-0">
+                                                        <Cog size={13} />
                                                     </div>
-                                                    <span className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white font-mono">
+                                                    <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tabular-nums">
                                                         {transmissionLifePercent}%
                                                     </span>
                                                 </div>
@@ -333,16 +333,16 @@ const VehicleFleet = () => {
                                     </div>
 
                                     {/* Two-Tier Action Deck */}
-                                    <div className="space-y-2.5 pt-1">
+                                    <div className="space-y-3 pt-1">
                                         
-                                        {/* Tier 1: Full-Width VIP Booking Action Button */}
+                                        {/* Tier 1: Full-Width Service Booking Action Button */}
                                         <button
                                             type="button"
                                             onClick={() => navigate(`/book-service?vehicleId=${v.id}`)}
-                                            className="w-full py-3.5 px-6 rounded-xl bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-950 font-bold text-sm flex items-center justify-center gap-2.5 shadow-md shadow-amber-400/20 transition-all cursor-pointer"
+                                            className="w-full py-3.5 px-6 rounded-2xl bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-950 font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-md shadow-amber-400/20 transition-all cursor-pointer"
                                         >
-                                            <Calendar size={16} />
-                                            <span>{isAr ? 'حجز خدمة VIP' : 'Book VIP Service'}</span>
+                                            <Calendar size={18} />
+                                            <span>{isAr ? 'حجز موعد صيانة' : 'Book Service Appointment'}</span>
                                         </button>
 
                                         {/* Tier 2: 3 Segmented Secondary Actions */}
@@ -350,9 +350,9 @@ const VehicleFleet = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => setSellModalVehicle(v)}
-                                                className="py-2.5 px-3 rounded-xl bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/[0.08] text-slate-800 dark:text-slate-200 font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer"
+                                                className="py-3 px-3.5 rounded-2xl bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/[0.08] text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer"
                                             >
-                                                <Tag size={14} className="text-slate-600 dark:text-slate-400" />
+                                                <Tag size={15} className="text-slate-600 dark:text-slate-400" />
                                                 <span>{isAr ? 'عرض للبيع' : 'Sell Car'}</span>
                                             </button>
 
@@ -360,18 +360,18 @@ const VehicleFleet = () => {
                                                 href={`${API_BASE}/vehicles/${v.id}/service-passport/pdf?token=${localStorage.getItem('token') || ''}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="py-2.5 px-3 rounded-xl bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/[0.08] text-slate-800 dark:text-slate-200 font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer text-center"
+                                                className="py-3 px-3.5 rounded-2xl bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/[0.08] text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer text-center"
                                             >
-                                                <ShieldCheck size={14} className="text-slate-600 dark:text-slate-400" />
+                                                <ShieldCheck size={15} className="text-slate-600 dark:text-slate-400" />
                                                 <span>{isAr ? 'جواز الصيانة' : 'Passport'}</span>
                                             </a>
 
                                             <button
                                                 type="button"
                                                 onClick={() => navigate(`/history?vehicleId=${v.id}`)}
-                                                className="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-400 font-semibold text-xs flex items-center justify-center gap-2 border border-slate-800 transition-all shadow-xs cursor-pointer"
+                                                className="py-3 px-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-cyan-400 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 border border-slate-800 transition-all shadow-xs cursor-pointer"
                                             >
-                                                <FileText size={14} className="text-cyan-400" />
+                                                <FileText size={15} className="text-cyan-400" />
                                                 <span>{isAr ? 'سجل الصيانة' : 'Logbook'}</span>
                                             </button>
                                         </div>

@@ -66,60 +66,60 @@ const Appointments = () => {
     }, [isAr]);
 
     return (
-        <div className="space-y-6 pb-16 max-w-5xl">
+        <div className="space-y-7 pb-16 max-w-5xl mx-auto">
             <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-white/[0.08] pb-5">
                 <div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-slate-950 dark:text-white">
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white tracking-tight">
                         {isAr ? 'جدول مواعيد الصيانة' : 'Service Appointments'}
                     </h1>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mt-1">
                         {isAr ? 'متابعة مواعيد وصول سياراتك لمركز الخدمة والباكيات المحجوزة' : 'Track your upcoming workshop arrivals, bay allocations, and intake status'}
                     </p>
                 </div>
                 <button
                     onClick={() => navigate('/book-service')}
-                    className="bg-amber-400 hover:bg-amber-300 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors self-start sm:self-auto"
+                    className="bg-amber-400 hover:bg-amber-300 text-slate-950 px-6 py-3 rounded-2xl font-bold text-sm flex items-center gap-2 shadow-sm transition-colors self-start sm:self-auto"
                 >
-                    <Plus size={16} />
+                    <Plus size={18} />
                     <span>{isAr ? 'حجز موعد جديد' : 'New Appointment'}</span>
                 </button>
             </header>
 
             {error && (
-                <div className="flex items-center gap-3 bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 p-4 rounded-xl text-xs font-semibold">
-                    <AlertCircle size={18} />
+                <div className="flex items-center gap-3 bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 p-4 rounded-2xl text-sm font-semibold">
+                    <AlertCircle size={20} />
                     <p>{error}</p>
                 </div>
             )}
 
             {loading && appointments.length === 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 animate-pulse">
                     {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="h-40 bg-slate-200 dark:bg-white/[0.04] rounded-2xl" />
+                        <div key={i} className="h-44 bg-slate-200 dark:bg-white/[0.04] rounded-3xl" />
                     ))}
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {appointments.map((apt, idx) => {
                         const statusInfo = STATUS_STYLE[apt.status] || STATUS_STYLE['Scheduled'];
                         const StatusIcon = statusInfo.icon;
                         return (
                             <div
                                 key={apt.id || idx}
-                                className="bg-white dark:bg-[#0c0d12] rounded-2xl border border-slate-200/80 dark:border-white/[0.08] p-5 shadow-sm hover:border-slate-300 dark:hover:border-white/20 transition-all space-y-4"
+                                className="bg-white dark:bg-[#0c0d12] rounded-3xl border border-slate-200/80 dark:border-white/[0.08] p-6 shadow-sm hover:border-slate-300 dark:hover:border-white/20 transition-all space-y-4"
                             >
                             <div className="flex items-start justify-between gap-3">
                                 <div className="space-y-1 min-w-0">
                                     <div className="flex items-center gap-2">
-                                        <h3 className="text-base font-bold text-slate-950 dark:text-white truncate">
+                                        <h3 className="text-lg font-bold text-slate-950 dark:text-white truncate">
                                             {apt.make} {apt.model}
                                         </h3>
-                                        <span className="text-xs font-medium text-slate-500">
+                                        <span className="text-sm font-semibold text-slate-500">
                                             {apt.year}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-2 text-xs">
-                                        <span className="font-mono text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded bg-slate-100 dark:bg-white/[0.06]">
+                                    <div className="flex items-center gap-2 text-sm">
+                                        <span className="font-mono font-medium text-slate-700 dark:text-slate-300 px-2.5 py-0.5 rounded-lg bg-slate-100 dark:bg-white/[0.06]">
                                             {apt.license_plate || 'No Plate'}
                                         </span>
                                         <span className="text-slate-400">•</span>
@@ -129,34 +129,34 @@ const Appointments = () => {
                                     </div>
                                 </div>
 
-                                <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold shrink-0 ${statusInfo.cls}`}>
-                                    <StatusIcon size={13} />
+                                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shrink-0 ${statusInfo.cls}`}>
+                                    <StatusIcon size={14} />
                                     <span>{isAr ? statusInfo.labelAr : statusInfo.labelEn}</span>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06] text-xs">
+                            <div className="grid grid-cols-2 gap-3.5 p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06] text-sm">
                                 <div>
-                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                         {isAr ? 'التاريخ' : 'Date'}
                                     </span>
-                                    <p className="font-bold text-slate-900 dark:text-white font-mono tabular-nums mt-0.5">
+                                    <p className="font-semibold text-slate-900 dark:text-white font-mono tabular-nums mt-0.5 text-sm sm:text-base">
                                         {formatDate(apt.scheduled_date)}
                                     </p>
                                 </div>
                                 <div>
-                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
                                         {isAr ? 'الوقت' : 'Arrival Slot'}
                                     </span>
-                                    <p className="font-bold text-slate-900 dark:text-white font-mono tabular-nums mt-0.5">
+                                    <p className="font-semibold text-slate-900 dark:text-white font-mono tabular-nums mt-0.5 text-sm sm:text-base">
                                         {apt.scheduled_time || '—'}
                                     </p>
                                 </div>
                             </div>
 
                             {apt.notes && (
-                                <p className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100/50 dark:bg-white/[0.02] p-2.5 rounded-lg border border-slate-200/40 dark:border-white/[0.04]">
-                                    <span className="font-bold text-slate-700 dark:text-slate-300">{isAr ? 'ملاحظات: ' : 'Notes: '}</span>
+                                <p className="text-sm text-slate-600 dark:text-slate-400 bg-slate-100/50 dark:bg-white/[0.02] p-3 rounded-xl border border-slate-200/40 dark:border-white/[0.04]">
+                                    <span className="font-bold text-slate-800 dark:text-slate-200">{isAr ? 'ملاحظات: ' : 'Notes: '}</span>
                                     {apt.notes}
                                 </p>
                             )}
@@ -170,10 +170,10 @@ const Appointments = () => {
                             <Clock size={28} />
                         </div>
                         <div className="space-y-1">
-                            <h3 className="text-base font-bold text-slate-950 dark:text-white">
+                            <h3 className="text-lg font-bold text-slate-950 dark:text-white">
                                 {isAr ? 'لا توجد مواعيد صيانة مجدولة' : 'No Scheduled Appointments'}
                             </h3>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+                            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
                                 {isAr 
                                     ? 'جدول مركز الخدمة فارغ حالياً بالنسبة لمركباتك. يمكنك حجز موعد فحص دوري في أي وقت.'
                                     : 'Your maintenance schedule is clear. Book an intake slot whenever your vehicle needs service.'}
@@ -181,9 +181,9 @@ const Appointments = () => {
                         </div>
                         <button
                             onClick={() => navigate('/book-service')}
-                            className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-xs transition-colors shadow-sm"
+                            className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-slate-950 px-6 py-3 rounded-2xl font-bold text-sm transition-colors shadow-sm"
                         >
-                            <Plus size={16} />
+                            <Plus size={18} />
                             <span>{isAr ? 'حجز موعد صيانة' : 'Book Appointment'}</span>
                         </button>
                     </div>

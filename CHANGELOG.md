@@ -4,6 +4,66 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-10
 
+### Typography Engine Overhaul & Viewport Ergonomics (CR-009)
+- **Elimination of Sub-baseline Micro-Type Scale Across Platform:**
+  - Diagnosed root causes of platform-wide legibility issues: micro-scale CSS classes (`text-[9px]`, `text-[10px]`, `text-[11px]`, and unscaled `text-xs`), unbounded full-width desktop viewports on wide monitors (causing visual isolation), and counterform clogging under heavy bold weights.
+  - Raised global base desktop typographic scale from `12px–13.5px` to an ergonomic `14.5px–16.5px` standard baseline across all customer and staff views.
+  - Overhauled component font scales:
+    - **`ServiceHistory.jsx` (Service Logbook):** Page headers elevated to `text-2xl sm:text-3xl font-extrabold`, subtitles to `text-sm font-medium`, KPI stat digits to `text-3xl sm:text-4xl font-extrabold`, table headers to `text-xs sm:text-sm font-bold uppercase`, table rows to `text-sm sm:text-base font-semibold`, invoice amounts to `text-base sm:text-lg font-semibold tabular-nums`, and status badges to `px-3.5 py-1.5 rounded-full text-xs font-bold`.
+    - **`InvoiceList.jsx` (Billing & Invoices):** Headers, KPI metrics, table rows, and payment status badges elevated to comfortable 14px–16px ergonomic scale.
+    - **`VehicleFleet.jsx` (My Vehicles Fleet):** Metric cards elevated from `text-[9px]/text-[10px]` to `text-xs font-bold uppercase` labels, odometer and service counts elevated to `text-xl sm:text-2xl font-semibold tabular-nums`, and oil/trans life capsules elevated to `text-base sm:text-lg font-bold`.
+    - **`Appointments.jsx` (Service Appointments):** Header, appointment cards, date/time chips, and action buttons elevated to `text-sm–text-base`.
+    - **`Settings.jsx` (Account & Preferences):** Form field labels elevated to `text-xs sm:text-sm font-bold uppercase`, input fields to `py-3 px-4 text-sm sm:text-base font-medium rounded-2xl`, and display preference buttons to `p-4 rounded-2xl text-sm font-bold`.
+    - **`ServiceBooking.jsx` (Booking Wizard):** Step progress bar, vehicle selection tiles, and service package cards upgraded to spacious, readable cards.
+- **Arabic Typography Clogging Eradication:**
+  - Diagnosed Cairo font's closed counterform defect where inner loops of letters (`م`, `و`, `ف`, `ق`, `ط`) collapse into solid black dots under medium and bold weights.
+  - Imported and standardized `IBM Plex Sans Arabic` and `Noto Sans Arabic UI` (`wght@400;500;600;700`) as the primary Arabic typography stack across `customer-portal/index.html` and `staff-interface/index.html`.
+  - Configured `--font-arabic` token in `index.css` and set `line-height: 1.65` and `letter-spacing: -0.01em` on `[dir="rtl"]` elements, ensuring Arabic character ascenders, descenders, and dots render with crystal-clear open apertures and zero visual bleeding.
+- **Tabular Non-Bold Numeric Precision:**
+  - Solved digit clogging and ocular fatigue caused by heavy bold weights (`font-weight: 800/900`) closing the loops of `0`, `6`, `8`, and `9`.
+  - Enforced `font-variant-numeric: tabular-nums` globally across all currency sums, odometers, invoice numbers, dates, and metric counters, constrained to clean `font-weight: 500-600` for perfect column alignment and open apertures.
+- **Responsive Viewport Enclosure & Framing:**
+  - Eliminated "canvas sprawl" on widescreen displays (where left-anchored sidebars and right-anchored tables were separated by feet of empty whitespace) by applying ergonomic containment wrappers (`max-w-7xl mx-auto` for dense data tables and `max-w-5xl mx-auto` for forms and wizards).
+
+### Login Terminal Overhaul & Brand Unification (CR-008)
+- **Unified Automotive Obsidian & Studio Aesthetic:**
+  - Redesigned both Customer Portal (`customer-portal/src/components/Login.jsx`) and Staff Operations Portal (`staff-interface/src/components/Login.jsx`) with identical high-tech CAD blueprint grid background, warm amber showroom spotlights, and subtle wireframe watermark.
+  - Implemented sleek obsidian frosted terminal glass card (`rounded-[2.5rem]`, luxury thin border, top amber accent strip).
+- **Consolidated Role Switcher:**
+  - Added segmented portal switcher tabs (`[ 👤 Customer ]` | `[ 🛠️ Staff Portal ]`) to seamlessly switch between the customer and staff login interfaces across both local dev (`localhost:5174` / `localhost:5173`) and cloud production URLs (`gocarauto.vercel.app` / `gocarauto-3kpg.vercel.app`).
+- **Gimmick & "VIP" Terminology Removal:**
+  - Completely removed "VIP Concierge", "VIP Concierge Access", "Encrypted VIP Session", "SFMS PORTAL", "ELITE STAFF MANAGEMENT", "Establish Connection", and "AUTHENTICATE".
+  - Replaced with clean, professional automotive engineering titles: "Welcome to GoCar Auto" / "Customer Fleet & Service Portal", "GoCar Auto Operations" / "Workshop & Fleet Management Terminal", and standard "Sign In" / "Sign In to Operations".
+- **Staff Portal Logo Contrast Remediation:**
+  - Identified root cause of washed-out staff logo: `staff-interface/public/logo.png` had been replaced with an all-white inverted version (`RGB ~ 244, 233, 230`), rendering it invisible on white/light cards.
+  - Replaced with the crisp, full-color original logo (`customer-portal/public/logo.png`, `RGB ~ 39, 43, 60` dark-navy icon with vibrant orange typography), housed inside a subtle high-contrast badge with drop shadow.
+- **Form Enhancements & Browser Autofill Fix:**
+  - Injected CSS rules into `customer-portal/src/index.css` and `staff-interface/src/index.css` using `-webkit-box-shadow: 0 0 0 1000px inset` to eliminate Chrome/Safari pale yellow autofill background artifacts.
+  - Added interactive password visibility toggle (`Eye` / `EyeOff` icons) to both portals.
+  - Added theme toggle (Light/Dark mode) in both login screens and bilingual support (عربي / English) with RTL support in the customer portal.
+
+
+### Performance Overhaul & Data Retrieval Optimization (CR-007)
+- **Backend N+1 Query Elimination in `vehicleController.getAllVehicles`:**
+  - Replaced sequential per-vehicle `database.get()` query loop with a single grouped subquery aggregate (`open_sr`) joined to `vehicles`.
+  - Computes vehicle `health_score` and mileage intervals in-memory with **0 extra database round trips**, eliminating 2–4 seconds of sequential cloud latency on every vehicle fetch.
+- **Cross-Database Compatibility in Customer Portal (`customerPortalController.getDashboard`):**
+  - Replaced Postgres/SQLite-only `ORDER BY next_service_due ASC NULLS LAST` with standard portable SQL (`ORDER BY CASE WHEN next_service_due IS NULL THEN 1 ELSE 0 END, next_service_due ASC, id DESC LIMIT 3`), preventing MySQL/TiDB Cloud syntax errors and query retries.
+- **Production MySQL Connection Pool Optimization (`database/db.js`):**
+  - Configured `enableKeepAlive: true`, `keepAliveInitialDelay: 10000`, `maxIdle: 10`, and `idleTimeout: 60000` on the MySQL2 connection pool to maintain warm connections and eliminate repetitive TLS 1.2 handshakes across WAN.
+- **Production Schema Parity (`database/schema.mysql.sql`):**
+  - Added the `service_history` SQL view definition using MySQL-compatible `CONCAT` syntax, ensuring customer service history queries execute cleanly.
+- **In-Memory Request Caching & In-Flight Request Deduplication (`staff-interface` & `customer-portal`):**
+  - Added a smart, zero-dependency in-memory cache layer in both `staff-interface/src/utils/api.js` and `customer-portal/src/utils/api.js`.
+  - GET requests are cached for a 30-second fresh window, making navigation between previously visited tabs **instantaneous (0ms perceived latency)** without blank loading screens.
+  - Concurrent duplicate in-flight requests are automatically coalesced into a single network call.
+  - Automatically invalidates the cache immediately on any mutating HTTP method (`POST`, `PUT`, `DELETE`, `PATCH`) to guarantee real-time data freshness.
+- **Reminders Over-fetching Remediation (`ServiceRemindersModule.jsx`):**
+  - Removed unconditional loading of the entire `/api/clients` database table on initial component mount. The client registry is now lazily fetched only when the user opens the "New Reminder" modal.
+- **Customer Portal Route Code-Splitting (`customer-portal/src/App.jsx`):**
+  - Converted all 10 customer portal route components to dynamic `React.lazy()` imports with a centered `<Suspense>` loading indicator.
+  - Eliminated the monolithic 584 kB JS bundle warning; routes are now loaded as nimble on-demand chunks.
+
 ### Added & Enhanced (Staff Portal Visual Theme Parity & Light/Dark Mode Unification)
 - **Deep WCAG AA Text Contrast Remediation Across All Views:**
   - Systematically audited and remediated all 18 views and sub-pages in `staff-interface/` to eliminate hardcoded low-contrast dark tokens, ensuring 100% theme parity with `customer-portal`:

@@ -226,3 +226,42 @@ CREATE TABLE consignment_listings (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_cl_status (listing_status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
+-- SERVICE HISTORY VIEW (Reporting & Customer Portal)
+-- ============================================
+CREATE OR REPLACE VIEW service_history AS
+SELECT 
+    sr.id AS record_id,
+    sr.service_date,
+    c.id AS client_id,
+    c.full_name AS client_name,
+    c.email AS client_email,
+    c.phone AS client_mobile,
+    v.id AS vehicle_id,
+    CONCAT(v.make, ' ', v.model, ' (', COALESCE(v.year, ''), ')') AS vehicle_info,
+    v.license_plate,
+    v.vin,
+    sr.mileage,
+    si.item_name,
+    si.item_name_ar,
+    si.category,
+    sr.quantity,
+    sr.unit_price,
+    sr.total_price,
+    u.name AS serviced_by,
+    sreq.id AS request_id,
+    sreq.status AS request_status,
+    ft.id AS invoice_id,
+    ft.invoice_number,
+    ft.payment_status,
+    ft.service_fee,
+    ft.spare_parts_markup,
+    ft.total_amount_due
+FROM service_records sr
+JOIN service_requests sreq ON sr.request_id = sreq.id
+JOIN clients c ON sreq.client_id = c.id
+JOIN vehicles v ON sreq.vehicle_id = v.id
+JOIN service_items si ON sr.item_id = si.id
+LEFT JOIN users u ON sr.user_id = u.id
+LEFT JOIN financial_transactions ft ON sreq.id = ft.request_id;

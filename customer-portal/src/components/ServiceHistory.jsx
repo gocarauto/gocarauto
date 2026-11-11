@@ -199,14 +199,14 @@ const ServiceHistory = () => {
     };
 
     return (
-        <div className="space-y-6 pb-16">
+        <div className="max-w-7xl mx-auto space-y-7 pb-16">
             
             {/* Header */}
             <header className="border-b border-slate-200/80 dark:border-white/[0.08] pb-5">
-                <h1 className="text-xl sm:text-2xl font-bold text-slate-950 dark:text-white">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white tracking-tight">
                     {isAr ? 'سجلات الصيانة ودفتر الخدمة' : 'Service Logbook & History'}
                 </h1>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mt-1">
                     {isAr ? 'سجل رقمي موثق لكل زيارة وفحص وقطعة غيار معتمدة' : 'Official digital service ledger with itemized parts and verified invoices'}
                 </p>
             </header>
@@ -225,55 +225,55 @@ const ServiceHistory = () => {
             )}
 
             {/* Stat Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm flex items-center justify-between">
-                    <div className="space-y-0.5">
-                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div className="p-6 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm flex items-center justify-between">
+                    <div className="space-y-1">
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                             {isAr ? 'إجمالي السجلات' : 'Total Records'}
                         </span>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-black text-slate-950 dark:text-white tabular-nums">
+                            <span className="text-3xl font-extrabold text-slate-950 dark:text-white tabular-nums">
                                 {history.length}
                             </span>
-                            <span className="text-xs text-slate-500">{isAr ? 'عملية' : 'Entries'}</span>
+                            <span className="text-xs font-semibold text-slate-500">{isAr ? 'عملية' : 'Entries'}</span>
                         </div>
                     </div>
-                    <div className="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-500 flex items-center justify-center font-bold">
-                        <FileText size={18} />
+                    <div className="w-12 h-12 rounded-xl bg-amber-400/10 text-amber-500 flex items-center justify-center font-bold">
+                        <FileText size={20} />
                     </div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm flex items-center justify-between">
-                    <div className="space-y-0.5">
-                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                <div className="p-6 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm flex items-center justify-between">
+                    <div className="space-y-1">
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                             {isAr ? 'إجمالي الاستثمار' : 'Maintenance Invested'}
                         </span>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-black text-slate-950 dark:text-white tabular-nums">
+                            <span className="text-3xl font-extrabold text-slate-950 dark:text-white tabular-nums">
                                 {totalSpent.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                             </span>
-                            <span className="text-xs text-slate-500">{isAr ? 'ج.م' : 'EGP'}</span>
+                            <span className="text-xs font-bold text-amber-500">{isAr ? 'ج.م' : 'EGP'}</span>
                         </div>
                     </div>
-                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
-                        <CheckCircle2 size={18} />
+                    <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                        <CheckCircle2 size={20} />
                     </div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm flex items-center justify-between">
-                    <div className="space-y-0.5">
-                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                <div className="p-6 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200/80 dark:border-white/[0.08] shadow-sm flex items-center justify-between">
+                    <div className="space-y-1">
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                             {isAr ? 'المركبات المشمولة' : 'Vehicles Serviced'}
                         </span>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-black text-slate-950 dark:text-white tabular-nums">
+                            <span className="text-3xl font-extrabold text-slate-950 dark:text-white tabular-nums">
                                 {uniqueVehicles}
                             </span>
-                            <span className="text-xs text-slate-500">{isAr ? 'سيارات' : 'Cars'}</span>
+                            <span className="text-xs font-semibold text-slate-500">{isAr ? 'سيارات' : 'Cars'}</span>
                         </div>
                     </div>
-                    <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold">
-                        <Wrench size={18} />
+                    <div className="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold">
+                        <Wrench size={20} />
                     </div>
                 </div>
             </div>
@@ -282,20 +282,20 @@ const ServiceHistory = () => {
             <div className="bg-white dark:bg-[#0c0d12] rounded-3xl border border-slate-200/80 dark:border-white/[0.08] shadow-sm overflow-hidden">
                 
                 {/* Table Toolbar */}
-                <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-white/[0.06] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="relative flex-1 max-w-sm">
-                        <Search className="absolute ltr:left-3.5 rtl:right-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
+                <div className="p-5 sm:p-6 border-b border-slate-100 dark:border-white/[0.06] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="relative flex-1 max-w-md">
+                        <Search className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-slate-400" size={17} />
                         <input 
                             type="text" 
                             placeholder={isAr ? 'البحث بالخدمة، السيارة، أو التاريخ...' : 'Search by service or vehicle...'} 
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-xl py-2 ltr:pl-9 rtl:pr-9 px-3 text-xs font-medium outline-none focus:ring-2 focus:ring-amber-400 text-slate-900 dark:text-white placeholder:text-slate-400"
+                            className="w-full bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 rounded-2xl py-3 ltr:pl-11 rtl:pr-11 px-4 text-sm font-medium outline-none focus:ring-2 focus:ring-amber-400 text-slate-900 dark:text-white placeholder:text-slate-400"
                         />
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        <div className="flex bg-slate-100 dark:bg-white/[0.04] p-1 rounded-lg border border-slate-200/60 dark:border-white/[0.06]">
+                    <div className="flex items-center gap-3">
+                        <div className="flex bg-slate-100 dark:bg-white/[0.04] p-1.5 rounded-2xl border border-slate-200/60 dark:border-white/[0.06]">
                             {[
                                 { id: 'All', en: 'All', ar: 'الكل' },
                                 { id: 'Oil', en: 'Oil', ar: 'الزيوت' },
@@ -305,7 +305,7 @@ const ServiceHistory = () => {
                                 <button
                                     key={tab.id}
                                     onClick={() => handleTabChange(tab.id)}
-                                    className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                                    className={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
                                         tab.id === activeTab
                                             ? 'bg-white dark:bg-white/15 text-slate-950 dark:text-white shadow-xs'
                                             : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
@@ -318,10 +318,10 @@ const ServiceHistory = () => {
 
                         <button
                             onClick={exportCSV}
-                            className="h-8 px-3 rounded-lg border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 flex items-center gap-1.5 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors shrink-0"
+                            className="h-10 px-4 rounded-2xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 flex items-center gap-2 text-xs sm:text-sm font-semibold hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors shrink-0 cursor-pointer"
                             title="Export records to CSV"
                         >
-                            <Download size={14} />
+                            <Download size={15} />
                             <span>{isAr ? 'تصدير' : 'Export'}</span>
                         </button>
                     </div>
@@ -350,15 +350,15 @@ const ServiceHistory = () => {
                                 <div key={item.record_id || item.id || idx} className="p-4 space-y-2.5">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2.5 min-w-0">
-                                            <div className={`w-8 h-8 rounded-lg ${style.bg} ${style.color} flex items-center justify-center shrink-0`}>
-                                                <style.icon size={15} />
+                                            <div className={`w-9 h-9 rounded-xl ${style.bg} ${style.color} flex items-center justify-center shrink-0`}>
+                                                <style.icon size={16} />
                                             </div>
                                             <div className="min-w-0">
-                                                <span className="font-bold text-slate-900 dark:text-white block text-sm truncate">{title}</span>
-                                                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">{formatDate(item.service_date)}</span>
+                                                <span className="font-bold text-slate-900 dark:text-white block text-base truncate">{title}</span>
+                                                <span className="text-xs text-slate-500 dark:text-slate-400 tabular-nums">{formatDate(item.service_date)}</span>
                                             </div>
                                         </div>
-                                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold shrink-0 ${
+                                        <span className={`px-3 py-1 rounded-full text-xs font-bold shrink-0 ${
                                             ['Completed', 'Complete', 'Paid'].includes(rawStatus) 
                                                 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
                                                 : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
@@ -367,22 +367,22 @@ const ServiceHistory = () => {
                                         </span>
                                     </div>
 
-                                    <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100/60 dark:border-white/[0.04]">
+                                    <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100/60 dark:border-white/[0.04]">
                                         <div>
-                                            <span className="text-slate-400 text-[10px] uppercase font-bold block">{isAr ? 'المركبة' : 'Vehicle'}</span>
-                                            <span className="font-semibold text-slate-800 dark:text-slate-200">{vehicle}</span>
-                                            {vinDisplay && <span className="text-[10px] text-slate-400 font-mono block">{vinDisplay}</span>}
+                                            <span className="text-slate-400 text-xs uppercase font-bold block">{isAr ? 'المركبة' : 'Vehicle'}</span>
+                                            <span className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{vehicle}</span>
+                                            {vinDisplay && <span className="text-xs text-slate-400 block">{vinDisplay}</span>}
                                         </div>
                                         <div className="text-right rtl:text-left">
-                                            <span className="text-slate-400 text-[10px] uppercase font-bold block">{isAr ? 'التكلفة' : 'Cost'}</span>
-                                            <span className="font-bold text-slate-950 dark:text-white font-mono tabular-nums">
+                                            <span className="text-slate-400 text-xs uppercase font-bold block">{isAr ? 'التكلفة' : 'Cost'}</span>
+                                            <span className="font-semibold text-slate-950 dark:text-white text-sm tabular-nums">
                                                 {cost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} EGP
                                             </span>
                                         </div>
                                     </div>
 
                                     <div className="flex items-center justify-between pt-1">
-                                        <span className="text-[11px] text-slate-400 font-mono">
+                                        <span className="text-xs text-slate-500 tabular-nums font-medium">
                                             {(item.mileage || 0).toLocaleString()} km
                                         </span>
                                         <div className="flex items-center gap-2">
@@ -390,16 +390,16 @@ const ServiceHistory = () => {
                                                 <>
                                                     <button 
                                                         onClick={() => handleViewInvoice(item.invoice_id)}
-                                                        className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-amber-400/10 text-amber-600 dark:text-amber-400 border border-amber-400/20 flex items-center gap-1 active:scale-95 transition-all"
+                                                        className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-amber-400/10 text-amber-600 dark:text-amber-400 border border-amber-400/20 flex items-center gap-1 active:scale-95 transition-all"
                                                     >
-                                                        <Eye size={12} />
+                                                        <Eye size={13} />
                                                         <span>{isAr ? 'عرض' : 'View'}</span>
                                                     </button>
                                                     <button 
                                                         onClick={() => handleDownloadPDF(item.invoice_id, item.invoice_number)}
-                                                        className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 flex items-center gap-1 active:scale-95 transition-all"
+                                                        className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 flex items-center gap-1 active:scale-95 transition-all"
                                                     >
-                                                        <Download size={12} />
+                                                        <Download size={13} />
                                                         <span>PDF</span>
                                                     </button>
                                                 </>
@@ -410,8 +410,8 @@ const ServiceHistory = () => {
                             );
                         })
                     ) : (
-                        <div className="p-8 text-center text-slate-400 text-xs">
-                            <FileText size={20} className="mx-auto mb-1.5 opacity-40" />
+                        <div className="p-8 text-center text-slate-400 text-sm">
+                            <FileText size={24} className="mx-auto mb-2 opacity-40" />
                             <span>{isAr ? 'لم يتم العثور على سجلات' : 'No maintenance records found'}</span>
                         </div>
                     )}
@@ -422,36 +422,36 @@ const ServiceHistory = () => {
                     <table className="w-full border-collapse text-left rtl:text-right">
                         <thead>
                             <tr className="border-b border-slate-100 dark:border-white/[0.06] bg-slate-50/60 dark:bg-white/[0.02]">
-                                <th onClick={() => toggleSort('service_type')} className="px-5 py-3.5 text-xs font-bold text-slate-500 cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                                <th onClick={() => toggleSort('service_type')} className="px-6 py-4 text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 cursor-pointer hover:text-slate-900 dark:hover:text-white">
                                     <div className="flex items-center gap-1.5">
                                         <span>{isAr ? 'نوع الخدمة' : 'Service Type'}</span>
-                                        <ArrowUpDown size={12} className="opacity-60" />
+                                        <ArrowUpDown size={13} className="opacity-60" />
                                     </div>
                                 </th>
-                                <th onClick={() => toggleSort('service_date')} className="px-5 py-3.5 text-xs font-bold text-slate-500 cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                                <th onClick={() => toggleSort('service_date')} className="px-6 py-4 text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 cursor-pointer hover:text-slate-900 dark:hover:text-white">
                                     <div className="flex items-center gap-1.5">
                                         <span>{isAr ? 'التاريخ' : 'Date'}</span>
-                                        <ArrowUpDown size={12} className="opacity-60" />
+                                        <ArrowUpDown size={13} className="opacity-60" />
                                     </div>
                                 </th>
-                                <th onClick={() => toggleSort('vehicle_name')} className="px-5 py-3.5 text-xs font-bold text-slate-500 cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                                <th onClick={() => toggleSort('vehicle_name')} className="px-6 py-4 text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 cursor-pointer hover:text-slate-900 dark:hover:text-white">
                                     <div className="flex items-center gap-1.5">
                                         <span>{isAr ? 'المركبة' : 'Vehicle'}</span>
-                                        <ArrowUpDown size={12} className="opacity-60" />
+                                        <ArrowUpDown size={13} className="opacity-60" />
                                     </div>
                                 </th>
-                                <th className="px-5 py-3.5 text-xs font-bold text-slate-500">{isAr ? 'العداد' : 'Mileage'}</th>
-                                <th className="px-5 py-3.5 text-xs font-bold text-slate-500">{isAr ? 'التكلفة' : 'Amount'}</th>
-                                <th className="px-5 py-3.5 text-xs font-bold text-slate-500">{isAr ? 'الحالة' : 'Status'}</th>
-                                <th className="px-5 py-3.5 ltr:text-right rtl:text-left text-xs font-bold text-slate-500">{isAr ? 'المستندات' : 'Actions'}</th>
+                                <th className="px-6 py-4 text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400">{isAr ? 'العداد' : 'Mileage'}</th>
+                                <th className="px-6 py-4 text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400">{isAr ? 'التكلفة' : 'Amount'}</th>
+                                <th className="px-6 py-4 text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400">{isAr ? 'الحالة' : 'Status'}</th>
+                                <th className="px-6 py-4 ltr:text-right rtl:text-left text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400">{isAr ? 'المستندات' : 'Actions'}</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 dark:divide-white/[0.06] text-xs">
+                        <tbody className="divide-y divide-slate-100 dark:divide-white/[0.06] text-sm">
                             {loading && history.length === 0 ? (
                                 [1, 2, 3, 4, 5].map(i => (
                                     <tr key={i} className="animate-pulse border-b border-slate-100 dark:border-white/[0.04]">
-                                        <td colSpan={7} className="px-5 py-4">
-                                            <div className="h-4 bg-slate-200 dark:bg-white/[0.04] rounded-md w-full" />
+                                        <td colSpan={7} className="px-6 py-4">
+                                            <div className="h-5 bg-slate-200 dark:bg-white/[0.04] rounded-md w-full" />
                                         </td>
                                     </tr>
                                 ))
@@ -465,55 +465,56 @@ const ServiceHistory = () => {
                                 const vinDisplay = item.vin ? `VIN: ...${item.vin.slice(-4)}` : (item.license_plate ? `Plate: ${item.license_plate}` : '');
                                 return (
                                     <tr key={item.record_id || item.id || idx} className="hover:bg-slate-50/70 dark:hover:bg-white/[0.02] transition-colors group">
-                                        <td className="px-5 py-3.5 font-bold text-slate-900 dark:text-white">
-                                            <div className="flex items-center gap-2.5">
-                                                <div className={`w-8 h-8 rounded-lg ${style.bg} ${style.color} flex items-center justify-center shrink-0`}>
-                                                    <style.icon size={15} />
+                                        <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`w-9 h-9 rounded-xl ${style.bg} ${style.color} flex items-center justify-center shrink-0`}>
+                                                    <style.icon size={16} />
                                                 </div>
-                                                <span>{title}</span>
+                                                <span className="text-base font-bold">{title}</span>
                                             </div>
                                         </td>
-                                        <td className="px-5 py-3.5 text-slate-600 dark:text-slate-400 font-mono tabular-nums">
+                                        <td className="px-6 py-4 text-slate-700 dark:text-slate-300 tabular-nums font-medium text-sm">
                                             {formatDate(item.service_date)}
                                         </td>
-                                        <td className="px-5 py-3.5">
+                                        <td className="px-6 py-4">
                                             <div className="flex flex-col">
-                                                <span className="font-semibold text-slate-900 dark:text-white">{vehicle}</span>
+                                                <span className="font-semibold text-sm text-slate-900 dark:text-white">{vehicle}</span>
                                                 {vinDisplay && (
-                                                    <span className="text-[10px] text-slate-400 font-mono mt-0.5">{vinDisplay}</span>
+                                                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">{vinDisplay}</span>
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="px-5 py-3.5 font-mono tabular-nums text-slate-700 dark:text-slate-300">
-                                            {(item.mileage || 0).toLocaleString()} <span className="text-[10px] text-slate-400 font-sans">km</span>
+                                        <td className="px-6 py-4 tabular-nums text-slate-800 dark:text-slate-200 font-semibold text-sm">
+                                            {(item.mileage || 0).toLocaleString()} <span className="text-xs text-slate-500 font-normal">km</span>
                                         </td>
-                                        <td className="px-5 py-3.5 font-bold font-mono tabular-nums text-slate-900 dark:text-white">
-                                            {cost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-[10px] text-slate-500 font-sans">EGP</span>
+                                        <td className="px-6 py-4 font-semibold tabular-nums text-slate-950 dark:text-white text-base">
+                                            {cost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-amber-500 font-bold">EGP</span>
                                         </td>
-                                        <td className="px-5 py-3.5">
-                                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                                        <td className="px-6 py-4">
+                                            <span className={`px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 ${
                                                 ['Completed', 'Complete', 'Paid'].includes(rawStatus) 
-                                                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
-                                                    : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                                                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' 
+                                                    : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
                                             }`}>
-                                                {statusLabel}
+                                                <span className={`w-1.5 h-1.5 rounded-full ${['Completed', 'Complete', 'Paid'].includes(rawStatus) ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+                                                <span>{statusLabel}</span>
                                             </span>
                                         </td>
-                                        <td className="px-5 py-3.5 ltr:text-right rtl:text-left">
+                                        <td className="px-6 py-4 ltr:text-right rtl:text-left">
                                             <div className="flex items-center ltr:justify-end rtl:justify-start gap-1">
                                                 <button 
                                                     onClick={() => handleViewInvoice(item.invoice_id)}
-                                                    className="p-1.5 text-slate-400 hover:text-amber-500 rounded-lg hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
+                                                    className="p-2 text-slate-400 hover:text-amber-500 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
                                                     title={item.invoice_id ? (isAr ? 'عرض الفاتورة' : 'View Invoice') : (isAr ? 'لا توجد فاتورة' : 'No Invoice Available')}
                                                 >
-                                                    <Eye size={15} />
+                                                    <Eye size={16} />
                                                 </button>
                                                 <button 
                                                     onClick={() => handleDownloadPDF(item.invoice_id, item.invoice_number)}
-                                                    className="p-1.5 text-slate-400 hover:text-sky-500 rounded-lg hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
+                                                    className="p-2 text-slate-400 hover:text-sky-500 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
                                                     title={item.invoice_id ? (isAr ? 'تحميل PDF' : 'Download Invoice PDF') : (isAr ? 'لا توجد فاتورة' : 'No Invoice Available')}
                                                 >
-                                                    <Download size={15} />
+                                                    <Download size={16} />
                                                 </button>
                                             </div>
                                         </td>

@@ -39,6 +39,10 @@ class Database {
                     database: process.env.DB_NAME || 'gocar_auto',
                     waitForConnections: true,
                     connectionLimit: 10,
+                    maxIdle: 10,
+                    idleTimeout: 60000,
+                    enableKeepAlive: true,
+                    keepAliveInitialDelay: 10000,
                     queueLimit: 0,
                 };
                 if (process.env.DB_SSL === 'true') {

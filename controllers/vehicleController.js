@@ -13,31 +13,42 @@ const vehicleController = {
         try {
             const { clientId, search } = req.query;
 
-            let query = 'SELECT * FROM vehicles WHERE 1=1';
+            let query = `
+                SELECT v.*, COALESCE(open_sr.open_count, 0) as open_requests_count
+                FROM vehicles v
+                LEFT JOIN (
+                    SELECT vehicle_id, COUNT(*) as open_count
+                    FROM service_requests
+                    WHERE status NOT IN ('Complete', 'Completed', 'Invoiced', 'Paid')
+                    GROUP BY vehicle_id
+                ) open_sr ON v.id = open_sr.vehicle_id
+                WHERE 1=1
+            `;
             const params = [];
 
             if (clientId) {
-                query += ' AND client_id = ?';
+                query += ' AND v.client_id = ?';
                 params.push(clientId);
             }
 
             if (search) {
-                query += ' AND (make LIKE ? OR model LIKE ? OR license_plate LIKE ? OR vin LIKE ?)';
+                query += ' AND (v.make LIKE ? OR v.model LIKE ? OR v.license_plate LIKE ? OR v.vin LIKE ?)';
                 const searchTerm = `%${search}%`;
                 params.push(searchTerm, searchTerm, searchTerm, searchTerm);
             }
 
-            query += ' ORDER BY client_name, make, model';
+            query += ' ORDER BY v.client_name, v.make, v.model';
 
             const vehicles = await database.query(query, params);
             
-            // Feature 1 & 6: Compute km_since_last_service and health_score
+            // Feature 1 & 6: Compute km_since_last_service and health_score in-memory (0 extra DB queries)
+            const now = new Date();
             for (const v of vehicles) {
                 const lastMileage = v.last_service_mileage || 0;
                 v.km_since_last_service = v.current_mileage - lastMileage;
                 
                 let score = 100;
-                const isOverdueByDate = v.next_service_due && new Date(v.next_service_due) < new Date();
+                const isOverdueByDate = v.next_service_due && new Date(v.next_service_due) < now;
                 
                 if (isOverdueByDate) score -= 40;
                 
@@ -47,12 +58,7 @@ const vehicleController = {
                     score -= 20;
                 }
                 
-                // Count open service requests for this vehicle
-                const openReqs = await database.get(
-                    "SELECT COUNT(*) as count FROM service_requests WHERE vehicle_id = ? AND status NOT IN ('Complete', 'Completed', 'Invoiced', 'Paid')",
-                    [v.id]
-                );
-                const openCount = openReqs ? openReqs.count : 0;
+                const openCount = Number(v.open_requests_count) || 0;
                 score -= Math.min(openCount, 2) * 20;
                 
                 v.health_score = Math.max(0, score);

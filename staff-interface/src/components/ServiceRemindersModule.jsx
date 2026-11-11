@@ -100,8 +100,13 @@ const ServiceRemindersModule = () => {
     useEffect(() => {
         fetchReminders();
         fetchSentReminders();
-        fetchClientsList();
     }, []);
+
+    useEffect(() => {
+        if (showNewReminderModal && allClients.length === 0) {
+            fetchClientsList();
+        }
+    }, [showNewReminderModal, allClients.length]);
 
     const fetchReminders = async () => {
         setLoading(true);
