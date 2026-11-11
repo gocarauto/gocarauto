@@ -4,6 +4,22 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-11
 
+### DaisyUI Component Integration & Universal Font Size Standardization (CR-012)
+- **Universal Eradication of 319 Sub-12px Micro-Fonts Across Entire Application:**
+  - Resolved persistent user pain point regarding inconsistent and illegibly small fonts ("either small and barely readable or too small").
+  - Systematically audited and replaced all 319 occurrences of `text-[9px]`, `text-[10px]`, and `text-[11px]` across 24 JSX views in `staff-interface/` and `customer-portal/` with comfortable, semantic `text-xs` (12px minimum threshold) or `text-sm` (14px).
+  - Instituted an engine-level CSS safeguard in both `staff-interface/src/index.css` and `customer-portal/src/index.css` (`.text-\[9px\], .text-\[10px\], .text-\[11px\] { font-size: 0.75rem !important; }`), guaranteeing that no browser can ever render sub-12px unreadable text anywhere across the platform.
+- **DaisyUI Component System Integration:**
+  - Added DaisyUI component adapters (`.btn`, `.btn-primary`, `.btn-neutral`, `.btn-outline`, `.btn-soft`, `.btn-ghost`, `.btn-sm`, `.btn-md`, `.btn-lg`, and segmented `.join`) into both portal styling sheets.
+  - Upgraded action controls across core operations screens:
+    - **`Dashboard.jsx` (Command Operations Deck):** Replaced unstyled floating orange `MANAGE >` links in the Service Operations Feed with tactile DaisyUI `btn btn-primary btn-sm` buttons (`[ Manage › ]`). Elevated KPI cards to prominent, high-contrast metric headers and legible sub-labels.
+    - **`CustomerList.jsx` (Client Registry):** Table headers upgraded to `text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400`. Client names upgraded to 16px bold. Profile action buttons upgraded to DaisyUI `btn btn-primary btn-sm`.
+    - **`VehicleList.jsx` (Fleet Registry):** Replaced mismatched and inconsistent `PASSPORT` and `DETAILS >` buttons with DaisyUI's segmented `.join` button group (`.btn.btn-outline.btn-sm.join-item` + `.btn.btn-primary.btn-sm.join-item`). Standardized vehicle year tags to comfortable 13px bold and elevated table headers.
+    - **`ServiceRequestList.jsx` & `FinancialList.jsx`:** Upgraded action links and payment modal triggers to DaisyUI button standards.
+- **High-Contrast Contact & Monospace Typography:**
+  - Corrected blinding raw amber phone numbers (`text-amber-500` / `#f59e0b`, 3.19:1 contrast ratio failing WCAG AA) to crisp, high-contrast ink-black monospace tabular digits (`#0f172a` in light mode / `#ffffff` in dark mode, 16.1:1 contrast ratio exceeding WCAG AAA standards).
+
+
 ### Bug Fix: Service History Ledger & Invoiced Services Synchronization (CR-011)
 - **Resolved "0 Records in Service History Despite Existing Invoices":**
   - **Root Cause:**

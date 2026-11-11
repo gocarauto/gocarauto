@@ -171,7 +171,7 @@ const ServiceRequestForm = () => {
                                 >
                                     <div className="space-y-3">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 font-bold">
+                                            <span className="text-xs font-mono text-slate-600 dark:text-slate-400 font-bold">
                                                 ID #{String(client.id).padStart(4, '0')}
                                             </span>
                                             <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400/80 group-hover:scale-125 transition-transform" />
@@ -186,14 +186,14 @@ const ServiceRequestForm = () => {
                                                 <span>{client.phone}</span>
                                             </div>
                                             {client.email && (
-                                                <div className="text-[11px] text-slate-600 dark:text-slate-400 truncate mt-0.5">
+                                                <div className="text-xs text-slate-600 dark:text-slate-400 truncate mt-0.5">
                                                     {client.email}
                                                 </div>
                                             )}
                                         </div>
                                     </div>
 
-                                    <div className="mt-4 pt-3 border-t border-slate-200/80 dark:border-white/5 flex items-center justify-between text-[11px] font-black uppercase tracking-wider text-amber-500 dark:text-primary">
+                                    <div className="mt-4 pt-3 border-t border-slate-200/80 dark:border-white/5 flex items-center justify-between text-xs font-black uppercase tracking-wider text-amber-500 dark:text-primary">
                                         <span>Select Client</span>
                                         <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                                     </div>
@@ -219,7 +219,7 @@ const ServiceRequestForm = () => {
                                     <User size={22} />
                                 </div>
                                 <div>
-                                    <div className="text-[10px] font-black uppercase tracking-widest text-amber-500 dark:text-primary">Selected Customer</div>
+                                    <div className="text-xs font-black uppercase tracking-widest text-amber-500 dark:text-primary">Selected Customer</div>
                                     <h4 className="text-xl font-black text-slate-900 dark:text-white uppercase">{selectedClient?.full_name}</h4>
                                     <span className="text-xs text-slate-600 dark:text-slate-400 font-mono">{selectedClient?.phone}</span>
                                 </div>
@@ -258,7 +258,7 @@ const ServiceRequestForm = () => {
                                 >
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-amber-500 dark:text-primary">
+                                            <span className="text-xs font-black uppercase tracking-widest text-amber-500 dark:text-primary">
                                                 {vehicle.year} MODEL
                                             </span>
                                             <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:text-amber-500 dark:group-hover:text-primary transition-colors">
@@ -275,7 +275,7 @@ const ServiceRequestForm = () => {
                                                 <span className="text-slate-900 dark:text-white font-bold" dir="auto">{vehicle.license_plate || 'N/A'}</span>
                                             </div>
                                             {vehicle.vin && (
-                                                <div className="mt-1 flex items-center justify-between text-[11px] font-mono">
+                                                <div className="mt-1 flex items-center justify-between text-xs font-mono">
                                                     <span className="text-slate-500 dark:text-slate-400">VIN:</span>
                                                     <span className="text-slate-700 dark:text-slate-300 truncate max-w-[140px]">{vehicle.vin}</span>
                                                 </div>
@@ -304,12 +304,12 @@ const ServiceRequestForm = () => {
                                         <User size={18} />
                                     </div>
                                     <div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">CLIENT</span>
+                                        <span className="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">CLIENT</span>
                                         <div className="text-sm font-black text-slate-900 dark:text-white uppercase">{selectedClient?.full_name}</div>
                                         <div className="text-xs text-slate-600 dark:text-slate-400 font-mono">{selectedClient?.phone}</div>
                                     </div>
                                 </div>
-                                <button type="button" onClick={() => setStep(1)} className="text-[10px] text-amber-500 dark:text-primary hover:underline font-bold uppercase">
+                                <button type="button" onClick={() => setStep(1)} className="text-xs text-amber-500 dark:text-primary hover:underline font-bold uppercase">
                                     Change
                                 </button>
                             </div>
@@ -320,12 +320,12 @@ const ServiceRequestForm = () => {
                                         <Car size={18} />
                                     </div>
                                     <div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">VEHICLE ASSET</span>
+                                        <span className="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">VEHICLE ASSET</span>
                                         <div className="text-sm font-black text-slate-900 dark:text-white uppercase">{selectedVehicle?.make} {selectedVehicle?.model} ({selectedVehicle?.year})</div>
                                         <div className="text-xs text-slate-600 dark:text-slate-400 font-mono" dir="auto">Plate: {selectedVehicle?.license_plate || 'N/A'}</div>
                                     </div>
                                 </div>
-                                <button type="button" onClick={() => setStep(2)} className="text-[10px] text-amber-500 dark:text-primary hover:underline font-bold uppercase">
+                                <button type="button" onClick={() => setStep(2)} className="text-xs text-amber-500 dark:text-primary hover:underline font-bold uppercase">
                                     Change
                                 </button>
                             </div>
@@ -347,7 +347,7 @@ const ServiceRequestForm = () => {
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                     <div className="space-y-2">
-                                        <label htmlFor="service-classification" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                        <label htmlFor="service-classification" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <span>Service Classification *</span>
                                         </label>
                                         <select
@@ -364,7 +364,7 @@ const ServiceRequestForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="initial-floor-status" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                        <label htmlFor="initial-floor-status" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <span>Initial Floor Status</span>
                                         </label>
                                         <select
@@ -379,7 +379,7 @@ const ServiceRequestForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="service-intake-mileage" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                        <label htmlFor="service-intake-mileage" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <Gauge size={11} className="text-primary" />
                                             <span>Current Mileage (KM)</span>
                                         </label>
@@ -394,7 +394,7 @@ const ServiceRequestForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="service-intake-date" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                        <label htmlFor="service-intake-date" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <Calendar size={11} className="text-slate-500 dark:text-slate-400" />
                                             <span>Intake Arrival Date *</span>
                                         </label>
@@ -431,7 +431,7 @@ const ServiceRequestForm = () => {
                                     ></textarea>
                                 </div>
 
-                                <div className="pt-3 border-t border-slate-200/80 dark:border-white/5 text-[10px] text-slate-600 dark:text-slate-400 font-mono flex items-center justify-between">
+                                <div className="pt-3 border-t border-slate-200/80 dark:border-white/5 text-xs text-slate-600 dark:text-slate-400 font-mono flex items-center justify-between">
                                     <span>TICKET DISPATCH: READY</span>
                                     <span className="text-amber-500 dark:text-primary font-bold">STATION 1</span>
                                 </div>
@@ -460,8 +460,8 @@ const StepIndicator = ({ num, label, active, current }) => (
     <div className={`flex-1 flex flex-col gap-3 transition-opacity duration-300 ${active ? 'opacity-100' : 'opacity-30'}`}>
         <div className={`h-1.5 rounded-full transition-all duration-500 ${current ? 'bg-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)]' : active ? 'bg-blue-500' : 'bg-slate-200 dark:bg-white/10'}`}></div>
         <div className="flex items-center gap-2">
-            <span className={`text-[10px] font-black ${current ? 'text-amber-500 dark:text-primary' : 'text-slate-900 dark:text-white'}`}>{num}</span>
-            <span className={`text-[10px] font-black tracking-widest uppercase ${current ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'}`}>{label}</span>
+            <span className={`text-xs font-black ${current ? 'text-amber-500 dark:text-primary' : 'text-slate-900 dark:text-white'}`}>{num}</span>
+            <span className={`text-xs font-black tracking-widest uppercase ${current ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'}`}>{label}</span>
         </div>
     </div>
 );

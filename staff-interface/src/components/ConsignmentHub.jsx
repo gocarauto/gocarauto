@@ -248,7 +248,7 @@ const ConsignmentHub = () => {
                     <div className="text-xl md:text-2xl font-black text-slate-900 dark:text-white font-mono">
                         {(pipelineStats?.totalActiveValue || 0).toLocaleString()} <span className="text-xs text-slate-600 dark:text-slate-400 font-bold">EGP</span>
                     </div>
-                    <div className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 font-medium">Active inventory under marketing</div>
+                    <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">Active inventory under marketing</div>
                 </div>
 
                 <div className="glass-card p-5">
@@ -259,7 +259,7 @@ const ConsignmentHub = () => {
                     <div className="text-xl md:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
                         {(pipelineStats?.totalEarnedCommission || 0).toLocaleString()} <span className="text-xs text-slate-600 dark:text-slate-400 font-bold">EGP</span>
                     </div>
-                    <div className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 font-medium">Success cuts collected to date</div>
+                    <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">Success cuts collected to date</div>
                 </div>
 
                 <div className="glass-card p-5">
@@ -270,7 +270,7 @@ const ConsignmentHub = () => {
                     <div className="text-xl md:text-2xl font-black text-amber-600 dark:text-amber-400 font-mono">
                         {(pipelineStats?.listed || 0) + (pipelineStats?.staged || 0) + (pipelineStats?.buyerViewing || 0)}
                     </div>
-                    <div className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 font-medium">Staged & published for buyers</div>
+                    <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">Staged & published for buyers</div>
                 </div>
 
                 <div className="glass-card p-5">
@@ -281,7 +281,7 @@ const ConsignmentHub = () => {
                     <div className="text-xl md:text-2xl font-black text-cyan-600 dark:text-cyan-400 font-mono">
                         {pipelineStats?.sold || 0}
                     </div>
-                    <div className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 font-medium">Cars sold & verified</div>
+                    <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">Cars sold & verified</div>
                 </div>
             </div>
 
@@ -308,7 +308,7 @@ const ConsignmentHub = () => {
                     >
                         Inbound Portal Leads
                         {inboundRequests.filter(r => r.status === 'New').length > 0 && (
-                            <span className="w-5 h-5 rounded-full bg-amber-500 text-black text-[10px] font-black flex items-center justify-center">
+                            <span className="w-5 h-5 rounded-full bg-amber-500 text-black text-xs font-black flex items-center justify-center">
                                 {inboundRequests.filter(r => r.status === 'New').length}
                             </span>
                         )}
@@ -369,10 +369,10 @@ const ConsignmentHub = () => {
                                 <div key={lead.id} className="glass-card p-5 hover:border-amber-500/40 transition-all flex flex-col justify-between">
                                     <div>
                                         <div className="flex items-center justify-between gap-2 mb-3">
-                                            <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                            <span className="px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                                                 {lead.status}
                                             </span>
-                                            <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono">
+                                            <span className="text-xs text-slate-600 dark:text-slate-400 font-mono">
                                                 {new Date(lead.created_at).toLocaleDateString()}
                                             </span>
                                         </div>
@@ -405,7 +405,7 @@ const ConsignmentHub = () => {
                                                 </div>
                                             )}
                                             {lead.notes && (
-                                                <p className="text-[11px] text-slate-700 dark:text-slate-300 italic bg-slate-100 dark:bg-black/30 p-2 rounded-lg mt-2">
+                                                <p className="text-xs text-slate-700 dark:text-slate-300 italic bg-slate-100 dark:bg-black/30 p-2 rounded-lg mt-2">
                                                     "{lead.notes}"
                                                 </p>
                                             )}
@@ -462,7 +462,7 @@ const ConsignmentHub = () => {
                                             {/* Top Row: Vehicle title & Status dropdown */}
                                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                                                 <div>
-                                                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${stage.color} mb-1.5 inline-block`}>
+                                                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider border ${stage.color} mb-1.5 inline-block`}>
                                                         {stage.label}
                                                     </span>
                                                     <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
@@ -495,7 +495,7 @@ const ConsignmentHub = () => {
                                             {/* Financial Metrics Grid */}
                                             <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-200 dark:border-white/5 mb-4">
                                                 <div>
-                                                    <div className="text-[10px] text-slate-600 dark:text-slate-400 uppercase tracking-wider font-semibold">
+                                                    <div className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-wider font-semibold">
                                                         {item.listing_status === 'Sold' ? 'Final Sold Price' : 'Asking Price'}
                                                     </div>
                                                     <div className="text-base font-black text-slate-900 dark:text-white font-mono mt-0.5">
@@ -503,7 +503,7 @@ const ConsignmentHub = () => {
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <div className="text-[10px] text-slate-600 dark:text-slate-400 uppercase tracking-wider font-semibold">
+                                                    <div className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-wider font-semibold">
                                                         {item.listing_status === 'Sold' ? 'Commission Earned' : 'Projected GoCar Cut (2.5%)'}
                                                     </div>
                                                     <div className="text-base font-black text-emerald-600 dark:text-emerald-400 font-mono mt-0.5">
@@ -538,7 +538,7 @@ const ConsignmentHub = () => {
                                                     </div>
                                                 )}
                                                 {item.notes && (
-                                                    <p className="text-[11px] text-slate-700 dark:text-slate-300 italic bg-slate-100 dark:bg-white/5 p-2 rounded-lg mt-2">
+                                                    <p className="text-xs text-slate-700 dark:text-slate-300 italic bg-slate-100 dark:bg-white/5 p-2 rounded-lg mt-2">
                                                         "{item.notes}"
                                                     </p>
                                                 )}
@@ -647,7 +647,7 @@ const ConsignmentHub = () => {
                                 {/* Live Cut Calculation */}
                                 {settleForm.soldPrice && (
                                     <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
-                                        <div className="text-[11px] text-slate-600 dark:text-slate-400 uppercase tracking-wider font-semibold">Calculated GoCar Net Commission</div>
+                                        <div className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-wider font-semibold">Calculated GoCar Net Commission</div>
                                         <div className="text-xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1">
                                             {Math.round((parseFloat(settleForm.soldPrice) * parseFloat(settleForm.commissionRate || 2.5)) / 100).toLocaleString()} EGP
                                         </div>

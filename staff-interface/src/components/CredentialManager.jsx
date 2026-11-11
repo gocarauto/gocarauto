@@ -139,7 +139,7 @@ const CredentialManager = () => {
                     message.type === 'success' ? 'bg-green-500/10 border-green-500/30 text-green-600 dark:text-green-400' : 'bg-red-500/10 border-red-500/30 text-red-600 dark:text-red-500'
                 } animate-in zoom-in duration-300`}>
                     {message.type === 'success' ? <CheckCircle2 size={18} /> : <AlertTriangle size={18} />}
-                    <span className="text-[10px] font-black uppercase tracking-widest">{message.text}</span>
+                    <span className="text-xs font-black uppercase tracking-widest">{message.text}</span>
                 </div>
             )}
 
@@ -201,7 +201,7 @@ const CredentialManager = () => {
                         clientMsg.type === 'success' ? 'bg-green-500/10 border-green-500/30 text-green-600 dark:text-green-400' : 'bg-red-500/10 border-red-500/30 text-red-600 dark:text-red-500'
                     }`}>
                         {clientMsg.type === 'success' ? <CheckCircle2 size={18} /> : <AlertTriangle size={18} />}
-                        <span className="text-[10px] font-black uppercase tracking-widest">{clientMsg.text}</span>
+                        <span className="text-xs font-black uppercase tracking-widest">{clientMsg.text}</span>
                     </div>
                 )}
 
@@ -235,7 +235,7 @@ const CredentialManager = () => {
                                 </div>
                                 <button
                                     onClick={() => { setSelectedClient(client); setNewClientPassword(''); setClientPasswordModalOpen(true); }}
-                                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 border border-green-500/30 hover:border-green-400/50 rounded-xl px-4 py-2 transition-all opacity-0 group-hover:opacity-100"
+                                    className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 border border-green-500/30 hover:border-green-400/50 rounded-xl px-4 py-2 transition-all opacity-0 group-hover:opacity-100"
                                 >
                                     <Lock size={12} /> SET PASSWORD
                                 </button>
@@ -261,28 +261,28 @@ const CredentialManager = () => {
                         <form onSubmit={handleSubmit} className="p-8 space-y-6">
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-1">Full Legal Name</label>
+                                    <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-1">Full Legal Name</label>
                                     <input type="text" required className="w-full bg-slate-50 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500/50 transition-colors" placeholder="Enter staff name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-1">Email Address (Login)</label>
+                                    <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-1">Email Address (Login)</label>
                                     <input type="email" required className="w-full bg-slate-50 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500/50 transition-colors" placeholder="name@gocarauto.com" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-1">Access Level</label>
+                                        <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-1">Access Level</label>
                                         <select className="w-full bg-slate-50 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 transition-colors appearance-none" value={formData.role} onChange={(e) => setFormData({...formData, role: e.target.value})}>
                                             <option value="Operator">Operator</option>
                                             <option value="Admin">Admin</option>
                                         </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-1">Mobile</label>
+                                        <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-1">Mobile</label>
                                         <input type="text" className="w-full bg-slate-50 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500/50 transition-colors" placeholder="+20..." value={formData.mobile} onChange={(e) => setFormData({...formData, mobile: e.target.value})} />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-1">
+                                    <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-1">
                                         {editingUser ? 'Override Password (Optional)' : 'Security Key (Password)'}
                                     </label>
                                     <input type="password" required={!editingUser} className="w-full bg-slate-50 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500/50 transition-colors font-mono" placeholder="••••••••" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} />
@@ -312,12 +312,12 @@ const CredentialManager = () => {
                         </div>
                         <form onSubmit={handleSetClientPassword} className="p-8 space-y-6">
                             <div className="bg-slate-50 dark:bg-white/5 rounded-xl p-4 border border-slate-200 dark:border-white/5">
-                                <div className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-1">Setting password for</div>
+                                <div className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-1">Setting password for</div>
                                 <div className="text-slate-900 dark:text-white font-black uppercase tracking-tight">{selectedClient.full_name}</div>
                                 <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">{selectedClient.email || selectedClient.phone}</div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-1">New Portal Password</label>
+                                <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-1">New Portal Password</label>
                                 <input
                                     type="password"
                                     required

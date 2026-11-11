@@ -138,7 +138,7 @@ const CustomerForm = () => {
                                         <h3 className="text-sm font-display font-black text-slate-900 dark:text-white uppercase tracking-wider">
                                             01. Primary Identity
                                         </h3>
-                                        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
+                                        <p className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
                                             Client Identification
                                         </p>
                                     </div>
@@ -146,7 +146,7 @@ const CustomerForm = () => {
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
-                                        <label htmlFor="customer-full-name" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                        <label htmlFor="customer-full-name" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <span>Full Legal Name</span>
                                             <span className="text-primary">*</span>
                                         </label>
@@ -163,7 +163,7 @@ const CustomerForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="customer-phone" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                        <label htmlFor="customer-phone" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <Phone size={11} className="text-primary" />
                                             <span>Primary Phone (WhatsApp)</span>
                                             <span className="text-primary">*</span>
@@ -181,7 +181,7 @@ const CustomerForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="customer-email" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                        <label htmlFor="customer-email" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <Mail size={11} className="text-slate-500 dark:text-slate-400" />
                                             <span>Email Address</span>
                                         </label>
@@ -198,7 +198,7 @@ const CustomerForm = () => {
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 flex items-center gap-2 text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">
+                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">
                                 <CheckCircle2 size={13} />
                                 <span>Direct WhatsApp Gateway Linked</span>
                             </div>
@@ -215,7 +215,7 @@ const CustomerForm = () => {
                                         <h3 className="text-sm font-display font-black text-slate-900 dark:text-white uppercase tracking-wider">
                                             02. Demographics & Source
                                         </h3>
-                                        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
+                                        <p className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
                                             Address & Acquisition
                                         </p>
                                     </div>
@@ -223,7 +223,7 @@ const CustomerForm = () => {
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
-                                        <label htmlFor="customer-referral-source" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                        <label htmlFor="customer-referral-source" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <Share2 size={11} className="text-slate-500 dark:text-slate-400" />
                                             <span>Referral Source</span>
                                         </label>
@@ -243,7 +243,7 @@ const CustomerForm = () => {
 
                                     {/* ── Referred By Client Linkage ── */}
                                     <div className="space-y-2">
-                                        <label htmlFor="customer-referred-by" className="text-[10px] font-black uppercase tracking-widest text-amber-500 dark:text-amber-400 flex items-center gap-1.5">
+                                        <label htmlFor="customer-referred-by" className="text-xs font-black uppercase tracking-widest text-amber-500 dark:text-amber-400 flex items-center gap-1.5">
                                             <span>⭐ Referred By Existing Client</span>
                                         </label>
                                         <select
@@ -262,11 +262,11 @@ const CustomerForm = () => {
                                                     </option>
                                                 ))}
                                         </select>
-                                        <p className="text-[9px] text-slate-600 dark:text-slate-400 font-medium">Links this new client to their referrer for network LTV attribution</p>
+                                        <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">Links this new client to their referrer for network LTV attribution</p>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="customer-address" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                        <label htmlFor="customer-address" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <MapPin size={11} className="text-slate-500 dark:text-slate-400" />
                                             <span>Physical / Workshop Address</span>
                                         </label>
@@ -283,7 +283,7 @@ const CustomerForm = () => {
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 text-[10px] text-slate-600 dark:text-slate-400 font-mono">
+                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 text-xs text-slate-600 dark:text-slate-400 font-mono">
                                 GEODATA: EGYPT (CAIRO/GIZA METRO)
                             </div>
                         </div>
@@ -299,14 +299,14 @@ const CustomerForm = () => {
                                         <h3 className="text-sm font-display font-black text-slate-900 dark:text-white uppercase tracking-wider">
                                             03. Workshop Intel & Notes
                                         </h3>
-                                        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
+                                        <p className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
                                             Internal Directives
                                         </p>
                                     </div>
                                 </div>
 
                                 <div className="space-y-2 flex-1 flex flex-col">
-                                    <label htmlFor="customer-notes" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                    <label htmlFor="customer-notes" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                         <Settings size={11} className="text-slate-500 dark:text-slate-400" />
                                         <span>Customer Directives, VIP Tags, or Preferences</span>
                                     </label>
@@ -321,7 +321,7 @@ const CustomerForm = () => {
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-400 font-mono">
+                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 font-mono">
                                 <span>ENCRYPTION: AES-256</span>
                                 <span className="text-amber-500 dark:text-primary font-bold">VIP COMPATIBLE</span>
                             </div>
@@ -331,7 +331,7 @@ const CustomerForm = () => {
 
                     {/* Bottom Action Footer */}
                     <div className="flex items-center justify-between pt-6 border-t border-slate-200/80 dark:border-white/5">
-                        <span className="text-[11px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
+                        <span className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
                             Mandatory fields marked with <span className="text-primary">*</span>
                         </span>
                         <div className="flex items-center gap-4">

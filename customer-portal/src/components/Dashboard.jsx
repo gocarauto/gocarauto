@@ -477,7 +477,7 @@ const Dashboard = () => {
                         >
                             <div className="relative p-3.5 sm:p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-2xl space-y-1.5 w-[210px]">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-sans">
+                                    <span className="text-xs font-bold text-slate-300 uppercase tracking-wider font-sans">
                                         {t('oil_life')}
                                     </span>
                                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -498,7 +498,7 @@ const Dashboard = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <span className="text-[11px] text-slate-300 font-sans block pt-1">
+                                <span className="text-xs text-slate-300 font-sans block pt-1">
                                     {isAr ? `الصيانة القادمة خلال ~${kmUntilService.toLocaleString()} كم` : `Next due in ~${kmUntilService.toLocaleString()} km`}
                                 </span>
                             </div>
@@ -516,7 +516,7 @@ const Dashboard = () => {
                                 </div>
                                 <div className="grid grid-cols-2 gap-3 text-xs">
                                     <div>
-                                        <span className="text-[10px] font-sans font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
+                                        <span className="text-xs font-sans font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                                             {t('odometer')}:
                                         </span>
                                         <span className="font-mono font-bold text-white tabular-nums text-sm">
@@ -524,7 +524,7 @@ const Dashboard = () => {
                                         </span>
                                     </div>
                                     <div>
-                                        <span className="text-[10px] font-sans font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
+                                        <span className="text-xs font-sans font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                                             {t('services_logged')}:
                                         </span>
                                         <span className="font-mono font-bold text-white tabular-nums text-sm">
@@ -542,7 +542,7 @@ const Dashboard = () => {
                         >
                             <div className="relative p-3.5 sm:p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-2xl space-y-1.5 w-[230px]">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-sans">
+                                    <span className="text-xs font-bold text-slate-300 uppercase tracking-wider font-sans">
                                         {t('transmission_oil')}
                                     </span>
                                     <span className="w-2 h-2 rounded-full bg-cyan-400" />
@@ -563,7 +563,7 @@ const Dashboard = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <span className="text-[11px] text-slate-300 font-sans block pt-1">
+                                <span className="text-xs text-slate-300 font-sans block pt-1">
                                     {isAr ? 'تم التحقق من جدول الصيانة' : 'Scheduled interval verified'}
                                 </span>
                             </div>
@@ -635,10 +635,10 @@ const Dashboard = () => {
                                     <Droplet size={16} />
                                 </div>
                                 <div>
-                                    <span className="text-[11px] font-bold text-slate-300 uppercase block leading-tight font-sans">
+                                    <span className="text-xs font-bold text-slate-300 uppercase block leading-tight font-sans">
                                         {t('oil_life')}
                                     </span>
-                                    <span className="text-[10px] text-slate-400">
+                                    <span className="text-xs text-slate-400">
                                         ~{kmUntilService.toLocaleString()} km
                                     </span>
                                 </div>
@@ -655,10 +655,10 @@ const Dashboard = () => {
                                     <Activity size={16} />
                                 </div>
                                 <div>
-                                    <span className="text-[11px] font-bold text-slate-300 uppercase block leading-tight font-sans">
+                                    <span className="text-xs font-bold text-slate-300 uppercase block leading-tight font-sans">
                                         {t('odometer')}
                                     </span>
-                                    <span className="text-[10px] text-slate-400">
+                                    <span className="text-xs text-slate-400">
                                         {activeVehicle.services_count || 0} {isAr ? 'صيانات' : 'services'}
                                     </span>
                                 </div>
@@ -675,10 +675,10 @@ const Dashboard = () => {
                                     <Cog size={16} />
                                 </div>
                                 <div>
-                                    <span className="text-[11px] font-bold text-slate-300 uppercase block leading-tight font-sans">
+                                    <span className="text-xs font-bold text-slate-300 uppercase block leading-tight font-sans">
                                         {t('transmission_oil')}
                                     </span>
-                                    <span className="text-[10px] text-cyan-400 font-semibold">
+                                    <span className="text-xs text-cyan-400 font-semibold">
                                         {isAr ? 'تم الفحص' : 'Verified'}
                                     </span>
                                 </div>
@@ -703,7 +703,7 @@ const Dashboard = () => {
                                 <h3 className="text-sm sm:text-base font-bold text-slate-950 dark:text-white">
                                     {t('service_pipeline')}
                                 </h3>
-                                <span className="text-[11px] px-2 py-0.5 rounded-md bg-amber-400/20 text-amber-700 dark:text-amber-300 font-bold">
+                                <span className="text-xs px-2 py-0.5 rounded-md bg-amber-400/20 text-amber-700 dark:text-amber-300 font-bold">
                                     {activeAppointment.status || 'Open'}
                                 </span>
                             </div>

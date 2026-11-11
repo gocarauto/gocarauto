@@ -28,7 +28,7 @@ const CustomerList = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                     <h1 className="text-3xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter">Client Registry</h1>
-                    <p className="text-xs text-slate-500 dark:text-gray-500 uppercase tracking-widest font-bold mt-1">Management of registered service partners</p>
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">Management of registered service partners</p>
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="badge badge-success px-4 py-2">
@@ -36,8 +36,8 @@ const CustomerList = () => {
                         {customers.length} REGISTERED
                     </div>
                     <Link to="/customers/new">
-                        <button className="btn-primary">
-                            + REGISTER NEW CLIENT
+                        <button className="btn btn-primary btn-md">
+                            + Register New Client
                         </button>
                     </Link>
                 </div>
@@ -84,7 +84,7 @@ const CustomerList = () => {
                                     <div key={customer.id} className="p-4 space-y-3">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <div className="font-bold text-slate-900 dark:text-white text-base uppercase">
+                                                <div className="font-bold text-slate-900 dark:text-white text-base">
                                                     {customer.full_name}
                                                 </div>
                                                 <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
@@ -92,23 +92,23 @@ const CustomerList = () => {
                                                 </div>
                                             </div>
                                             <div className="text-right">
-                                                <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold block">TOTAL SPENT</span>
-                                                <span className="font-black text-amber-500 dark:text-amber-400 text-sm font-mono">
+                                                <span className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold block">Total Spent</span>
+                                                <span className="font-bold text-slate-900 dark:text-white text-sm font-mono tabular-nums">
                                                     {customer.total_spent ? `${parseFloat(customer.total_spent).toLocaleString()} EGP` : '0 EGP'}
                                                 </span>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-200/80 dark:border-white/5">
+                                        <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-200/80 dark:border-white/5">
                                             <div>
-                                                <div className="text-sm font-bold text-amber-500 dark:text-amber-400 font-mono">{customer.phone}</div>
-                                                <div className="text-xs text-slate-500 dark:text-slate-400">{customer.email || '—'}</div>
+                                                <div className="text-sm font-semibold font-mono text-slate-900 dark:text-white tabular-nums">{customer.phone}</div>
+                                                <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{customer.email || '—'}</div>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 {customer.phone && <WhatsAppButton phone={customer.phone} clientName={customer.full_name} />}
                                                 <Link to={`/customers/${customer.id}`}>
-                                                    <button className="h-9 px-3 bg-amber-400 text-slate-950 rounded-xl font-bold text-xs uppercase flex items-center gap-1 transition-all">
-                                                        <span>PROFILE</span>
+                                                    <button className="btn btn-primary btn-sm gap-1">
+                                                        <span>Profile</span>
                                                         <ChevronRight size={14} />
                                                     </button>
                                                 </Link>
@@ -124,10 +124,10 @@ const CustomerList = () => {
                             <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-slate-200/80 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Client Name</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Contact</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Total Spent</th>
-                                    <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Actions</th>
+                                    <th className="px-8 py-4 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Client Name</th>
+                                    <th className="px-8 py-4 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Contact</th>
+                                    <th className="px-8 py-4 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Total Spent</th>
+                                    <th className="px-8 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-200/80 dark:divide-white/5">
@@ -141,23 +141,23 @@ const CustomerList = () => {
                                     customers.map((customer) => (
                                         <tr key={customer.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors group">
                                             <td className="px-8 py-5">
-                                                <div className="font-black text-slate-900 dark:text-white text-lg tracking-tight uppercase">{customer.full_name}</div>
-                                                <div className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase mt-1">ID: {String(customer.id).padStart(4, '0')}</div>
+                                                <div className="font-bold text-slate-900 dark:text-white text-base tracking-tight">{customer.full_name}</div>
+                                                <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">ID: #{String(customer.id).padStart(4, '0')}</div>
                                             </td>
                                             <td className="px-8 py-5">
-                                                <div className="text-sm font-bold text-amber-500 dark:text-primary">{customer.phone}</div>
-                                                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{customer.email || '---'}</div>
+                                                <div className="text-sm sm:text-base font-semibold font-mono text-slate-900 dark:text-white tabular-nums">{customer.phone}</div>
+                                                <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{customer.email || '—'}</div>
                                             </td>
                                             <td className="px-8 py-5">
-                                                <div className="text-base font-black text-slate-900 dark:text-white">
+                                                <div className="text-sm sm:text-base font-bold font-mono text-slate-900 dark:text-white tabular-nums">
                                                     {customer.total_spent ? `${parseFloat(customer.total_spent).toLocaleString()} EGP` : '0 EGP'}
                                                 </div>
                                             </td>
                                             <td className="px-8 py-5 text-right">
-                                                <div className="flex items-center justify-end gap-3 opacity-80 group-hover:opacity-100 transition-opacity">
+                                                <div className="flex items-center justify-end gap-3">
                                                     <Link to={`/customers/${customer.id}`}>
-                                                        <button className="h-10 px-4 bg-amber-400 hover:bg-amber-300 text-slate-950 rounded-xl font-black text-[10px] tracking-widest uppercase flex items-center gap-1 transition-all shadow-md shadow-amber-400/20">
-                                                            PROFILE
+                                                        <button className="btn btn-primary btn-sm gap-1">
+                                                            <span>Profile</span>
                                                             <ChevronRight size={14} />
                                                         </button>
                                                     </Link>

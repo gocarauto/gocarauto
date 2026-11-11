@@ -57,7 +57,7 @@ const DirectionSwitcher = () => {
                         title="Expand Staff Direction Switcher"
                     >
                         <Eye size={18} className="group-hover:rotate-12 transition-transform" />
-                        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#fbbf24] text-black text-[9px] font-black rounded-full flex items-center justify-center">
+                        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#fbbf24] text-black text-xs font-black rounded-full flex items-center justify-center">
                             {direction}
                         </span>
                     </motion.button>
@@ -72,7 +72,7 @@ const DirectionSwitcher = () => {
                         <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
                             <div className="flex items-center gap-2">
                                 <Sparkles size={14} className="text-[#fbbf24]" />
-                                <span className="text-[11px] font-black uppercase tracking-wider text-slate-200">Staff Direction</span>
+                                <span className="text-xs font-black uppercase tracking-wider text-slate-200">Staff Direction</span>
                             </div>
                             <button
                                 onClick={toggleMinimized}
@@ -105,13 +105,13 @@ const DirectionSwitcher = () => {
                                                 <p className="text-xs font-black tracking-tight leading-none text-white">
                                                     {dir.name}
                                                 </p>
-                                                <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                                                <p className="text-xs text-slate-400 font-medium mt-0.5">
                                                     {dir.subtitle}
                                                 </p>
                                             </div>
                                         </div>
                                         {isActive && (
-                                            <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-[#fbbf24] text-black">
+                                            <span className="text-xs font-black uppercase px-2 py-0.5 rounded-full bg-[#fbbf24] text-black">
                                                 Active
                                             </span>
                                         )}

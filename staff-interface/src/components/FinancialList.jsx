@@ -88,12 +88,12 @@ const FinancialList = () => {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-slate-200/80 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Invoice #</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Date</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Client</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Amount Due</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Status</th>
-                                    <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Actions</th>
+                                    <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Invoice #</th>
+                                    <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Date</th>
+                                    <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Client</th>
+                                    <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Amount Due</th>
+                                    <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Status</th>
+                                    <th className="px-8 py-5 text-right text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-200/80 dark:divide-white/5">
@@ -119,7 +119,7 @@ const FinancialList = () => {
                                                 {inv.total_amount_due ? `${parseFloat(inv.total_amount_due).toLocaleString()} EGP` : '0 EGP'}
                                             </td>
                                             <td className="px-8 py-5">
-                                                <span className={`px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase border inline-flex items-center gap-2 ${
+                                                <span className={`px-3 py-1.5 rounded-full text-xs font-black tracking-widest uppercase border inline-flex items-center gap-2 ${
                                                     inv.payment_status === 'Paid' 
                                                         ? 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]' 
                                                         : 'bg-amber-500/10 text-amber-600 dark:text-amber-500 border-amber-500/20'
@@ -151,10 +151,10 @@ const FinancialList = () => {
                                                     {inv.payment_status !== 'Paid' && (
                                                         <button
                                                             onClick={() => handleOpenPaymentModal(inv)}
-                                                            className="h-10 px-4 bg-amber-400 hover:bg-amber-300 text-slate-950 rounded-xl font-black text-[10px] tracking-widest uppercase flex items-center gap-2 transition-all shadow-md shadow-amber-400/20 cursor-pointer"
+                                                            className="btn btn-primary btn-sm gap-1"
                                                         >
                                                             <CreditCard size={14} />
-                                                            PAY
+                                                            <span>Pay</span>
                                                         </button>
                                                     )}
                                                 </div>
@@ -203,7 +203,7 @@ const FinancialList = () => {
                             
                             <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
                                 <div>
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 mb-2">Payment Amount (EGP)</label>
+                                    <label className="block text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 mb-2">Payment Amount (EGP)</label>
                                     <input
                                         type="number"
                                         step="0.01"
@@ -216,7 +216,7 @@ const FinancialList = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 mb-2">Payment Method</label>
+                                    <label className="block text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 mb-2">Payment Method</label>
                                     <select
                                         value={paymentMethod}
                                         onChange={(e) => setPaymentMethod(e.target.value)}

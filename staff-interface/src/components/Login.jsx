@@ -162,7 +162,7 @@ const Login = () => {
                     {/* Authentication Form */}
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-1.5">
-                            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 px-1 flex items-center gap-1.5">
+                            <label className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 px-1 flex items-center gap-1.5">
                                 <Shield size={12} className="text-[#fbbf24]" />
                                 <span>Work Email or Username</span>
                             </label>
@@ -180,7 +180,7 @@ const Login = () => {
                         </div>
 
                         <div className="space-y-1.5">
-                            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 px-1 flex items-center gap-1.5">
+                            <label className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 px-1 flex items-center gap-1.5">
                                 <Lock size={12} className="text-[#fbbf24]" />
                                 <span>Password</span>
                             </label>
@@ -226,7 +226,7 @@ const Login = () => {
 
                     {/* Security Footer Notice */}
                     <div className="mt-7 text-center border-t border-slate-100 dark:border-white/5 pt-5">
-                        <div className="flex items-center justify-center gap-1.5 text-[11px] font-semibold text-slate-400 dark:text-slate-500">
+                        <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-400 dark:text-slate-500">
                             <Shield size={13} className="text-[#fbbf24]" />
                             <span>Authorized Personnel Only • GoCar Auto Systems</span>
                         </div>

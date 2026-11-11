@@ -449,17 +449,17 @@ const ServiceRequestDetail = () => {
                 
                 <div className="relative z-10 flex-1">
                     <div className="flex items-center gap-4 mb-2">
-                        <div className="badge badge-warning text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-amber-500/10 border-amber-500/20 text-amber-500">
+                        <div className="badge badge-warning text-xs font-black uppercase tracking-widest px-3 py-1 bg-amber-500/10 border-amber-500/20 text-amber-500">
                             OP #{String(request.id || '').padStart(5, '0')}
                         </div>
-                        <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                        <div className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border ${
                             request.status === 'Completed' || request.status === 'Paid' ? 'bg-green-500/10 border-green-500/20 text-green-700 dark:text-green-400' : 
                             request.status === 'In Progress' ? 'bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-400 animate-pulse' :
                             'bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400'
                         }`}>
                             {request.status?.toUpperCase()}
                         </div>
-                        {request.source === 'PORTAL' && <div className="text-[10px] font-black text-amber-600 dark:text-amber-500 drop-shadow-[0_0_5px_currentColor]">✦ PORTAL ORIGIN</div>}
+                        {request.source === 'PORTAL' && <div className="text-xs font-black text-amber-600 dark:text-amber-500 drop-shadow-[0_0_5px_currentColor]">✦ PORTAL ORIGIN</div>}
                     </div>
                     <h1 className="text-4xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none">
                         {request.client_name || 'N/A'}
@@ -472,24 +472,24 @@ const ServiceRequestDetail = () => {
                 <div className="relative z-10 flex flex-wrap gap-3">
                     {request.status !== 'Invoiced' && request.status !== 'Paid' && (
                         <>
-                            <button className="btn-secondary text-[10px]" onClick={() => handleStatusChange('Waiting for Parts')}>WAITING FOR PARTS</button>
-                            <button className="btn-secondary text-[10px]" onClick={() => handleStatusChange('In Progress')}>ENGAGE</button>
-                            <button className="btn-primary text-[10px] bg-green-500 text-black border-none" onClick={() => handleStatusChange('Completed')}>COMPLETE MISSION</button>
+                            <button className="btn-secondary text-xs" onClick={() => handleStatusChange('Waiting for Parts')}>WAITING FOR PARTS</button>
+                            <button className="btn-secondary text-xs" onClick={() => handleStatusChange('In Progress')}>ENGAGE</button>
+                            <button className="btn-primary text-xs bg-green-500 text-black border-none" onClick={() => handleStatusChange('Completed')}>COMPLETE MISSION</button>
                         </>
                     )}
                     {(request.status === 'Completed' || request.status === 'Complete') && (
-                        <button className="btn-primary text-[10px]" onClick={() => {
+                        <button className="btn-primary text-xs" onClick={() => {
                             setInvoiceData({ serviceFee: projectedFee, sparePartsMarkup: request.spare_parts_markup || 0, taxRate: request.tax_rate || 14 });
                             setShowInvoiceModal(true);
                         }}>GENERATE INVOICE</button>
                     )}
                     {(request.status === 'Invoiced' || request.status === 'Paid') && (
                         <>
-                            {isAdmin && <button className="btn-secondary text-[10px]" onClick={() => {
+                            {isAdmin && <button className="btn-secondary text-xs" onClick={() => {
                                 setInvoiceData({ serviceFee: request.service_fee || projectedFee, sparePartsMarkup: request.spare_parts_markup || 0, taxRate: request.tax_rate || 14 });
                                 setShowInvoiceModal(true);
                             }}>UPDATE INVOICE</button>}
-                            <button className="btn-primary text-[10px] flex items-center gap-2" onClick={() => handleViewInvoice()}>
+                            <button className="btn-primary text-xs flex items-center gap-2" onClick={() => handleViewInvoice()}>
                                 <Download size={14} /> VIEW INVOICE
                             </button>
                         </>
@@ -514,8 +514,8 @@ const ServiceRequestDetail = () => {
                         </div>
                         {canEditItems && (
                             <div className="flex gap-2">
-                                <button className="btn-secondary text-[10px] py-2" onClick={() => { setShowAddItem(!showAddItem); setShowBulkAdd(false); }}>{showAddItem ? 'CLOSE' : 'ADD ITEM'}</button>
-                                <button className="btn-secondary text-[10px] py-2 border-primary/30 text-primary" onClick={() => { setShowBulkAdd(!showBulkAdd); setShowAddItem(false); }}>{showBulkAdd ? 'CLOSE' : 'BULK IMPORT'}</button>
+                                <button className="btn-secondary text-xs py-2" onClick={() => { setShowAddItem(!showAddItem); setShowBulkAdd(false); }}>{showAddItem ? 'CLOSE' : 'ADD ITEM'}</button>
+                                <button className="btn-secondary text-xs py-2 border-primary/30 text-primary" onClick={() => { setShowBulkAdd(!showBulkAdd); setShowAddItem(false); }}>{showBulkAdd ? 'CLOSE' : 'BULK IMPORT'}</button>
                             </div>
                         )}
                     </div>
@@ -529,13 +529,13 @@ const ServiceRequestDetail = () => {
                             <FormInput label="Unit Price (EGP)" value={newItem.unitPrice} onChange={e => setNewItem({...newItem, unitPrice: e.target.value})} type="number" />
                         </div>
                         <FormInput label="Mission Notes" value={newItem.notes} onChange={e => setNewItem({...newItem, notes: e.target.value})} />
-                        <button className="btn-primary w-full text-[10px] mt-6" onClick={handleAddItem}>SAVE OPERATION ENTRY</button>
+                        <button className="btn-primary w-full text-xs mt-6" onClick={handleAddItem}>SAVE OPERATION ENTRY</button>
                     </div>}
 
                     {showBulkAdd && <div className="p-10 bg-slate-100/70 dark:bg-black/40 border-b border-slate-200 dark:border-white/10 animate-in slide-in-from-top duration-300 space-y-10">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                             <div className="space-y-4 text-left">
-                                <div className="text-[10px] font-black text-[#25D366] uppercase tracking-widest px-4 flex justify-between items-end">
+                                <div className="text-xs font-black text-[#25D366] uppercase tracking-widest px-4 flex justify-between items-end">
                                     <span>Incoming Log Parser</span>
                                     <span className="opacity-70 italic">e.g., 1. Oil - 2500</span>
                                 </div>
@@ -546,7 +546,7 @@ const ServiceRequestDetail = () => {
                                     onChange={e => setWhatsappText(e.target.value)}
                                 ></textarea>
                                 <div className="grid grid-cols-2 gap-3">
-                                    <button onClick={handleParseWhatsApp} className="h-12 w-full bg-slate-900 text-white dark:bg-white dark:text-black rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-primary transition-all">
+                                    <button onClick={handleParseWhatsApp} className="h-12 w-full bg-slate-900 text-white dark:bg-white dark:text-black rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-primary transition-all">
                                         <Wrench size={16} /> PARSE DATA
                                     </button>
                                     <button 
@@ -554,7 +554,7 @@ const ServiceRequestDetail = () => {
                                             const url = `https://wa.me/${request.client_phone?.replace(/[+ -]/g, '')}?text=${encodeURIComponent(whatsappText)}`;
                                             window.open(url, '_blank');
                                         }}
-                                        className="h-12 bg-[#25D366] text-black rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3"
+                                        className="h-12 bg-[#25D366] text-black rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3"
                                     >
                                         <Zap size={16} /> SEND MSG
                                     </button>
@@ -562,20 +562,20 @@ const ServiceRequestDetail = () => {
                             </div>
 
                             <div className="space-y-4 text-left">
-                                <div className="text-[10px] font-black text-blue-600 dark:text-blue-500 uppercase tracking-widest px-4 text-left">
+                                <div className="text-xs font-black text-blue-600 dark:text-blue-500 uppercase tracking-widest px-4 text-left">
                                     Remote Fleet Sync (Sheets)
                                 </div>
                                 <div className="bg-white dark:bg-black/60 p-5 rounded-3xl border border-slate-200 dark:border-white/5 h-40 flex flex-col justify-center gap-4">
                                     <FormInput label="Sheet Protocol URL" placeholder="https://docs.google.com/spreadsheets/..." value={googleSheetsUrl} onChange={e => setGoogleSheetsUrl(e.target.value)} />
                                 </div>
-                                <button className="h-12 w-full bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 opacity-50 cursor-not-allowed" disabled>
+                                <button className="h-12 w-full bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 opacity-50 cursor-not-allowed" disabled>
                                     <Zap size={16} /> SYNC FROM REMOTE
                                 </button>
                             </div>
                         </div>
 
                         <div className="pt-6 border-t border-slate-200 dark:border-white/10">
-                            <div className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-[0.3em] mb-8 text-center bg-slate-200/60 dark:bg-white/5 py-2 rounded-lg text-left px-5">Review Bulk Staging Rows</div>
+                            <div className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-[0.3em] mb-8 text-center bg-slate-200/60 dark:bg-white/5 py-2 rounded-lg text-left px-5">Review Bulk Staging Rows</div>
                             <div className="grid grid-cols-1 gap-5">
                                 {bulkItems.map((item, idx) => (
                                     <div key={idx} className="flex flex-col md:flex-row gap-4 items-end bg-slate-50/50 dark:bg-white/[0.02] p-6 rounded-3xl border border-slate-200 dark:border-white/5 group hover:border-slate-300 dark:hover:border-white/10 transition-all">
@@ -614,9 +614,9 @@ const ServiceRequestDetail = () => {
                             </div>
                             
                             <div className="flex flex-col md:flex-row gap-5 mt-10">
-                                <button className="btn-secondary flex-1 py-4 text-[10px] font-black" onClick={() => setBulkItems([...bulkItems, { itemName: '', itemNameAr: '', quantity: 1, unitPrice: 0, notes: '' }])}>+ ADD ROW</button>
+                                <button className="btn-secondary flex-1 py-4 text-xs font-black" onClick={() => setBulkItems([...bulkItems, { itemName: '', itemNameAr: '', quantity: 1, unitPrice: 0, notes: '' }])}>+ ADD ROW</button>
                                 <button 
-                                    className={`flex-2 py-4 text-[10px] font-black rounded-2xl transition-all shadow-[0_0_50px_rgba(var(--primary-rgb),0.2)] ${submitting ? 'bg-primary/50 text-white cursor-wait' : 'bg-primary text-black hover:scale-[1.02]'}`}
+                                    className={`flex-2 py-4 text-xs font-black rounded-2xl transition-all shadow-[0_0_50px_rgba(var(--primary-rgb),0.2)] ${submitting ? 'bg-primary/50 text-white cursor-wait' : 'bg-primary text-black hover:scale-[1.02]'}`}
                                     onClick={handleBulkAdd}
                                     disabled={submitting}
                                 >
@@ -630,10 +630,10 @@ const ServiceRequestDetail = () => {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02]">
-                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-left">Component / Description</th>
-                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-right">Qty</th>
-                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-right">Unit Price</th>
-                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-right">Subtotal</th>
+                                    <th className="px-8 py-4 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-left">Component / Description</th>
+                                    <th className="px-8 py-4 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-right">Qty</th>
+                                    <th className="px-8 py-4 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-right">Unit Price</th>
+                                    <th className="px-8 py-4 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-right">Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-white/5 font-bold uppercase tracking-tight">
@@ -644,7 +644,7 @@ const ServiceRequestDetail = () => {
                                         <tr key={record.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.01] transition-colors">
                                             <td className="px-8 py-5 text-left">
                                                 <div className="text-slate-900 dark:text-white text-sm">{record.item_name}</div>
-                                                <div className="text-[10px] text-slate-600 dark:text-slate-400 font-mono mt-1" dir="rtl">{record.item_name_ar}</div>
+                                                <div className="text-xs text-slate-600 dark:text-slate-400 font-mono mt-1" dir="rtl">{record.item_name_ar}</div>
                                             </td>
                                             <td className="px-8 py-5 text-right font-mono text-xs text-slate-700 dark:text-slate-300">{record.quantity}</td>
                                             <td className="px-8 py-5 text-right font-mono text-xs text-slate-700 dark:text-slate-300">{(parseFloat(record.unit_price) || 0).toLocaleString()} EGP</td>
@@ -655,13 +655,13 @@ const ServiceRequestDetail = () => {
                             </tbody>
                             <tfoot className="bg-slate-100/60 dark:bg-black/40 font-black uppercase tracking-widest">
                                 <tr>
-                                    <td colSpan="3" className="px-8 py-6 text-right text-[10px] text-slate-600 dark:text-slate-400">Subtotal Ledger</td>
+                                    <td colSpan="3" className="px-8 py-6 text-right text-xs text-slate-600 dark:text-slate-400">Subtotal Ledger</td>
                                     <td className="px-8 py-6 text-right text-slate-900 dark:text-white">{(totalAmount || 0).toLocaleString()} EGP</td>
                                 </tr>
                                 {request.invoice_number && (
                                     <>
                                         <tr className="text-blue-600 dark:text-blue-400/80">
-                                            <td colSpan="3" className="px-8 py-2 text-right text-[9px]">Operational Surcharge</td>
+                                            <td colSpan="3" className="px-8 py-2 text-right text-xs">Operational Surcharge</td>
                                             <td className="px-8 py-2 text-right text-xs">{(parseFloat(request.service_fee || 0) + parseFloat(request.spare_parts_markup || 0)).toLocaleString()} EGP</td>
                                         </tr>
                                         <tr className="bg-primary/5">
@@ -689,7 +689,7 @@ const ServiceRequestDetail = () => {
                                     <div key={comment.id} className="bg-slate-100 dark:bg-black/40 p-4 rounded-2xl border border-slate-200 dark:border-white/5">
                                         <div className="flex justify-between items-center mb-2">
                                             <span className="text-xs font-black text-primary">{comment.author_name}</span>
-                                            <span className="text-[10px] text-slate-600 dark:text-slate-400">{formatDate(comment.created_at)}</span>
+                                            <span className="text-xs text-slate-600 dark:text-slate-400">{formatDate(comment.created_at)}</span>
                                         </div>
                                         <div className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{comment.content}</div>
                                     </div>
@@ -721,7 +721,7 @@ const ServiceRequestDetail = () => {
                         <IntelligenceItem label="Primary Target" value={request.client_name} />
                         
                         <div className="flex justify-between items-center gap-4 py-1 text-left">
-                            <div className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest whitespace-nowrap">Assigned Tech</div>
+                            <div className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest whitespace-nowrap">Assigned Tech</div>
                             <div className="h-px border-b border-dashed border-slate-200 dark:border-white/10 flex-1 mb-1"></div>
                             <select 
                                 className="bg-white dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-lg text-xs text-slate-900 dark:text-white p-1 focus:border-primary/50 outline-none w-32"
@@ -738,18 +738,18 @@ const ServiceRequestDetail = () => {
                         <div className="pt-4 border-t border-slate-200 dark:border-white/5 space-y-4">
                             <div className="flex justify-between items-center text-left">
                                 <IntelligenceLabel text="Fleet Asset" />
-                                {!isEditingMileage && <button onClick={() => { setIsEditingMileage(true); setTempMileage(request.mileage || 0); }} className="text-[9px] font-black text-primary hover:underline">CALIBRATE KM</button>}
+                                {!isEditingMileage && <button onClick={() => { setIsEditingMileage(true); setTempMileage(request.mileage || 0); }} className="text-xs font-black text-primary hover:underline">CALIBRATE KM</button>}
                             </div>
                             <div className="text-sm text-slate-900 dark:text-white font-bold text-left">{request.vehicle_info}</div>
                             {isEditingMileage ? (
                                 <div className="flex gap-2">
                                     <input type="number" className="input-glass h-10 py-0 flex-1 text-xs" value={tempMileage} onChange={e => setTempMileage(e.target.value)} autoFocus />
-                                    <button onClick={handleUpdateMileage} className="h-10 px-3 bg-green-500 text-black rounded-xl font-black text-[10px]">FIX</button>
+                                    <button onClick={handleUpdateMileage} className="h-10 px-3 bg-green-500 text-black rounded-xl font-black text-xs">FIX</button>
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-2 text-left">
                                     <Zap size={14} className="text-amber-500" />
-                                    <span className="text-xl font-display font-black text-slate-900 dark:text-white tracking-widest">{(request.mileage || 0).toLocaleString()} <span className="text-[10px] text-slate-600 dark:text-slate-400 align-middle">KM</span></span>
+                                    <span className="text-xl font-display font-black text-slate-900 dark:text-white tracking-widest">{(request.mileage || 0).toLocaleString()} <span className="text-xs text-slate-600 dark:text-slate-400 align-middle">KM</span></span>
                                 </div>
                             )}
                         </div>
@@ -773,8 +773,8 @@ const ServiceRequestDetail = () => {
                         <FormInput label="Tax Resolution (%)" value={invoiceData.taxRate} onChange={e => setInvoiceData({...invoiceData, taxRate: e.target.value})} type="number" />
                     </div>
                     <div className="flex gap-4 mt-12 pt-8 border-t border-slate-200 dark:border-white/5">
-                        <button className="flex-1 btn-secondary text-[10px]" onClick={() => setShowInvoiceModal(false)}>ABORT</button>
-                        <button className="flex-2 btn-primary text-[10px]" onClick={handleGenerateInvoice}>COMMIT REPORT</button>
+                        <button className="flex-1 btn-secondary text-xs" onClick={() => setShowInvoiceModal(false)}>ABORT</button>
+                        <button className="flex-2 btn-primary text-xs" onClick={handleGenerateInvoice}>COMMIT REPORT</button>
                     </div>
                 </div>
             </div>}
@@ -790,8 +790,8 @@ const ServiceRequestDetail = () => {
                         <FormInput label="Internal Notes" value={reminderForm.notes} onChange={e => setReminderForm({...reminderForm, notes: e.target.value})} />
                     </div>
                     <div className="flex gap-4 mt-12 pt-8 border-t border-slate-200 dark:border-white/5">
-                         <button className="flex-1 btn-secondary text-[10px]" onClick={() => setShowReminderModal(false)}>SKIP</button>
-                         <button className="flex-2 btn-primary text-[10px] bg-blue-500 text-black border-none" onClick={handleCreateReminder}>SET REMINDER</button>
+                         <button className="flex-1 btn-secondary text-xs" onClick={() => setShowReminderModal(false)}>SKIP</button>
+                         <button className="flex-2 btn-primary text-xs bg-blue-500 text-black border-none" onClick={handleCreateReminder}>SET REMINDER</button>
                     </div>
                 </div>
             </div>}
@@ -802,25 +802,25 @@ const ServiceRequestDetail = () => {
 const StatCard = ({ title, value, sub, color }) => (
     <div className="glass-card p-8 relative group overflow-hidden text-left">
         <div className={`absolute -right-4 -bottom-4 w-24 h-24 bg-slate-100 dark:bg-white/5 rounded-full group-hover:scale-150 transition-transform duration-700`}></div>
-        <div className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 mb-2">{title}</div>
+        <div className="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 mb-2">{title}</div>
         <div className={`text-3xl font-display font-black tracking-tighter mb-1 ${color}`}>{value}</div>
-        <div className="text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">{sub}</div>
+        <div className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">{sub}</div>
     </div>
 );
 
 const IntelligenceItem = ({ label, value }) => (
     <div className="flex justify-between items-end gap-4 py-1 text-left">
-        <div className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest whitespace-nowrap">{label}</div>
+        <div className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest whitespace-nowrap">{label}</div>
         <div className="h-px border-b border-dashed border-slate-200 dark:border-white/10 flex-1 mb-1"></div>
         <div className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight text-right">{value}</div>
     </div>
 );
 
-const IntelligenceLabel = ({ text }) => <div className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-left">{text}</div>;
+const IntelligenceLabel = ({ text }) => <div className="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 text-left">{text}</div>;
 
 const FormInput = ({ label, value, onChange, type = "text", placeholder = "" }) => (
     <div className="space-y-2 text-left">
-        <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-4">{label}</label>
+        <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest ml-4">{label}</label>
         <input type={type} value={value} onChange={onChange} placeholder={placeholder} className="input-glass font-mono tracking-widest w-full" />
     </div>
 );

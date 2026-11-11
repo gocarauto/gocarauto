@@ -170,7 +170,7 @@ const CustomerDossier = () => {
                                 <span className="drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]">👤</span>
                             </div>
                             <h3 className="text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">{client.full_name}</h3>
-                            <div className="inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400 text-[9px] font-black tracking-widest uppercase">
+                            <div className="inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400 text-xs font-black tracking-widest uppercase">
                                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 dark:bg-green-400 animate-pulse"></div>
                                 Active Client
                             </div>
@@ -194,9 +194,9 @@ const CustomerDossier = () => {
                         {/* ── Referral Network Section ── */}
                         {client.referredClients && client.referredClients.length > 0 && (
                             <div className="pt-6 border-t border-slate-200/80 dark:border-white/5 space-y-3">
-                                <div className="text-[10px] font-black uppercase tracking-widest text-amber-500 dark:text-amber-400 flex items-center justify-between">
+                                <div className="text-xs font-black uppercase tracking-widest text-amber-500 dark:text-amber-400 flex items-center justify-between">
                                     <span className="flex items-center gap-1.5"><Share2 size={13} /> Referral Network</span>
-                                    <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-300 font-mono text-[9px]">
+                                    <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-300 font-mono text-xs">
                                         {client.referredClients.length} Referred
                                     </span>
                                 </div>
@@ -205,9 +205,9 @@ const CustomerDossier = () => {
                                         <div key={ref.id} className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/5 flex items-center justify-between text-xs">
                                             <div>
                                                 <span className="font-bold text-slate-900 dark:text-white block">{ref.full_name}</span>
-                                                <span className="text-[10px] text-slate-600 dark:text-slate-400 font-mono">{ref.phone}</span>
+                                                <span className="text-xs text-slate-600 dark:text-slate-400 font-mono">{ref.phone}</span>
                                             </div>
-                                            <span className="text-emerald-600 dark:text-emerald-400 font-mono font-bold text-[11px]">
+                                            <span className="text-emerald-600 dark:text-emerald-400 font-mono font-bold text-xs">
                                                 {parseFloat(ref.total_spent || 0).toLocaleString()} EGP
                                             </span>
                                         </div>
@@ -217,7 +217,7 @@ const CustomerDossier = () => {
                         )}
 
                         <div className="pt-6 border-t border-slate-200/80 dark:border-white/5 space-y-4">
-                            <div className="text-[10px] font-black uppercase tracking-widest text-amber-500 dark:text-primary flex items-center gap-2">
+                            <div className="text-xs font-black uppercase tracking-widest text-amber-500 dark:text-primary flex items-center gap-2">
                                 <Shield size={14} /> Portal Access Gateway
                             </div>
                             
@@ -227,11 +227,11 @@ const CustomerDossier = () => {
                                 </button>
                             ) : (
                                 <div className="bg-slate-50 dark:bg-black/40 p-4 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-4">
-                                    <div className="font-mono text-[10px] text-slate-700 dark:text-slate-400 break-all bg-white dark:bg-black/60 p-3 rounded-xl border border-slate-200 dark:border-white/5 max-h-24 overflow-y-auto">
+                                    <div className="font-mono text-xs text-slate-700 dark:text-slate-400 break-all bg-white dark:bg-black/60 p-3 rounded-xl border border-slate-200 dark:border-white/5 max-h-24 overflow-y-auto">
                                         {magicLink}
                                     </div>
                                     <div className="flex gap-3">
-                                        <button onClick={copyToClipboard} className="flex-1 btn-primary justify-center text-[10px]">
+                                        <button onClick={copyToClipboard} className="flex-1 btn-primary justify-center text-xs">
                                             <Copy size={14} /> {copyStatus}
                                         </button>
                                         <WhatsAppButton phone={client.phone} customerName={client.full_name} customerId={client.id} size="md" showText={true} magicLink={magicLink} />
@@ -241,7 +241,7 @@ const CustomerDossier = () => {
                         </div>
 
                         <div className="pt-6 border-t border-slate-200/80 dark:border-white/5 space-y-2">
-                            <div className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 flex items-center gap-2">
+                            <div className="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 flex items-center gap-2">
                                 <Settings size={14} /> Intelligence Notes
                             </div>
                             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
@@ -258,7 +258,7 @@ const CustomerDossier = () => {
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">Fleet Repository</h3>
-                                    <div className="text-[10px] text-slate-600 dark:text-slate-400 font-black tracking-widest uppercase">Registered Vehicles</div>
+                                    <div className="text-xs text-slate-600 dark:text-slate-400 font-black tracking-widest uppercase">Registered Vehicles</div>
                                 </div>
                             </div>
                             <div className="badge badge-info">{vehicles.length} IDENTIFIED</div>
@@ -266,7 +266,7 @@ const CustomerDossier = () => {
 
                         {vehicles.length === 0 ? (
                             <div className="text-center py-16 bg-slate-50/50 dark:bg-white/[0.02] border border-dashed border-slate-200 dark:border-white/10 rounded-3xl">
-                                <p className="text-slate-600 dark:text-slate-400 text-[10px] font-black tracking-widest uppercase mb-4">NO VEHICLES REGISTERED.</p>
+                                <p className="text-slate-600 dark:text-slate-400 text-xs font-black tracking-widest uppercase mb-4">NO VEHICLES REGISTERED.</p>
                                 <Link to="/vehicles/new"><button className="btn-secondary">+ ADD ASSET TO FLEET</button></Link>
                             </div>
                         ) : (
@@ -275,15 +275,15 @@ const CustomerDossier = () => {
                                     <div key={vehicle.id} className="p-6 bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/10 rounded-2xl transition-all group">
                                         <div className="flex justify-between items-center">
                                             <div>
-                                                <div className="text-[9px] font-black uppercase tracking-widest text-amber-500 dark:text-primary mb-1 opacity-80 group-hover:opacity-100">{vehicle.year} MODEL</div>
+                                                <div className="text-xs font-black uppercase tracking-widest text-amber-500 dark:text-primary mb-1 opacity-80 group-hover:opacity-100">{vehicle.year} MODEL</div>
                                                 <h4 className="text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter mb-4 group-hover:text-amber-500">{vehicle.make} {vehicle.model}</h4>
                                                 <div className="flex gap-8">
                                                     <div>
-                                                        <div className="text-[9px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">PLATE ID</div>
+                                                        <div className="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">PLATE ID</div>
                                                         <div className="text-sm font-bold text-slate-800 dark:text-slate-200 font-mono mt-1" dir="auto">{vehicle.license_plate || 'N/A'}</div>
                                                     </div>
                                                     <div>
-                                                        <div className="text-[9px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">VIN HASH</div>
+                                                        <div className="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">VIN HASH</div>
                                                         <div className="text-sm font-bold text-slate-800 dark:text-slate-200 font-mono mt-1">{vehicle.vin || 'UNDISCLOSED'}</div>
                                                     </div>
                                                 </div>
@@ -324,7 +324,7 @@ const CustomerDossier = () => {
                     {resetSuccess && <div className="bg-green-500/10 border border-green-500/30 text-green-600 dark:text-green-400 p-4 rounded-xl text-xs font-bold mb-6 flex items-center gap-3 uppercase tracking-wide"><CheckCircle2 size={16} />{resetSuccess}</div>}
                     <form onSubmit={handlePasswordReset} className="space-y-6">
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 ml-4">NEW OVERRIDE PASSWORD</label>
+                            <label className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 ml-4">NEW OVERRIDE PASSWORD</label>
                             <div className="relative"><Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400" /><input type="password" className="input-glass pl-12 font-mono" placeholder="••••••••" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required /></div>
                         </div>
                         <div className="flex justify-end pt-4 border-t border-slate-200/80 dark:border-white/5"><button type="submit" className="btn-primary bg-blue-500 hover:bg-blue-400 text-black shadow-blue-500/20" disabled={resetLoading}>{resetLoading ? 'PROCESSING...' : 'OVERRIDE CREDENTIALS'}</button></div>
@@ -342,7 +342,7 @@ const CustomerDossier = () => {
 };
 
 const TabButton = ({ active, onClick, icon, label, activeColor }) => (
-    <button onClick={onClick} className={`pb-4 text-[10px] font-black tracking-widest uppercase transition-all flex items-center gap-2 border-b-2 cursor-pointer ${active ? activeColor : 'text-slate-600 dark:text-slate-400 border-transparent hover:text-slate-900 dark:hover:text-white'}`}>
+    <button onClick={onClick} className={`pb-4 text-xs font-black tracking-widest uppercase transition-all flex items-center gap-2 border-b-2 cursor-pointer ${active ? activeColor : 'text-slate-600 dark:text-slate-400 border-transparent hover:text-slate-900 dark:hover:text-white'}`}>
         {icon} {label}
     </button>
 );
@@ -351,7 +351,7 @@ const InfoRow = ({ icon, label, value, highlight }) => (
     <div className="flex items-center justify-between py-2 border-b border-slate-200/80 dark:border-white/5 last:border-0 group">
         <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center border border-slate-200/80 dark:border-white/10 group-hover:bg-slate-200 dark:group-hover:bg-white/10 text-slate-600 dark:text-slate-300 transition-colors">{icon}</div>
-            <span className="text-[10px] font-black tracking-widest text-slate-600 dark:text-slate-400 uppercase">{label}</span>
+            <span className="text-xs font-black tracking-widest text-slate-600 dark:text-slate-400 uppercase">{label}</span>
         </div>
         <span className={`text-sm font-bold text-right ${highlight ? 'text-amber-500 dark:text-primary' : 'text-slate-900 dark:text-slate-200'} uppercase max-w-[60%] truncate`}>{value}</span>
     </div>

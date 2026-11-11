@@ -163,33 +163,33 @@ const ReportsDashboard = () => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                         <div className="p-5 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200/80 dark:border-white/5 space-y-1">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-400">Total Billed Revenue</span>
+                            <span className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-gray-400">Total Billed Revenue</span>
                             <p className="text-2xl font-black text-slate-900 dark:text-white font-mono">{(economics.totalRevenue || 0).toLocaleString()} <span className="text-xs font-sans text-slate-500 dark:text-gray-400">EGP</span></p>
-                            <span className="text-[9px] text-slate-400 dark:text-gray-500 block">Gross revenue & commissions</span>
+                            <span className="text-xs text-slate-400 dark:text-gray-500 block">Gross revenue & commissions</span>
                         </div>
 
                         <div className="p-5 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200/80 dark:border-white/5 space-y-1">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-blue-500 dark:text-blue-400">Workshop Pass-Through</span>
+                            <span className="text-xs font-black uppercase tracking-widest text-blue-500 dark:text-blue-400">Workshop Pass-Through</span>
                             <p className="text-2xl font-black text-blue-600 dark:text-blue-400 font-mono">{(economics.workshopPassThrough || 0).toLocaleString()} <span className="text-xs font-sans text-slate-500 dark:text-gray-400">EGP</span></p>
-                            <span className="text-[9px] text-slate-400 dark:text-gray-500 block">Billed mechanical labor & raw parts</span>
+                            <span className="text-xs text-slate-400 dark:text-gray-500 block">Billed mechanical labor & raw parts</span>
                         </div>
 
                         <div className="p-5 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200/80 dark:border-white/5 space-y-1">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Delivery Concierge</span>
+                            <span className="text-xs font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Delivery Concierge</span>
                             <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono">{(economics.totalDeliveryRevenue || 0).toLocaleString()} <span className="text-xs font-sans text-slate-500 dark:text-gray-400">EGP</span></p>
-                            <span className="text-[9px] text-slate-400 dark:text-gray-500 block">Mandatory pick-up & delivery fees</span>
+                            <span className="text-xs text-slate-400 dark:text-gray-500 block">Mandatory pick-up & delivery fees</span>
                         </div>
 
                         <div className="p-5 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200/80 dark:border-white/5 space-y-1">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-amber-500 dark:text-amber-400">Service Fees</span>
+                            <span className="text-xs font-black uppercase tracking-widest text-amber-500 dark:text-amber-400">Service Fees</span>
                             <p className="text-2xl font-black text-amber-500 dark:text-amber-400 font-mono">{(economics.totalServiceFees || 0).toLocaleString()} <span className="text-xs font-sans text-slate-500 dark:text-gray-400">EGP</span></p>
-                            <span className="text-[9px] text-slate-400 dark:text-gray-500 block">10%–15% sliding management fee</span>
+                            <span className="text-xs text-slate-400 dark:text-gray-500 block">10%–15% sliding management fee</span>
                         </div>
 
                         <div className="p-5 rounded-2xl bg-slate-50 dark:bg-black/40 border border-emerald-500/20 space-y-1">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Consignment Cuts</span>
+                            <span className="text-xs font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Consignment Cuts</span>
                             <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono">{(economics.totalConsignmentCommissions || 0).toLocaleString()} <span className="text-xs font-sans text-slate-500 dark:text-gray-400">EGP</span></p>
-                            <span className="text-[9px] text-slate-400 dark:text-gray-500 block">{economics.soldCarsCount || 0} vehicles sold (2.5% cut)</span>
+                            <span className="text-xs text-slate-400 dark:text-gray-500 block">{economics.soldCarsCount || 0} vehicles sold (2.5% cut)</span>
                         </div>
                     </div>
                 </div>
@@ -258,22 +258,22 @@ const ReportsDashboard = () => {
                 <div className="glass-card p-8">
                     <div className="flex justify-between items-center mb-6">
                         <h3 className="text-slate-900 dark:text-white font-black tracking-widest uppercase text-sm">TOP SERVICE VEHICLES</h3>
-                        <div className="text-[10px] text-slate-500 dark:text-gray-500 font-bold uppercase tracking-widest">RANKED BY REVENUE</div>
+                        <div className="text-xs text-slate-500 dark:text-gray-500 font-bold uppercase tracking-widest">RANKED BY REVENUE</div>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-slate-200/80 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
-                                    <th onClick={() => handleSort('make')} className="px-4 py-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 transition-colors text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">
+                                    <th onClick={() => handleSort('make')} className="px-4 py-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 transition-colors text-xs font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">
                                         MAKE <ArrowUpDown size={12} className="inline ml-1 opacity-50" />
                                     </th>
-                                    <th onClick={() => handleSort('model')} className="px-4 py-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 transition-colors text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">
+                                    <th onClick={() => handleSort('model')} className="px-4 py-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 transition-colors text-xs font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">
                                         MODEL <ArrowUpDown size={12} className="inline ml-1 opacity-50" />
                                     </th>
-                                    <th onClick={() => handleSort('totalRevenue')} className="px-4 py-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 transition-colors text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">
+                                    <th onClick={() => handleSort('totalRevenue')} className="px-4 py-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 transition-colors text-xs font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">
                                         VALUE <ArrowUpDown size={12} className="inline ml-1 opacity-50" />
                                     </th>
-                                    <th onClick={() => handleSort('serviceCount')} className="px-4 py-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 transition-colors text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">
+                                    <th onClick={() => handleSort('serviceCount')} className="px-4 py-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 transition-colors text-xs font-black uppercase tracking-widest text-slate-500 dark:text-gray-500">
                                         OPS <ArrowUpDown size={12} className="inline ml-1 opacity-50" />
                                     </th>
                                 </tr>
@@ -337,7 +337,7 @@ const ReportsDashboard = () => {
 
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-xs">
-                            <thead className="bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-gray-400 uppercase font-black tracking-wider text-[10px]">
+                            <thead className="bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-gray-400 uppercase font-black tracking-wider text-xs">
                                 <tr>
                                     <th className="px-5 py-3">Champion / Referrer</th>
                                     <th className="px-5 py-3">Phone</th>
@@ -350,7 +350,7 @@ const ReportsDashboard = () => {
                                     <tr key={ref.referrer_id || idx} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors">
                                         <td className="px-5 py-4">
                                             <div className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
-                                                <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-500 dark:text-amber-400 flex items-center justify-center text-[10px] font-mono">
+                                                <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-500 dark:text-amber-400 flex items-center justify-center text-xs font-mono">
                                                     #{idx + 1}
                                                 </span>
                                                 <span>{ref.referrer_name}</span>
@@ -385,7 +385,7 @@ const ReportMetric = ({ title, value, icon, color, bg, border }) => (
             {icon}
         </div>
         <div className="relative z-10">
-            <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-gray-500 mb-1">{title}</div>
+            <div className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-gray-500 mb-1">{title}</div>
             <div className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter">{value}</div>
         </div>
     </div>

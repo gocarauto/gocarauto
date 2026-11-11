@@ -177,7 +177,7 @@ const VehicleForm = () => {
                                         <h3 className="text-sm font-display font-black text-slate-900 dark:text-white uppercase tracking-wider">
                                             01. Asset Ownership
                                         </h3>
-                                        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
+                                        <p className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
                                             Registered Proprietor
                                         </p>
                                     </div>
@@ -185,7 +185,7 @@ const VehicleForm = () => {
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
-                                        <label htmlFor="vehicle-client-id" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                        <label htmlFor="vehicle-client-id" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <span>Registered Client *</span>
                                         </label>
                                         <select
@@ -207,14 +207,14 @@ const VehicleForm = () => {
 
                                     {selectedClient ? (
                                         <div className="p-4 rounded-xl bg-slate-100 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/10 space-y-2 text-xs">
-                                            <div className="text-[10px] font-black text-amber-500 dark:text-primary uppercase tracking-wider flex items-center gap-1.5">
+                                            <div className="text-xs font-black text-amber-500 dark:text-primary uppercase tracking-wider flex items-center gap-1.5">
                                                 <ShieldCheck size={13} />
                                                 <span>Active Client Verified</span>
                                             </div>
                                             <div className="font-bold text-slate-900 dark:text-white uppercase">{selectedClient.full_name}</div>
-                                            <div className="text-slate-600 dark:text-slate-400 font-mono text-[11px]">{selectedClient.phone}</div>
+                                            <div className="text-slate-600 dark:text-slate-400 font-mono text-xs">{selectedClient.phone}</div>
                                             {selectedClient.address && (
-                                                <div className="text-slate-600 dark:text-slate-400 text-[11px] truncate">{selectedClient.address}</div>
+                                                <div className="text-slate-600 dark:text-slate-400 text-xs truncate">{selectedClient.address}</div>
                                             )}
                                         </div>
                                     ) : (
@@ -225,7 +225,7 @@ const VehicleForm = () => {
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-400">
+                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
                                 <span>TOTAL CLIENTS: {clients.length}</span>
                                 <Link to="/customers/new" className="text-amber-500 dark:text-primary hover:underline font-bold uppercase">
                                     + Add New Client
@@ -244,7 +244,7 @@ const VehicleForm = () => {
                                         <h3 className="text-sm font-display font-black text-slate-900 dark:text-white uppercase tracking-wider">
                                             02. Vehicle Identification
                                         </h3>
-                                        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
+                                        <p className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
                                             Make, Model & Plate
                                         </p>
                                     </div>
@@ -253,7 +253,7 @@ const VehicleForm = () => {
                                 <div className="space-y-5">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label htmlFor="vehicle-make" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                            <label htmlFor="vehicle-make" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                                 <span>Make *</span>
                                             </label>
                                             <input
@@ -269,7 +269,7 @@ const VehicleForm = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor="vehicle-model" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                            <label htmlFor="vehicle-model" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                                 <span>Model *</span>
                                             </label>
                                             <input
@@ -287,7 +287,7 @@ const VehicleForm = () => {
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label htmlFor="vehicle-year" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                            <label htmlFor="vehicle-year" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                                 <Calendar size={11} className="text-slate-500 dark:text-slate-400" />
                                                 <span>Year *</span>
                                             </label>
@@ -305,7 +305,7 @@ const VehicleForm = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor="vehicle-license-plate" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                            <label htmlFor="vehicle-license-plate" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                                 <Hash size={11} className="text-slate-500 dark:text-slate-400" />
                                                 <span>License Plate</span>
                                             </label>
@@ -324,7 +324,7 @@ const VehicleForm = () => {
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 text-[10px] text-slate-600 dark:text-slate-400 font-mono">
+                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 text-xs text-slate-600 dark:text-slate-400 font-mono">
                                 ARABIC / ENGLISH PLATES SUPPORTED
                             </div>
                         </div>
@@ -340,7 +340,7 @@ const VehicleForm = () => {
                                         <h3 className="text-sm font-display font-black text-slate-900 dark:text-white uppercase tracking-wider">
                                             03. Telemetry & VIN
                                         </h3>
-                                        <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
+                                        <p className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">
                                             Odometer & Chassis Number
                                         </p>
                                     </div>
@@ -348,7 +348,7 @@ const VehicleForm = () => {
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
-                                        <label htmlFor="vehicle-current-mileage" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                        <label htmlFor="vehicle-current-mileage" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <Gauge size={11} className="text-primary" />
                                             <span>Current Mileage (KM)</span>
                                         </label>
@@ -364,7 +364,7 @@ const VehicleForm = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label htmlFor="vehicle-vin" className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                        <label htmlFor="vehicle-vin" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                             <Hash size={11} className="text-slate-500 dark:text-slate-400" />
                                             <span>VIN Chassis Code (17-Digit)</span>
                                         </label>
@@ -380,14 +380,14 @@ const VehicleForm = () => {
                                         />
                                     </div>
 
-                                    <div className="p-4 rounded-xl bg-slate-100 dark:bg-black/40 border border-slate-200/80 dark:border-white/5 text-[11px] text-slate-700 dark:text-slate-300 space-y-1">
+                                    <div className="p-4 rounded-xl bg-slate-100 dark:bg-black/40 border border-slate-200/80 dark:border-white/5 text-xs text-slate-700 dark:text-slate-300 space-y-1">
                                         <div className="font-bold text-slate-900 dark:text-white uppercase">Automated Telemetry Sync</div>
                                         <div>Mileage updates will automatically synchronize with next scheduled maintenance cycles.</div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 flex items-center justify-between text-[10px] text-slate-600 dark:text-slate-400 font-mono">
+                            <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/5 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 font-mono">
                                 <span>TELEMETRY: ACTIVE</span>
                                 <span className="text-emerald-600 dark:text-emerald-400 font-bold">READY</span>
                             </div>
@@ -397,7 +397,7 @@ const VehicleForm = () => {
 
                     {/* Bottom Action Footer */}
                     <div className="flex items-center justify-between pt-6 border-t border-slate-200/80 dark:border-white/5">
-                        <span className="text-[11px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
+                        <span className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
                             Mandatory fields marked with <span className="text-primary">*</span>
                         </span>
                         <div className="flex items-center gap-4">

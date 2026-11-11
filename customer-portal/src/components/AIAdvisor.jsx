@@ -282,11 +282,11 @@ const AIAdvisor = () => {
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center justify-between gap-2">
-                                                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                                <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest">
                                                     {isAr ? 'الإجراء الفني المقترح' : 'Recommended Action'}
                                                 </h4>
                                                 {msg.urgency && (
-                                                    <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${
+                                                    <span className={`text-xs font-black uppercase px-2 py-0.5 rounded-full ${
                                                         msg.severity === 'critical' ? 'bg-red-500/20 text-red-400' : 'bg-yellow-500/20 text-yellow-400'
                                                     }`}>
                                                         {msg.urgency}

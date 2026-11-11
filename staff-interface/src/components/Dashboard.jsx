@@ -126,7 +126,7 @@ const Dashboard = () => {
                         <AlertTriangle className="text-amber-500 dark:text-amber-400 shrink-0" size={20} />
                         <div>
                             <p className="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-200">Cloud Telemetry Initializing</p>
-                            <p className="text-[11px] text-slate-700 dark:text-slate-300">Database statistics link is reconnecting. Live metrics will populate shortly.</p>
+                            <p className="text-xs text-slate-700 dark:text-slate-300">Database statistics link is reconnecting. Live metrics will populate shortly.</p>
                         </div>
                     </div>
                     <button
@@ -182,16 +182,16 @@ const Dashboard = () => {
                             <div>
                                 <h4 className="text-base font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
                                     <span>Used Car Consignment Leads</span>
-                                    <span className="px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black">{consignmentLeads.length} NEW</span>
+                                    <span className="px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-xs font-bold">{consignmentLeads.length} NEW</span>
                                 </h4>
-                                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">Customers requesting GoCar to handle the sale of their vehicle</p>
+                                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">Customers requesting GoCar to handle the sale of their vehicle</p>
                             </div>
                         </div>
                         <Link
                             to="/consignment"
-                            className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl transition-all flex items-center gap-1.5 shadow-lg shadow-amber-500/20"
+                            className="btn btn-primary btn-sm gap-1"
                         >
-                            Open Consignment Hub
+                            <span>Open Consignment Hub</span>
                             <ChevronRight size={14} />
                         </Link>
                     </div>
@@ -201,9 +201,9 @@ const Dashboard = () => {
                             <div key={lead.id} className="p-4 rounded-2xl bg-white/90 dark:bg-black/50 border border-slate-200/80 dark:border-white/10 shadow-sm space-y-3">
                                 <div className="flex items-start justify-between">
                                     <div>
-                                        <span className="text-[10px] font-black text-amber-500 dark:text-amber-400 uppercase tracking-widest block">{lead.client_name}</span>
-                                        <h5 className="text-sm font-bold text-slate-900 dark:text-white">{lead.make} {lead.model} ({lead.year})</h5>
-                                        <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono">{lead.license_plate}</span>
+                                        <span className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">{lead.client_name}</span>
+                                        <h5 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">{lead.make} {lead.model} ({lead.year})</h5>
+                                        <span className="text-xs text-slate-600 dark:text-slate-400 font-mono font-medium">{lead.license_plate}</span>
                                     </div>
                                     {lead.asking_price && (
                                         <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
@@ -217,13 +217,13 @@ const Dashboard = () => {
                                 <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-white/5 text-xs">
                                     <a
                                         href={`tel:${lead.client_phone}`}
-                                        className="font-bold text-amber-500 dark:text-amber-400 hover:underline flex items-center gap-1"
+                                        className="font-bold text-slate-900 dark:text-white font-mono hover:underline flex items-center gap-1"
                                     >
                                         📞 {lead.client_phone}
                                     </a>
                                     <button
                                         onClick={() => handleUpdateLeadStatus(lead.id, 'Contacted')}
-                                        className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-white/10 dark:hover:bg-white/20 dark:text-white font-bold text-[10px] uppercase tracking-wider transition-colors"
+                                        className="btn btn-neutral btn-xs uppercase"
                                     >
                                         Mark Contacted
                                     </button>
@@ -294,7 +294,7 @@ const Dashboard = () => {
                             <button
                                 key={filter}
                                 onClick={() => setActivityFilter(filter)}
-                                className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                                className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
                                     activityFilter === filter
                                         ? 'bg-amber-400 text-slate-950 shadow-md font-bold'
                                         : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white'
@@ -310,11 +310,11 @@ const Dashboard = () => {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b border-slate-200/80 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Timestamp</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Client</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Vehicle / Operation</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Status</th>
-                                <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Action</th>
+                                <th className="px-8 py-4 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Timestamp</th>
+                                <th className="px-8 py-4 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Client</th>
+                                <th className="px-8 py-4 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Vehicle / Operation</th>
+                                <th className="px-8 py-4 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Status</th>
+                                <th className="px-8 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-200/80 dark:divide-white/5">
@@ -323,10 +323,10 @@ const Dashboard = () => {
                                     <td className="px-8 py-5 text-xs font-mono font-bold text-slate-600 dark:text-slate-400">
                                         {formatDate(activity.date)}
                                     </td>
-                                    <td className="px-8 py-5 font-black text-sm text-slate-900 dark:text-white uppercase tracking-tight">
+                                    <td className="px-8 py-5 font-bold text-sm sm:text-base text-slate-900 dark:text-white tracking-tight">
                                         {activity.customer}
                                     </td>
-                                    <td className="px-8 py-5 text-xs font-medium text-slate-700 dark:text-slate-300 max-w-xs truncate">
+                                    <td className="px-8 py-5 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 max-w-xs truncate">
                                         {activity.details}
                                     </td>
                                     <td className="px-8 py-5">
@@ -339,9 +339,9 @@ const Dashboard = () => {
                                     </td>
                                     <td className="px-8 py-5 text-right">
                                         <Link to={`/service-requests/${activity.id}`}>
-                                            <button className="text-amber-500 dark:text-[#fbbf24] hover:text-amber-600 dark:hover:text-white font-black text-xs uppercase tracking-widest flex items-center gap-1 group/link ml-auto cursor-pointer transition-colors">
-                                                <span>MANAGE</span>
-                                                <ChevronRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
+                                            <button className="btn btn-primary btn-sm gap-1 ml-auto">
+                                                <span>Manage</span>
+                                                <ChevronRight size={14} />
                                             </button>
                                         </Link>
                                     </td>
@@ -383,7 +383,7 @@ const Dashboard = () => {
                                     <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                                         {r.make} {r.model} • <span className="text-amber-500 dark:text-[#fbbf24] font-bold">{r.service_type}</span>
                                     </div>
-                                    <div className="text-[11px] text-rose-500 dark:text-rose-400 font-mono font-bold">
+                                    <div className="text-xs text-rose-500 dark:text-rose-400 font-mono font-bold">
                                         TARGET DATE: {formatDate(r.due_date)}
                                     </div>
                                 </div>
@@ -429,7 +429,7 @@ const Dashboard = () => {
                             <div className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter">
                                 {(forecast.forecastTotal || 0).toLocaleString()} <span className="text-xs text-slate-600 dark:text-slate-400 uppercase font-sans">EGP</span>
                             </div>
-                            <div className="text-[10px] font-mono font-bold text-purple-500 dark:text-purple-400 uppercase tracking-widest">
+                            <div className="text-xs font-mono font-bold text-purple-500 dark:text-purple-400 uppercase tracking-wider">
                                 AI Confidence: {forecast.confidence || '92%'}
                             </div>
                         </div>
@@ -481,13 +481,13 @@ const MetricCard = ({ title, value, sub, color, bgColor, borderColor, icon: Icon
         <Icon className={`absolute right-5 top-5 ${color} opacity-20 w-12 h-12 group-hover:scale-110 transition-transform`} />
         
         <div className="relative z-10 flex flex-col h-full space-y-1.5">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                 {title}
             </span>
             <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight font-mono tabular-nums">
                 {value}
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-[85%] pb-3 font-normal">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-[90%] pb-3 font-medium">
                 {sub}
             </p>
 

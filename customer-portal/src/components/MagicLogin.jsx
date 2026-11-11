@@ -107,7 +107,7 @@ const MagicLogin = () => {
                 )}
 
                 {/* Footer Security */}
-                <div className="mt-12 flex items-center justify-center gap-2 text-[10px] font-black text-gray-600 uppercase tracking-widest border-t border-white/5 pt-8">
+                <div className="mt-12 flex items-center justify-center gap-2 text-xs font-black text-gray-600 uppercase tracking-widest border-t border-white/5 pt-8">
                     <Shield size={14} /> Protocol 442-B Secured
                 </div>
             </motion.div>

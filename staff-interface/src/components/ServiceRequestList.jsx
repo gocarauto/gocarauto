@@ -92,7 +92,7 @@ const ServiceRequestList = () => {
                     <div className="relative z-10">
                         <div className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Active Operations</div>
                         <div className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter">{requests.length}</div>
-                        <div className="text-[10px] text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider mt-1">Total Work Orders</div>
+                        <div className="text-xs text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider mt-1">Total Work Orders</div>
                     </div>
                 </div>
                 <div className="glass-card p-6 border-cyan-500/30 relative overflow-hidden group">
@@ -103,7 +103,7 @@ const ServiceRequestList = () => {
                         <div className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter">
                             {requests.filter(r => r?.status?.includes('Progress') || r?.status === 'Open').length}
                         </div>
-                        <div className="text-[10px] text-cyan-600 dark:text-cyan-400 font-bold uppercase tracking-wider mt-1">Open / In Progress</div>
+                        <div className="text-xs text-cyan-600 dark:text-cyan-400 font-bold uppercase tracking-wider mt-1">Open / In Progress</div>
                     </div>
                 </div>
                 <div className="glass-card p-6 border-blue-500/30 relative overflow-hidden group">
@@ -112,7 +112,7 @@ const ServiceRequestList = () => {
                     <div className="relative z-10">
                         <div className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Recurring Vehicles</div>
                         <div className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter">{stats.recurringVehicles}</div>
-                        <div className="text-[10px] text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider mt-1">Fleet Assets</div>
+                        <div className="text-xs text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider mt-1">Fleet Assets</div>
                     </div>
                 </div>
                 <div className="glass-card p-6 border-emerald-500/30 relative overflow-hidden group">
@@ -121,7 +121,7 @@ const ServiceRequestList = () => {
                     <div className="relative z-10">
                         <div className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Recurring Clients</div>
                         <div className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter">{stats.recurringClients}</div>
-                        <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider mt-1">Customer Accounts</div>
+                        <div className="text-xs text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider mt-1">Customer Accounts</div>
                     </div>
                 </div>
             </div>
@@ -222,11 +222,11 @@ const ServiceRequestList = () => {
                                                 <span className="font-mono font-black text-amber-500 dark:text-amber-400 text-base tracking-wider">
                                                     #{String(req.id).padStart(5, '0')}
                                                 </span>
-                                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${req.source === 'PORTAL' ? 'bg-amber-400/20 text-amber-500 dark:text-amber-400' : 'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-400'}`}>
+                                                <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${req.source === 'PORTAL' ? 'bg-amber-400/20 text-amber-500 dark:text-amber-400' : 'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-400'}`}>
                                                     {req.source === 'PORTAL' ? 'PORTAL' : 'STAFF'}
                                                 </span>
                                             </div>
-                                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-black tracking-widest uppercase border ${getStatusTheme(req.status)} inline-flex items-center gap-1.5`}>
+                                            <span className={`px-2.5 py-1 rounded-full text-xs font-black tracking-widest uppercase border ${getStatusTheme(req.status)} inline-flex items-center gap-1.5`}>
                                                 {req.status === 'Paid' && <CheckCircle2 size={11} />}
                                                 {req.status}
                                             </span>
@@ -238,7 +238,7 @@ const ServiceRequestList = () => {
                                                 <div className="text-xs text-blue-500 dark:text-blue-400 font-medium">{req.vehicle_info}</div>
                                             </div>
                                             <div className="text-right">
-                                                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold">TOTAL</div>
+                                                <div className="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold">TOTAL</div>
                                                 <div className="font-black text-slate-900 dark:text-white text-sm">
                                                     {parseFloat(req.total_amount) > 0 
                                                         ? `${parseFloat(req.total_amount).toLocaleString()} EGP` 
@@ -252,7 +252,7 @@ const ServiceRequestList = () => {
                                                 <Clock size={12} className="text-amber-500 dark:text-amber-400" />
                                                 <span>{formatDate(req.request_date || req.created_at)}</span>
                                             </div>
-                                            <span className="text-[11px] text-slate-600 dark:text-slate-300">
+                                            <span className="text-xs text-slate-600 dark:text-slate-300">
                                                 {req.assigned_to_name || 'Unassigned'}
                                             </span>
                                         </div>
@@ -296,7 +296,7 @@ const ServiceRequestList = () => {
                                                     <div className="font-mono font-black text-amber-500 dark:text-primary text-lg tracking-widest">
                                                         #{String(req.id).padStart(5, '0')}
                                                     </div>
-                                                    <div className={`text-[10px] font-bold mt-1 tracking-widest uppercase ${req.source === 'PORTAL' ? 'text-amber-500 dark:text-primary font-black drop-shadow-[0_0_5px_currentColor]' : 'text-slate-500 dark:text-slate-400'}`}>
+                                                    <div className={`text-xs font-bold mt-1 tracking-widest uppercase ${req.source === 'PORTAL' ? 'text-amber-500 dark:text-primary font-black drop-shadow-[0_0_5px_currentColor]' : 'text-slate-500 dark:text-slate-400'}`}>
                                                         {req.source === 'PORTAL' ? '✦ PORTAL' : '⚙ STAFF'}
                                                     </div>
                                                 </td>
@@ -314,7 +314,7 @@ const ServiceRequestList = () => {
                                                     <div className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-widest">{req.assigned_to_name || 'Unassigned'}</div>
                                                 </td>
                                                 <td className="px-8 py-5">
-                                                    <span className={`px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase border ${getStatusTheme(req.status)} inline-flex items-center gap-2`}>
+                                                    <span className={`px-3 py-1.5 rounded-full text-xs font-black tracking-widest uppercase border ${getStatusTheme(req.status)} inline-flex items-center gap-2`}>
                                                         {req.status === 'Paid' && <CheckCircle2 size={12} />}
                                                         {req.status}
                                                     </span>
@@ -329,15 +329,15 @@ const ServiceRequestList = () => {
                                                             <div className={`text-base font-black ${parseFloat(req.running_total) > 0 ? 'text-slate-800 dark:text-slate-200' : 'text-slate-400 dark:text-slate-500'}`}>
                                                                 {parseFloat(req.running_total) > 0 ? `${parseFloat(req.running_total).toLocaleString()} EGP` : '0 EGP'}
                                                             </div>
-                                                            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest mt-0.5">LIVE TOTAL</div>
+                                                            <div className="text-xs text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest mt-0.5">LIVE TOTAL</div>
                                                         </div>
                                                     )}
                                                 </td>
                                                 <td className="px-8 py-5 text-right">
                                                     <Link to={`/service-requests/${req.id}`}>
-                                                        <button className="h-10 px-5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200/80 dark:border-white/10 hover:border-amber-400/50 text-slate-800 dark:text-white rounded-xl font-black text-[10px] tracking-widest uppercase flex items-center justify-center gap-2 ml-auto transition-all shadow-sm">
-                                                            MANAGE
-                                                            <ChevronRight size={14} className="text-amber-500 dark:text-primary" />
+                                                        <button className="btn btn-primary btn-sm gap-1 ml-auto">
+                                                            <span>Manage</span>
+                                                            <ChevronRight size={14} />
                                                         </button>
                                                     </Link>
                                                 </td>

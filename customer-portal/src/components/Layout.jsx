@@ -255,7 +255,7 @@ const Layout = () => {
                                     aria-label="Search records"
                                     className="bg-transparent border-none outline-none text-sm w-full text-slate-900 dark:text-white placeholder:text-slate-400"
                                 />
-                                <kbd className="hidden lg:inline-block text-[10px] font-mono text-slate-400 dark:text-slate-500 bg-slate-200/60 dark:bg-white/[0.08] px-1.5 py-0.5 rounded">
+                                <kbd className="hidden lg:inline-block text-xs font-mono text-slate-400 dark:text-slate-500 bg-slate-200/60 dark:bg-white/[0.08] px-1.5 py-0.5 rounded">
                                     ⌘K
                                 </kbd>
                             </form>
@@ -366,7 +366,7 @@ const Layout = () => {
                         }`}
                     >
                         <LayoutDashboard size={20} className={location.pathname === '/' ? 'stroke-[2.4px]' : 'stroke-[1.8px]'} />
-                        <span className="text-[10px] mt-1 tracking-tight truncate max-w-[62px]">{t('dashboard') || 'Home'}</span>
+                        <span className="text-xs mt-1 tracking-tight truncate max-w-[62px]">{t('dashboard') || 'Home'}</span>
                     </Link>
 
                     {/* Vehicles */}
@@ -379,7 +379,7 @@ const Layout = () => {
                         }`}
                     >
                         <Car size={20} className={location.pathname.startsWith('/vehicles') ? 'stroke-[2.4px]' : 'stroke-[1.8px]'} />
-                        <span className="text-[10px] mt-1 tracking-tight truncate max-w-[62px]">{t('my_vehicles') || 'Fleet'}</span>
+                        <span className="text-xs mt-1 tracking-tight truncate max-w-[62px]">{t('my_vehicles') || 'Fleet'}</span>
                     </Link>
 
                     {/* Center Prominent CTA: Book Service */}
@@ -391,7 +391,7 @@ const Layout = () => {
                         <div className="w-13 h-13 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 text-slate-950 flex items-center justify-center shadow-lg shadow-amber-500/30 border-2 border-white dark:border-[#0c0d12]">
                             <Wrench size={22} strokeWidth={2.4} />
                         </div>
-                        <span className="text-[10px] font-bold text-slate-800 dark:text-slate-200 mt-1">{isAr ? 'حجز' : 'Book'}</span>
+                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-1">{isAr ? 'حجز' : 'Book'}</span>
                     </Link>
 
                     {/* History */}
@@ -404,7 +404,7 @@ const Layout = () => {
                         }`}
                     >
                         <FileText size={20} className={location.pathname.startsWith('/history') ? 'stroke-[2.4px]' : 'stroke-[1.8px]'} />
-                        <span className="text-[10px] mt-1 tracking-tight truncate max-w-[62px]">{t('service_history') || 'History'}</span>
+                        <span className="text-xs mt-1 tracking-tight truncate max-w-[62px]">{t('service_history') || 'History'}</span>
                     </Link>
 
                     {/* Menu / Drawer Toggle */}
@@ -414,7 +414,7 @@ const Layout = () => {
                         aria-label="Open full menu"
                     >
                         <Menu size={20} className="stroke-[1.8px]" />
-                        <span className="text-[10px] mt-1 tracking-tight truncate max-w-[62px]">{isAr ? 'المزيد' : 'More'}</span>
+                        <span className="text-xs mt-1 tracking-tight truncate max-w-[62px]">{isAr ? 'المزيد' : 'More'}</span>
                     </button>
                 </nav>
             </div>

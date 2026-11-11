@@ -202,7 +202,7 @@ const ServiceBooking = () => {
                     </div>
 
                     <div className="space-y-1.5">
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-amber-500 bg-amber-400/10 px-3 py-1 rounded-md">
+                        <span className="text-xs font-bold uppercase tracking-wider text-amber-500 bg-amber-400/10 px-3 py-1 rounded-md">
                             {isAr ? 'تم تأكيد طلب الحجز' : 'Intake Request Logged'}
                         </span>
                         <h2 className="text-2xl font-bold text-slate-950 dark:text-white">

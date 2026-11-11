@@ -680,21 +680,21 @@ const ServiceRemindersModule = () => {
                 <div>
                     <div className="flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                        <p className="text-[10px] font-black text-primary uppercase tracking-widest">Maintenance Dispatch Hub</p>
+                        <p className="text-xs font-black text-primary uppercase tracking-widest">Maintenance Dispatch Hub</p>
                     </div>
                     <h2 className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter uppercase mt-1">Service Reminders</h2>
                 </div>
                 <div className="flex gap-2 flex-wrap items-center">
                     <button
                         onClick={() => setShowNewReminderModal(true)}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-primary hover:bg-[#f59e0b] text-black font-black text-[11px] uppercase tracking-wider transition-all shadow-lg shadow-yellow-500/10 active:scale-95"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-primary hover:bg-[#f59e0b] text-black font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-yellow-500/10 active:scale-95"
                     >
                         <Plus size={15} strokeWidth={3} />
                         New Reminder
                     </button>
                     <button
                         onClick={() => setShowAnalytics(!showAnalytics)}
-                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 dark:text-slate-200 font-black text-[11px] uppercase tracking-widest transition-all"
+                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 dark:text-slate-200 font-black text-xs uppercase tracking-widest transition-all"
                     >
                         <BarChart3 size={14} />
                         {showAnalytics ? 'Hide Stats' : 'Show Stats'}
@@ -703,7 +703,7 @@ const ServiceRemindersModule = () => {
                     <button
                         onClick={handleSmartScan}
                         disabled={isScanning}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-black text-[11px] uppercase tracking-widest transition-all disabled:opacity-50"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-black text-xs uppercase tracking-widest transition-all disabled:opacity-50"
                         title="Auto-scan work order history to detect due oil & periodic services"
                     >
                         {isScanning ? <RefreshCw size={14} className="animate-spin" /> : <Scan size={14} />}
@@ -714,7 +714,7 @@ const ServiceRemindersModule = () => {
                     <div className="relative" ref={exportRef}>
                         <button
                             onClick={() => setShowExportMenu(v => !v)}
-                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 dark:text-slate-200 font-black text-[11px] uppercase tracking-widest transition-all"
+                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 dark:text-slate-200 font-black text-xs uppercase tracking-widest transition-all"
                         >
                             <Download size={14} />
                             Export
@@ -729,7 +729,7 @@ const ServiceRemindersModule = () => {
                                     <Globe size={15} className="text-blue-500 dark:text-blue-400" />
                                     <div>
                                         <div className="text-[12px] font-black">Interactive Ledger (HTML)</div>
-                                        <div className="text-[10px] text-slate-600 dark:text-slate-400">Shareable, styled ledger file</div>
+                                        <div className="text-xs text-slate-600 dark:text-slate-400">Shareable, styled ledger file</div>
                                     </div>
                                 </button>
                                 <div className="h-px bg-slate-100 dark:bg-white/5" />
@@ -740,7 +740,7 @@ const ServiceRemindersModule = () => {
                                     <FileText size={15} className="text-red-500 dark:text-red-400" />
                                     <div>
                                         <div className="text-[12px] font-black">PDF Document</div>
-                                        <div className="text-[10px] text-slate-600 dark:text-slate-400">Print or save as PDF report</div>
+                                        <div className="text-xs text-slate-600 dark:text-slate-400">Print or save as PDF report</div>
                                     </div>
                                 </button>
                                 <div className="h-px bg-slate-100 dark:bg-white/5" />
@@ -751,7 +751,7 @@ const ServiceRemindersModule = () => {
                                     <Sheet size={15} className="text-green-500 dark:text-green-400" />
                                     <div>
                                         <div className="text-[12px] font-black">Excel / CSV Spreadsheet</div>
-                                        <div className="text-[10px] text-slate-600 dark:text-slate-400">Raw tabular export</div>
+                                        <div className="text-xs text-slate-600 dark:text-slate-400">Raw tabular export</div>
                                     </div>
                                 </button>
                             </div>
@@ -770,11 +770,11 @@ const ServiceRemindersModule = () => {
                             className="glass-card p-5 bg-primary/5 hover:bg-primary/10 border-primary/20 cursor-pointer transition-all flex flex-col justify-between min-h-[115px] group"
                         >
                             <div className="flex justify-between items-center">
-                                <span className="text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Active Pool</span>
+                                <span className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Active Pool</span>
                                 <Bell size={14} className="text-primary group-hover:scale-110 transition-transform" />
                             </div>
                             <h3 className="text-3xl font-black text-slate-900 dark:text-white mt-1">{totalActive}</h3>
-                            <span className="text-[9px] text-slate-600 dark:text-slate-400 font-bold uppercase">Pending Reminders</span>
+                            <span className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase">Pending Reminders</span>
                         </div>
 
                         {/* Overdue Card */}
@@ -785,11 +785,11 @@ const ServiceRemindersModule = () => {
                             }`}
                         >
                             <div className="flex justify-between items-center">
-                                <span className="text-[9px] font-black uppercase tracking-widest">Critical Alert</span>
+                                <span className="text-xs font-black uppercase tracking-widest">Critical Alert</span>
                                 <AlertTriangle size={14} className="group-hover:scale-110 transition-transform" />
                             </div>
                             <h3 className="text-3xl font-black text-slate-900 dark:text-white mt-1">{overdueCount}</h3>
-                            <span className="text-[9px] font-bold uppercase">Overdue Action Needed</span>
+                            <span className="text-xs font-bold uppercase">Overdue Action Needed</span>
                         </div>
 
                         {/* Due Soon Card */}
@@ -798,11 +798,11 @@ const ServiceRemindersModule = () => {
                             className="glass-card p-5 bg-blue-500/5 hover:bg-blue-500/10 border-blue-500/20 cursor-pointer transition-all flex flex-col justify-between min-h-[115px] group"
                         >
                             <div className="flex justify-between items-center">
-                                <span className="text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Due Soon</span>
+                                <span className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Due Soon</span>
                                 <Clock size={14} className="text-blue-500 dark:text-blue-400 group-hover:scale-110 transition-transform" />
                             </div>
                             <h3 className="text-3xl font-black text-slate-900 dark:text-white mt-1">{dueSoonCount}</h3>
-                            <span className="text-[9px] text-slate-600 dark:text-slate-400 font-bold uppercase">Next 30 Days</span>
+                            <span className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase">Next 30 Days</span>
                         </div>
 
                         {/* Prospects Card */}
@@ -811,20 +811,20 @@ const ServiceRemindersModule = () => {
                             className="glass-card p-5 bg-orange-500/5 hover:bg-orange-500/10 border-orange-500/20 cursor-pointer transition-all flex flex-col justify-between min-h-[115px] group"
                         >
                             <div className="flex justify-between items-center">
-                                <span className="text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">New Leads</span>
+                                <span className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">New Leads</span>
                                 <Users size={14} className="text-orange-500 dark:text-orange-400 group-hover:scale-110 transition-transform" />
                             </div>
                             <h3 className="text-3xl font-black text-slate-900 dark:text-white mt-1">{prospectsCount}</h3>
-                            <span className="text-[9px] text-slate-600 dark:text-slate-400 font-bold uppercase">Never Serviced Oil</span>
+                            <span className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase">Never Serviced Oil</span>
                         </div>
                     </div>
 
                     {/* Service Type Breakdown Card */}
                     <div className="glass-card p-5 bg-slate-50 dark:bg-white/[0.02] border-slate-200 dark:border-white/5 flex flex-col justify-between min-h-[115px]">
-                        <span className="text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Service Distribution</span>
+                        <span className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Service Distribution</span>
                         <div className="space-y-2.5 mt-2">
                             <div>
-                                <div className="flex justify-between text-[10px] font-bold text-slate-700 dark:text-gray-300 mb-1">
+                                <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
                                     <span>Engine Oil (الموتور)</span>
                                     <span>{engineOilCount} ({engineOilPct}%)</span>
                                 </div>
@@ -833,7 +833,7 @@ const ServiceRemindersModule = () => {
                                 </div>
                             </div>
                             <div>
-                                <div className="flex justify-between text-[10px] font-bold text-slate-700 dark:text-gray-300 mb-1">
+                                <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
                                     <span>Trans Oil (الفتيس)</span>
                                     <span>{transOilCount} ({transOilPct}%)</span>
                                 </div>
@@ -857,7 +857,7 @@ const ServiceRemindersModule = () => {
                     ) : (
                         <div>
                             <p className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest mb-1">Smart Scan Synchronized ✓</p>
-                            <p className="text-[11px] text-slate-600 dark:text-gray-300">
+                            <p className="text-xs text-slate-600 dark:text-gray-300">
                                 Analyzed <strong>{scanResult.scanned}</strong> past service entries &bull; 
                                 <strong className="text-green-600 dark:text-green-400"> {scanResult.created} new</strong> reminders registered &bull; 
                                 <strong className="text-blue-600 dark:text-blue-400"> {scanResult.updated} updated</strong> &bull; 
@@ -876,7 +876,7 @@ const ServiceRemindersModule = () => {
                 <div className="flex gap-2">
                     <button
                         onClick={() => setActiveTab('active')}
-                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider border transition-all ${
+                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider border transition-all ${
                             activeTab === 'active' 
                                 ? 'bg-primary text-black border-primary shadow-lg shadow-yellow-500/10' 
                                 : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-gray-400 border-slate-200 dark:border-white/5 hover:bg-slate-200 dark:hover:bg-white/10'
@@ -886,7 +886,7 @@ const ServiceRemindersModule = () => {
                     </button>
                     <button
                         onClick={() => setActiveTab('sent')}
-                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider border transition-all ${
+                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider border transition-all ${
                             activeTab === 'sent' 
                                 ? 'bg-blue-600 dark:bg-blue-500 text-white dark:text-black border-blue-600 dark:border-blue-500' 
                                 : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-gray-400 border-slate-200 dark:border-white/5 hover:bg-slate-200 dark:hover:bg-white/10'
@@ -896,7 +896,7 @@ const ServiceRemindersModule = () => {
                     </button>
                     <button
                         onClick={() => setActiveTab('prospects')}
-                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider border transition-all ${
+                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider border transition-all ${
                             activeTab === 'prospects' 
                                 ? 'bg-orange-500 text-black border-orange-500' 
                                 : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-gray-400 border-slate-200 dark:border-white/5 hover:bg-slate-200 dark:hover:bg-white/10'
@@ -925,25 +925,25 @@ const ServiceRemindersModule = () => {
                     <div className="lg:col-span-6 flex gap-2 flex-wrap">
                         <button 
                             onClick={() => setTimeFilter('all')}
-                            className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all ${timeFilter === 'all' ? 'bg-slate-900 text-white border-slate-900 dark:bg-white/15 dark:text-white dark:border-white/20' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/5 dark:hover:bg-white/10'}`}
+                            className={`px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all ${timeFilter === 'all' ? 'bg-slate-900 text-white border-slate-900 dark:bg-white/15 dark:text-white dark:border-white/20' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/5 dark:hover:bg-white/10'}`}
                         >
                             All ({reminders.length})
                         </button>
                         <button 
                             onClick={() => setTimeFilter('overdue')}
-                            className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all ${timeFilter === 'overdue' ? 'bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30 font-black' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/5 dark:hover:bg-white/10'}`}
+                            className={`px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all ${timeFilter === 'overdue' ? 'bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30 font-black' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/5 dark:hover:bg-white/10'}`}
                         >
                             Overdue ({overdueCount})
                         </button>
                         <button 
                             onClick={() => setTimeFilter('due_7d')}
-                            className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all ${timeFilter === 'due_7d' ? 'bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30 font-black' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/5 dark:hover:bg-white/10'}`}
+                            className={`px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all ${timeFilter === 'due_7d' ? 'bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30 font-black' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/5 dark:hover:bg-white/10'}`}
                         >
                             Next 7 Days
                         </button>
                         <button 
                             onClick={() => setTimeFilter('due_30d')}
-                            className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all ${timeFilter === 'due_30d' ? 'bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30 font-black' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/5 dark:hover:bg-white/10'}`}
+                            className={`px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all ${timeFilter === 'due_30d' ? 'bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30 font-black' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/5 dark:hover:bg-white/10'}`}
                         >
                             Next 30 Days
                         </button>
@@ -952,7 +952,7 @@ const ServiceRemindersModule = () => {
                         <select 
                             value={typeFilter} 
                             onChange={e => setTypeFilter(e.target.value)}
-                            className="bg-white dark:bg-white/5 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-gray-300 rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-wider outline-none ml-auto"
+                            className="bg-white dark:bg-white/5 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-gray-300 rounded-xl px-3 py-1.5 text-xs font-black uppercase tracking-wider outline-none ml-auto"
                         >
                             <option value="all">All Services</option>
                             <option value="engine_oil">Engine Oil (الموتور)</option>
@@ -974,19 +974,19 @@ const ServiceRemindersModule = () => {
                         <div className="flex items-center gap-2 w-full sm:w-auto">
                             <button 
                                 onClick={handleStartBulkWhatsApp}
-                                className="flex-1 sm:flex-initial btn-primary py-2 px-5 text-[10px] bg-green-500 text-black border-none flex items-center justify-center gap-2 hover:bg-green-400 font-black"
+                                className="flex-1 sm:flex-initial btn-primary py-2 px-5 text-xs bg-green-500 text-black border-none flex items-center justify-center gap-2 hover:bg-green-400 font-black"
                             >
                                 <MessageCircle size={14} /> Bulk WhatsApp Queue
                             </button>
                             <button 
                                 onClick={handleBulkMarkSent}
-                                className="flex-1 sm:flex-initial btn-secondary py-2 px-5 text-[10px] flex items-center justify-center gap-2 font-black"
+                                className="flex-1 sm:flex-initial btn-secondary py-2 px-5 text-xs flex items-center justify-center gap-2 font-black"
                             >
                                 <CheckCircle2 size={14} /> Mark As Sent
                             </button>
                             <button 
                                 onClick={handleBulkDelete}
-                                className="flex-1 sm:flex-initial bg-red-500/10 hover:bg-red-500 hover:text-black border border-red-500/20 text-red-500 py-2 px-5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+                                className="flex-1 sm:flex-initial bg-red-500/10 hover:bg-red-500 hover:text-black border border-red-500/20 text-red-500 py-2 px-5 rounded-xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2"
                             >
                                 <Trash2 size={14} /> Delete
                             </button>
@@ -1003,7 +1003,7 @@ const ServiceRemindersModule = () => {
                     ) : filteredActiveReminders.length === 0 ? (
                         <div className="p-16 text-center border border-dashed border-slate-200 dark:border-white/5 rounded-2xl">
                             <p className="text-xs text-slate-600 dark:text-gray-400 font-bold uppercase tracking-widest">No matching reminders found.</p>
-                            <p className="text-[11px] text-slate-500 dark:text-gray-600 mt-1">Try resetting filters or run a Smart Scan to auto-detect due services.</p>
+                            <p className="text-xs text-slate-500 dark:text-gray-600 mt-1">Try resetting filters or run a Smart Scan to auto-detect due services.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
@@ -1018,11 +1018,11 @@ const ServiceRemindersModule = () => {
                                                 onChange={handleSelectAll}
                                             />
                                         </th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Client / Contact</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Vehicle</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Service Task</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Due Target</th>
-                                        <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Quick Actions</th>
+                                        <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Client / Contact</th>
+                                        <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Vehicle</th>
+                                        <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Service Task</th>
+                                        <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Due Target</th>
+                                        <th className="px-6 py-4 text-right text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Quick Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100 dark:divide-white/5">
@@ -1046,7 +1046,7 @@ const ServiceRemindersModule = () => {
                                                     <div className="flex items-center gap-2 mt-0.5">
                                                         <a 
                                                             href={`tel:${rem.client_phone}`} 
-                                                            className="text-[11px] text-slate-600 dark:text-slate-400 hover:text-primary font-mono tracking-wider flex items-center gap-1 font-bold"
+                                                            className="text-xs text-slate-600 dark:text-slate-400 hover:text-primary font-mono tracking-wider flex items-center gap-1 font-bold"
                                                             title="Click to dial"
                                                         >
                                                             <Phone size={10} />
@@ -1056,7 +1056,7 @@ const ServiceRemindersModule = () => {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="font-bold text-slate-800 dark:text-gray-200">{rem.make} {rem.model}</div>
-                                                    <div className="text-[10px] text-slate-600 dark:text-slate-400 font-mono tracking-wider mt-0.5 bg-slate-100 dark:bg-white/5 inline-block px-1.5 py-0.5 rounded border border-slate-200 dark:border-white/5 font-semibold">
+                                                    <div className="text-xs text-slate-600 dark:text-slate-400 font-mono tracking-wider mt-0.5 bg-slate-100 dark:bg-white/5 inline-block px-1.5 py-0.5 rounded border border-slate-200 dark:border-white/5 font-semibold">
                                                         {rem.license_plate || 'No Plate'}
                                                     </div>
                                                 </td>
@@ -1066,7 +1066,7 @@ const ServiceRemindersModule = () => {
                                                         <span>{serviceAr}</span>
                                                     </div>
                                                     {rem.notes && (
-                                                        <div className="text-[10px] text-slate-600 dark:text-slate-400 truncate mt-1 font-medium" title={rem.notes}>
+                                                        <div className="text-xs text-slate-600 dark:text-slate-400 truncate mt-1 font-medium" title={rem.notes}>
                                                             {rem.notes}
                                                         </div>
                                                     )}
@@ -1081,14 +1081,14 @@ const ServiceRemindersModule = () => {
                                                                 className="input-glass text-xs p-1.5 text-slate-900 dark:text-white bg-white dark:bg-black/60 border-primary/30 rounded"
                                                             />
                                                             <div className="flex gap-1.5">
-                                                                <button onClick={() => handleSaveManualDate(rem)} className="text-[10px] font-bold bg-green-500/20 text-green-600 dark:text-green-400 px-2 py-0.5 rounded hover:bg-green-500/40">Save</button>
-                                                                <button onClick={() => setEditingId(null)} className="text-[10px] font-bold bg-red-500/20 text-red-600 dark:text-red-400 px-2 py-0.5 rounded hover:bg-red-500/40">Cancel</button>
+                                                                <button onClick={() => handleSaveManualDate(rem)} className="text-xs font-bold bg-green-500/20 text-green-600 dark:text-green-400 px-2 py-0.5 rounded hover:bg-green-500/40">Save</button>
+                                                                <button onClick={() => setEditingId(null)} className="text-xs font-bold bg-red-500/20 text-red-600 dark:text-red-400 px-2 py-0.5 rounded hover:bg-red-500/40">Cancel</button>
                                                             </div>
                                                         </div>
                                                     ) : (
                                                         <div>
                                                             <div 
-                                                                className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider cursor-pointer hover:opacity-80 transition-all ${
+                                                                className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider cursor-pointer hover:opacity-80 transition-all ${
                                                                     isOverdue ? 'bg-red-500/10 text-red-500 dark:text-red-400 border border-red-500/20' : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
                                                                 }`}
                                                                 onClick={() => { setEditingId(rem.id); setEditDate(rem.due_date ? rem.due_date.split('T')[0] : ''); }}
@@ -1100,24 +1100,24 @@ const ServiceRemindersModule = () => {
 
                                                             {/* Quick Reschedule Extension Chips */}
                                                             <div className="flex items-center gap-1 mt-1 opacity-75 hover:opacity-100 transition-opacity">
-                                                                <span className="text-[9px] text-slate-600 dark:text-slate-400 font-bold">Postpone:</span>
+                                                                <span className="text-xs text-slate-600 dark:text-slate-400 font-bold">Postpone:</span>
                                                                 <button 
                                                                     onClick={() => handleQuickReschedule(rem, 7)}
-                                                                    className="text-[9px] bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white px-1.5 py-0.5 rounded font-bold"
+                                                                    className="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white px-1.5 py-0.5 rounded font-bold"
                                                                     title="Add 7 Days"
                                                                 >
                                                                     +7d
                                                                 </button>
                                                                 <button 
                                                                     onClick={() => handleQuickReschedule(rem, 30)}
-                                                                    className="text-[9px] bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white px-1.5 py-0.5 rounded font-bold"
+                                                                    className="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white px-1.5 py-0.5 rounded font-bold"
                                                                     title="Add 1 Month"
                                                                 >
                                                                     +1m
                                                                 </button>
                                                                 <button 
                                                                     onClick={() => handleQuickReschedule(rem, 90)}
-                                                                    className="text-[9px] bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white px-1.5 py-0.5 rounded font-bold"
+                                                                    className="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white px-1.5 py-0.5 rounded font-bold"
                                                                     title="Add 3 Months"
                                                                 >
                                                                     +3m
@@ -1184,26 +1184,26 @@ const ServiceRemindersModule = () => {
                             <History size={16} className="text-blue-500 dark:text-blue-400" />
                             <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Contacted & Dispatched Reminders Ledger</span>
                         </div>
-                        <span className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase">{sentReminders.length} Records</span>
+                        <span className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase">{sentReminders.length} Records</span>
                     </div>
 
                     {filteredSentReminders.length === 0 ? (
                         <div className="p-16 text-center">
                             <History size={32} className="mx-auto text-slate-400 dark:text-slate-500 mb-2" />
                             <p className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">No sent reminders recorded yet.</p>
-                            <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">Dispatched WhatsApp messages will appear here for audit and follow-up.</p>
+                            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Dispatched WhatsApp messages will appear here for audit and follow-up.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead>
                                     <tr className="border-b border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02]">
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Client / Contact</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Vehicle</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Service Task</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Original Due</th>
-                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Status</th>
-                                        <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Action</th>
+                                        <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Client / Contact</th>
+                                        <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Vehicle</th>
+                                        <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Service Task</th>
+                                        <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Original Due</th>
+                                        <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Status</th>
+                                        <th className="px-6 py-4 text-right text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100 dark:divide-white/5">
@@ -1211,11 +1211,11 @@ const ServiceRemindersModule = () => {
                                         <tr key={r.id} className="hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors">
                                             <td className="px-6 py-4">
                                                 <div className="font-black text-slate-900 dark:text-white uppercase">{r.client_name}</div>
-                                                <div className="text-[11px] text-slate-600 dark:text-slate-400 font-mono font-medium">{r.client_phone}</div>
+                                                <div className="text-xs text-slate-600 dark:text-slate-400 font-mono font-medium">{r.client_phone}</div>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="font-bold text-slate-800 dark:text-gray-300">{r.make} {r.model}</div>
-                                                <div className="text-[10px] text-slate-600 dark:text-slate-400 font-mono font-medium">{r.license_plate || '—'}</div>
+                                                <div className="text-xs text-slate-600 dark:text-slate-400 font-mono font-medium">{r.license_plate || '—'}</div>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="font-black text-primary text-xs">{normalizeServiceType(r.service_type)}</div>
@@ -1224,7 +1224,7 @@ const ServiceRemindersModule = () => {
                                                 {formatDate(r.due_date)}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 uppercase tracking-widest">
+                                                <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 uppercase tracking-widest">
                                                     Sent / Contacted
                                                 </span>
                                             </td>
@@ -1232,14 +1232,14 @@ const ServiceRemindersModule = () => {
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button 
                                                         onClick={() => handleReactivateReminder(r.id)}
-                                                        className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300 text-[10px] font-bold rounded-xl border border-slate-200 dark:border-white/10 uppercase tracking-wider"
+                                                        className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300 text-xs font-bold rounded-xl border border-slate-200 dark:border-white/10 uppercase tracking-wider"
                                                         title="Re-open into active pool"
                                                     >
                                                         Re-activate
                                                     </button>
                                                     <button 
                                                         onClick={() => handleConvertToWorkOrder(r)}
-                                                        className="px-3 py-1.5 bg-primary/10 hover:bg-primary hover:text-black text-primary text-[10px] font-bold rounded-xl border border-primary/20 uppercase tracking-wider"
+                                                        className="px-3 py-1.5 bg-primary/10 hover:bg-primary hover:text-black text-primary text-xs font-bold rounded-xl border border-primary/20 uppercase tracking-wider"
                                                         title="Create Work Order"
                                                     >
                                                         Book Intake
@@ -1261,27 +1261,27 @@ const ServiceRemindersModule = () => {
                     <div className="p-4 border-b border-slate-200 dark:border-white/5 flex items-center justify-between">
                         <div>
                             <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Registered Vehicles with No Oil Service History</span>
-                            <p className="text-[11px] text-slate-500 dark:text-gray-400 mt-0.5">Vehicles registered over 60 days ago that have never undergone engine or transmission oil change at GoCar Auto.</p>
+                            <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">Vehicles registered over 60 days ago that have never undergone engine or transmission oil change at GoCar Auto.</p>
                         </div>
-                        <span className="text-[10px] text-orange-600 dark:text-orange-400 font-bold uppercase">{prospects.length} Prospect Leads</span>
+                        <span className="text-xs text-orange-600 dark:text-orange-400 font-bold uppercase">{prospects.length} Prospect Leads</span>
                     </div>
 
                     {prospects.length === 0 ? (
                         <div className="p-16 text-center">
                             <Users size={32} className="mx-auto text-slate-400 dark:text-slate-500 mb-3" />
                             <p className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">No unserviced prospect vehicles found.</p>
-                            <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">Click "Smart Scan" in the header to evaluate all vehicle profiles.</p>
+                            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Click "Smart Scan" in the header to evaluate all vehicle profiles.</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead>
                                     <tr className="border-b border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02]">
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Customer</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Vehicle Asset</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Direct Contact</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Registration Age</th>
-                                        <th className="px-6 py-4 text-right text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Lead Actions</th>
+                                        <th className="px-6 py-4 text-left text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Customer</th>
+                                        <th className="px-6 py-4 text-left text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Vehicle Asset</th>
+                                        <th className="px-6 py-4 text-left text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Direct Contact</th>
+                                        <th className="px-6 py-4 text-left text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Registration Age</th>
+                                        <th className="px-6 py-4 text-right text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Lead Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100 dark:divide-white/5">
@@ -1301,7 +1301,7 @@ const ServiceRemindersModule = () => {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="font-bold text-slate-800 dark:text-gray-200">{p.make} {p.model}</div>
-                                                    <div className="text-[10px] text-slate-600 dark:text-slate-400 font-mono font-medium">{p.license_plate || 'No Plate'}</div>
+                                                    <div className="text-xs text-slate-600 dark:text-slate-400 font-mono font-medium">{p.license_plate || 'No Plate'}</div>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <a 
@@ -1313,7 +1313,7 @@ const ServiceRemindersModule = () => {
                                                     </a>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+                                                    <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
                                                         {Math.round(p.days_since_registered)} Days Ago
                                                     </span>
                                                 </td>
@@ -1321,7 +1321,7 @@ const ServiceRemindersModule = () => {
                                                     <div className="flex items-center justify-end gap-2">
                                                         <button
                                                             onClick={() => handleSingleWhatsAppClick(mockReminder, 'prospect')}
-                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 hover:bg-green-500 hover:text-black border border-green-500/20 text-green-600 dark:text-green-400 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all"
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 hover:bg-green-500 hover:text-black border border-green-500/20 text-green-600 dark:text-green-400 rounded-xl text-xs font-black uppercase tracking-wider transition-all"
                                                         >
                                                             <MessageCircle size={12} /> WhatsApp Offer
                                                         </button>
@@ -1338,7 +1338,7 @@ const ServiceRemindersModule = () => {
                                                                 });
                                                                 setShowNewReminderModal(true);
                                                             }}
-                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary hover:text-black border border-primary/20 text-primary rounded-xl text-[10px] font-black uppercase tracking-wider transition-all"
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary hover:text-black border border-primary/20 text-primary rounded-xl text-xs font-black uppercase tracking-wider transition-all"
                                                         >
                                                             <Plus size={12} /> Create Reminder
                                                         </button>
@@ -1379,7 +1379,7 @@ const ServiceRemindersModule = () => {
 
                         <form onSubmit={handleCreateNewReminder} className="space-y-4">
                             <div>
-                                <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Select Client</label>
+                                <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Select Client</label>
                                 <select 
                                     className="input-glass text-xs w-full bg-slate-50 dark:bg-black/40 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white"
                                     value={newReminderForm.clientId}
@@ -1396,7 +1396,7 @@ const ServiceRemindersModule = () => {
                             </div>
 
                             <div>
-                                <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Select Vehicle Asset</label>
+                                <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Select Vehicle Asset</label>
                                 <select 
                                     className="input-glass text-xs w-full bg-slate-50 dark:bg-black/40 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white"
                                     value={newReminderForm.vehicleId}
@@ -1417,7 +1417,7 @@ const ServiceRemindersModule = () => {
 
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Service Task</label>
+                                    <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Service Task</label>
                                     <select 
                                         className="input-glass text-xs w-full bg-slate-50 dark:bg-black/40 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white"
                                         value={newReminderForm.serviceType}
@@ -1431,7 +1431,7 @@ const ServiceRemindersModule = () => {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Due Date</label>
+                                    <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Due Date</label>
                                     <input 
                                         type="date" 
                                         className="input-glass text-xs w-full bg-slate-50 dark:bg-black/40 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white"
@@ -1444,7 +1444,7 @@ const ServiceRemindersModule = () => {
 
                             {/* Preset Due Chips */}
                             <div className="flex items-center gap-1.5 pt-1">
-                                <span className="text-[9px] text-slate-600 dark:text-slate-400 font-bold uppercase">Quick Set:</span>
+                                <span className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase">Quick Set:</span>
                                 {[
                                     { label: '+1 Month', months: 1 },
                                     { label: '+3 Months', months: 3 },
@@ -1459,7 +1459,7 @@ const ServiceRemindersModule = () => {
                                             d.setMonth(d.getMonth() + p.months);
                                             setNewReminderForm(prev => ({ ...prev, dueDate: d.toISOString().split('T')[0] }));
                                         }}
-                                        className="text-[9px] font-bold px-2 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300 rounded border border-slate-200 dark:border-white/5"
+                                        className="text-xs font-bold px-2 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300 rounded border border-slate-200 dark:border-white/5"
                                     >
                                         {p.label}
                                     </button>
@@ -1467,7 +1467,7 @@ const ServiceRemindersModule = () => {
                             </div>
 
                             <div>
-                                <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Internal Notes</label>
+                                <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">Internal Notes</label>
                                 <input 
                                     type="text" 
                                     placeholder="e.g. Total 5W-40, check filter replacement"
@@ -1523,7 +1523,7 @@ const ServiceRemindersModule = () => {
                         <div className="flex gap-1.5 mb-4 bg-slate-100 dark:bg-white/5 p-1 rounded-xl">
                             <button
                                 onClick={() => handleSwitchTemplateType('standard')}
-                                className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${
+                                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${
                                     activeTemplateType === 'standard' ? 'bg-green-500 text-black' : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                                 }`}
                             >
@@ -1531,7 +1531,7 @@ const ServiceRemindersModule = () => {
                             </button>
                             <button
                                 onClick={() => handleSwitchTemplateType('urgent')}
-                                className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${
+                                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${
                                     activeTemplateType === 'urgent' ? 'bg-red-500 text-white' : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                                 }`}
                             >
@@ -1539,7 +1539,7 @@ const ServiceRemindersModule = () => {
                             </button>
                             <button
                                 onClick={() => handleSwitchTemplateType('promo')}
-                                className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${
+                                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${
                                     activeTemplateType === 'promo' ? 'bg-primary text-black' : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                                 }`}
                             >
@@ -1550,7 +1550,7 @@ const ServiceRemindersModule = () => {
                         {/* WhatsApp Message Preview Bubble */}
                         <div className="space-y-3">
                             <div className="p-4 rounded-2xl bg-slate-900 dark:bg-[#0b141a] border border-slate-700 dark:border-[#202c33] text-right" dir="rtl">
-                                <div className="text-[11px] text-slate-400 dark:text-gray-400 mb-1 font-mono text-left" dir="ltr">
+                                <div className="text-xs text-slate-400 dark:text-gray-400 mb-1 font-mono text-left" dir="ltr">
                                     To: +{getCleanWhatsAppPhone(activeTemplateReminder.client_phone)}
                                 </div>
                                 <textarea 
@@ -1558,7 +1558,7 @@ const ServiceRemindersModule = () => {
                                     value={customMessage}
                                     onChange={e => setCustomMessage(e.target.value)}
                                 />
-                                <div className="flex items-center justify-between pt-2 border-t border-white/5 text-[10px] text-gray-400">
+                                <div className="flex items-center justify-between pt-2 border-t border-white/5 text-xs text-gray-400">
                                     <button 
                                         type="button" 
                                         onClick={handleCopyMessage}
@@ -1598,7 +1598,7 @@ const ServiceRemindersModule = () => {
                             <h3 className="text-xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tighter text-green-600 dark:text-green-400">
                                 Bulk WhatsApp Dispatch
                             </h3>
-                            <span className="px-3 py-1 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full text-[10px] font-black text-slate-700 dark:text-gray-300">
+                            <span className="px-3 py-1 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full text-xs font-black text-slate-700 dark:text-gray-300">
                                 {currentQueueIndex + 1} OF {bulkQueue.length}
                             </span>
                         </div>
@@ -1612,7 +1612,7 @@ const ServiceRemindersModule = () => {
                         </div>
 
                         <div className="p-4 bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 rounded-xl mb-4">
-                            <div className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-1">Current Target</div>
+                            <div className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-1">Current Target</div>
                             <div className="text-sm font-black text-slate-900 dark:text-white">{bulkQueue[currentQueueIndex].reminder.client_name}</div>
                             <div className="text-xs text-green-600 dark:text-green-400 font-mono mt-0.5">
                                 +{getCleanWhatsAppPhone(bulkQueue[currentQueueIndex].reminder.client_phone)} &bull; {bulkQueue[currentQueueIndex].reminder.make} {bulkQueue[currentQueueIndex].reminder.model}
@@ -1620,7 +1620,7 @@ const ServiceRemindersModule = () => {
                         </div>
 
                         <div className="space-y-2 mb-6">
-                            <label className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest">Message Payload</label>
+                            <label className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest">Message Payload</label>
                             <textarea 
                                 className="input-glass text-xs p-4 min-h-[140px] bg-slate-50 dark:bg-black/40 text-slate-900 dark:text-white text-right leading-relaxed border-slate-300 dark:border-white/10" 
                                 dir="rtl"

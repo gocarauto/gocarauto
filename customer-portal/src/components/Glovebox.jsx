@@ -234,7 +234,7 @@ const Glovebox = () => {
                                     <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0">
                                         {isPdf ? <FileText size={20} className="text-amber-500" /> : <ImageIcon size={20} className="text-sky-500" />}
                                     </div>
-                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${badge.cls}`}>
+                                    <span className={`text-xs font-bold px-2 py-0.5 rounded-md border ${badge.cls}`}>
                                         {badge.label}
                                     </span>
                                 </div>
@@ -243,7 +243,7 @@ const Glovebox = () => {
                                     <h3 className="text-sm font-bold text-slate-950 dark:text-white truncate" title={doc.title}>
                                         {doc.title}
                                     </h3>
-                                    <p className="text-[11px] text-slate-400 mt-0.5">
+                                    <p className="text-xs text-slate-400 mt-0.5">
                                         {formatDate(doc.uploaded_at)}
                                     </p>
                                 </div>
@@ -387,7 +387,7 @@ const Glovebox = () => {
                                         </span>
                                     </div>
                                     {selectedFile && (
-                                        <span className="text-[10px] text-slate-400 shrink-0 font-mono">
+                                        <span className="text-xs text-slate-400 shrink-0 font-mono">
                                             {(selectedFile.size / 1024 / 1024).toFixed(1)} MB
                                         </span>
                                     )}
@@ -473,7 +473,7 @@ const Glovebox = () => {
                             <span className="font-bold text-slate-900 dark:text-white block truncate">
                                 {docToDelete.title}
                             </span>
-                            <span className="text-[11px] text-slate-400 font-mono block">
+                            <span className="text-xs text-slate-400 font-mono block">
                                 {docToDelete.document_type || 'Document'} • {formatDate(docToDelete.created_at, lang)}
                             </span>
                         </div>

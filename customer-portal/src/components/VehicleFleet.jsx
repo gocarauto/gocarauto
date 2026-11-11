@@ -143,7 +143,7 @@ const VehicleFleet = () => {
                         />
                     </div>
                     <div className="bg-white dark:bg-[#0c0d12] px-4 py-2 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs text-center shrink-0">
-                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block leading-none">{isAr ? 'العدد' : 'Cars'}</span>
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block leading-none">{isAr ? 'العدد' : 'Cars'}</span>
                         <span className="text-base font-bold text-slate-950 dark:text-white tabular-nums leading-tight mt-0.5 block">{vehicles.length}</span>
                     </div>
                 </div>
@@ -296,7 +296,7 @@ const VehicleFleet = () => {
                                         <div className="grid grid-cols-2 gap-2.5">
                                             {/* Engine Oil Life */}
                                             <div className="bg-slate-50/80 dark:bg-white/[0.03] p-3 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] flex flex-col justify-between">
-                                                <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block font-sans truncate">
+                                                <span className="text-xs sm:text-xs font-bold text-slate-500 uppercase tracking-wider block font-sans truncate">
                                                     {isAr ? 'زيت المحرك' : 'ENGINE OIL'}
                                                 </span>
                                                 <div className="flex items-center gap-1.5 my-1.5">
@@ -314,7 +314,7 @@ const VehicleFleet = () => {
 
                                             {/* Transmission Oil Life */}
                                             <div className="bg-slate-50/80 dark:bg-white/[0.03] p-3 rounded-2xl border border-slate-200/80 dark:border-white/[0.06] flex flex-col justify-between">
-                                                <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block font-sans truncate">
+                                                <span className="text-xs sm:text-xs font-bold text-slate-500 uppercase tracking-wider block font-sans truncate">
                                                     {isAr ? 'ناقل الحركة' : 'TRANS OIL'}
                                                 </span>
                                                 <div className="flex items-center gap-1.5 my-1.5">

@@ -310,7 +310,7 @@ const Layout = () => {
                         }`}
                     >
                         <LayoutDashboard size={20} className={location.pathname === '/' ? 'stroke-[2.4px]' : 'stroke-[1.8px]'} />
-                        <span className="text-[10px] mt-1 tracking-tight truncate max-w-[62px]">Deck</span>
+                        <span className="text-xs mt-1 tracking-tight truncate max-w-[62px]">Deck</span>
                     </Link>
 
                     {/* Service Ops */}
@@ -323,7 +323,7 @@ const Layout = () => {
                         }`}
                     >
                         <Wrench size={20} className={location.pathname.startsWith('/service-requests') ? 'stroke-[2.4px]' : 'stroke-[1.8px]'} />
-                        <span className="text-[10px] mt-1 tracking-tight truncate max-w-[62px]">Orders</span>
+                        <span className="text-xs mt-1 tracking-tight truncate max-w-[62px]">Orders</span>
                     </Link>
 
                     {/* Center Intake CTA */}
@@ -335,7 +335,7 @@ const Layout = () => {
                         <div className="w-13 h-13 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 text-slate-950 flex items-center justify-center shadow-lg shadow-amber-500/30 border-2 border-white dark:border-[#070709]">
                             <Plus size={22} strokeWidth={2.6} />
                         </div>
-                        <span className="text-[10px] font-bold text-amber-500 dark:text-amber-400 mt-1">Intake</span>
+                        <span className="text-xs font-bold text-amber-500 dark:text-amber-400 mt-1">Intake</span>
                     </Link>
 
                     {/* Vehicles */}
@@ -348,7 +348,7 @@ const Layout = () => {
                         }`}
                     >
                         <Car size={20} className={location.pathname.startsWith('/vehicles') ? 'stroke-[2.4px]' : 'stroke-[1.8px]'} />
-                        <span className="text-[10px] mt-1 tracking-tight truncate max-w-[62px]">Fleet</span>
+                        <span className="text-xs mt-1 tracking-tight truncate max-w-[62px]">Fleet</span>
                     </Link>
 
                     {/* Clients */}
@@ -361,7 +361,7 @@ const Layout = () => {
                         }`}
                     >
                         <Users size={20} className={location.pathname.startsWith('/customers') ? 'stroke-[2.4px]' : 'stroke-[1.8px]'} />
-                        <span className="text-[10px] mt-1 tracking-tight truncate max-w-[62px]">Clients</span>
+                        <span className="text-xs mt-1 tracking-tight truncate max-w-[62px]">Clients</span>
                     </Link>
                 </nav>
             </div>
