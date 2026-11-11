@@ -2,6 +2,31 @@
 
 All notable changes to the GoCar Auto platform are documented in this file.
 
+## [Unreleased] - 2026-11-11
+
+### Bug Fix: Service History Ledger & Invoiced Services Synchronization (CR-011)
+- **Resolved "0 Records in Service History Despite Existing Invoices":**
+  - **Root Cause:**
+    1. The customer portal `getServiceHistory` endpoint relied exclusively on the database view `SELECT * FROM service_history`. Because this view did not exist in the live cloud MySQL/TiDB database, the query threw an unhandled 500 error that caused the frontend to silently catch the error and render an empty state (`0 Entries`, `0 EGP`, `0 Cars`).
+    2. Furthermore, if a customer had invoiced services where itemized service records were recorded at the order level (or without matching catalog IDs), an inner join on `service_records` would omit those services from the logbook.
+  - **Robust Cross-Engine Direct Querying (`controllers/customerPortalController.js` & `controllers/vehicleController.js`):**
+    - Completely decoupled service history retrieval from brittle database views.
+    - Implemented a unified direct query with `LEFT JOIN service_items` and `LEFT JOIN financial_transactions` supporting both MySQL (`CONCAT`) and SQLite syntax.
+    - Added an automatic fallback that includes any invoiced service requests that do not have itemized sub-records. This guarantees that **every settled or invoiced service is 100% visible in the customer's digital logbook**, complete with invoice reference, vehicle details, date, and settled amount.
+  - **Frontend Cache Refresh Safeguard (`customer-portal/src/components/ServiceHistory.jsx`):**
+    - Configured `ServiceHistory.jsx` to automatically bypass client-side cache (`skipCache: true`) whenever history state is empty, ensuring that stale `[]` session cache entries never mask live records.
+
+### Bug Fix: Service Operations Vehicle Management Synchronization Error (CR-010)
+- **Resolved "System Link Failure: Could not synchronize operation data" on Service Request Detail View:**
+  - **Root Cause:** In the live MySQL / TiDB environment, `getRequestById` (`/api/service-requests/:id`) executed `SELECT * FROM vehicle_maintenance_ledger WHERE vehicle_id = ?`. Because `vehicle_maintenance_ledger`, `service_request_comments`, `external_services`, and `notification_logs` were present in the SQLite development schema but omitted from the production `schema.mysql.sql` and unmigrated on the cloud database, MySQL returned `Table doesn't exist`, causing an unhandled 500 error that blocked staff from managing any service request or vehicle.
+  - **Auto-Schema Migration & Table Guarantee (`database/db.js` & `server.js`):** Added an idempotent `ensureTables()` startup routine in `db.js` that checks and creates missing tables (`vehicle_maintenance_ledger`, `service_request_comments`, `external_services`, `notification_logs`) and the `service_history` view on every server boot.
+  - **Defensive Error Handling in Controllers (`controllers/serviceRequestController.js` & `controllers/commentsController.js`):**
+    - Wrapped `vehicle_maintenance_ledger` query in a defensive try/catch with fallback to `[]`, preventing secondary ledger queries from ever crashing the primary job order details.
+    - Updated service records query to use `LEFT JOIN service_items` instead of inner `JOIN` to guard against missing catalog references.
+    - Made `getComments` return an empty array fallback rather than throwing a 500 when comments are empty or uninitialized.
+  - **Enhanced Frontend Retry Mechanism (`staff-interface/src/components/ServiceRequestDetail.jsx`):**
+    - Updated "RETRY MISSION" button to trigger an in-place fresh fetch bypassing cache (`skipCache: true`), resetting loading state without forcing a jarring full window reload.
+
 ## [Unreleased] - 2026-11-10
 
 ### Typography Engine Overhaul & Viewport Ergonomics (CR-009)

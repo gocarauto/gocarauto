@@ -87,19 +87,32 @@ const ServiceRequestDetail = () => {
         }
     };
 
-    const fetchRequestDetails = async () => {
+    const fetchRequestDetails = async (options = {}) => {
         try {
-            const response = await api.get(`/service-requests/${id}`);
-            const requestData = response.data.data;
+            const response = await api.get(`/service-requests/${id}`, options);
+            const requestData = response.data?.data;
+            if (!requestData) {
+                throw new Error('Mission data not found');
+            }
             setRequest(requestData);
             setAssignedTo(requestData.assigned_to_name || requestData.assigned_to || '');
             setRecords(requestData.records || []);
+            setError('');
         } catch (error) {
             console.error('Error fetching request details:', error);
             setError('System Link Failure: Could not synchronize operation data.');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleRetry = () => {
+        setError('');
+        setLoading(true);
+        fetchRequestDetails({ skipCache: true });
+        fetchServiceItems();
+        fetchUsers();
+        fetchComments();
     };
 
     const fetchServiceItems = async () => {
@@ -403,7 +416,7 @@ const ServiceRequestDetail = () => {
              <div className="bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-500 p-8 rounded-3xl text-sm font-bold flex flex-col items-center gap-4 uppercase tracking-widest max-w-lg mx-auto">
                 <AlertCircle size={40} />
                 {error}
-                <button onClick={() => window.location.reload()} className="btn-secondary mt-4">RETRY MISSION</button>
+                <button onClick={handleRetry} className="btn-secondary mt-4">RETRY MISSION</button>
             </div>
         </div>
     );

@@ -47,15 +47,114 @@ const customerPortalController = {
 
     /**
      * Retrieve the comprehensive service history for the customer's fleet.
+     * Combines itemized service records with invoiced service requests to ensure
+     * a complete digital ledger is always returned even if raw item records are missing.
      */
     getServiceHistory: async (req, res) => {
         try {
             const customerId = req.user.id;
-            const history = await database.query(
-                'SELECT * FROM service_history WHERE client_id = ? ORDER BY service_date DESC',
-                [customerId]
-            );
-            res.json({ success: true, data: history });
+            const isMySQL = process.env.DB_TYPE === 'mysql';
+            const vehicleConcat = isMySQL
+                ? "CONCAT(COALESCE(v.make, ''), ' ', COALESCE(v.model, ''), ' (', COALESCE(v.year, ''), ')')"
+                : "(COALESCE(v.make, '') || ' ' || COALESCE(v.model, '') || ' (' || COALESCE(v.year, '') || ')')";
+
+            // 1. Fetch all itemized service records
+            let records = await database.query(`
+                SELECT 
+                    sr.id AS record_id,
+                    sr.service_date,
+                    c.id AS client_id,
+                    c.full_name AS client_name,
+                    c.email AS client_email,
+                    c.phone AS client_mobile,
+                    v.id AS vehicle_id,
+                    ${vehicleConcat} AS vehicle_info,
+                    v.license_plate,
+                    v.vin,
+                    COALESCE(sr.mileage, sreq.mileage, v.current_mileage, 0) as mileage,
+                    COALESCE(si.item_name, sreq.service_type, 'Service') AS item_name,
+                    COALESCE(si.item_name_ar, sreq.service_type, 'صيانة') AS item_name_ar,
+                    COALESCE(si.category, 'Service') AS category,
+                    sr.quantity,
+                    sr.unit_price,
+                    sr.total_price,
+                    u.name AS serviced_by,
+                    sreq.id AS request_id,
+                    sreq.service_type,
+                    sreq.status AS request_status,
+                    ft.id AS invoice_id,
+                    ft.invoice_number,
+                    ft.payment_status,
+                    ft.service_fee,
+                    ft.spare_parts_markup,
+                    ft.total_amount_due
+                FROM service_records sr
+                JOIN service_requests sreq ON sr.request_id = sreq.id
+                JOIN clients c ON sreq.client_id = c.id
+                JOIN vehicles v ON sreq.vehicle_id = v.id
+                LEFT JOIN service_items si ON sr.item_id = si.id
+                LEFT JOIN users u ON sr.user_id = u.id
+                LEFT JOIN financial_transactions ft ON sreq.id = ft.request_id
+                WHERE c.id = ?
+                ORDER BY sr.service_date DESC, sr.id DESC
+            `, [customerId]);
+
+            if (!Array.isArray(records)) {
+                records = [];
+            }
+
+            // 2. Also retrieve any invoiced requests that do not have itemized service_records
+            //    (guarantees customer sees log entries for all invoiced services)
+            const recordedRequestIds = new Set(records.map(r => r.request_id));
+
+            const invoicedRequests = await database.query(`
+                SELECT 
+                    sreq.id * 10000 AS record_id,
+                    COALESCE(ft.payment_date, sreq.scheduled_date, sreq.request_date) AS service_date,
+                    c.id AS client_id,
+                    c.full_name AS client_name,
+                    c.email AS client_email,
+                    c.phone AS client_mobile,
+                    v.id AS vehicle_id,
+                    ${vehicleConcat} AS vehicle_info,
+                    v.license_plate,
+                    v.vin,
+                    COALESCE(sreq.mileage, v.current_mileage, 0) as mileage,
+                    COALESCE(sreq.service_type, 'General Service') AS item_name,
+                    COALESCE(sreq.service_type, 'صيانة عامة') AS item_name_ar,
+                    'Service' AS category,
+                    1 AS quantity,
+                    ft.total_amount_due AS unit_price,
+                    ft.total_amount_due AS total_price,
+                    sreq.assigned_to_name AS serviced_by,
+                    sreq.id AS request_id,
+                    sreq.service_type,
+                    sreq.status AS request_status,
+                    ft.id AS invoice_id,
+                    ft.invoice_number,
+                    ft.payment_status,
+                    ft.service_fee,
+                    ft.spare_parts_markup,
+                    ft.total_amount_due
+                FROM service_requests sreq
+                JOIN clients c ON sreq.client_id = c.id
+                JOIN vehicles v ON sreq.vehicle_id = v.id
+                JOIN financial_transactions ft ON sreq.id = ft.request_id
+                WHERE c.id = ?
+            `, [customerId]);
+
+            if (Array.isArray(invoicedRequests)) {
+                for (const invReq of invoicedRequests) {
+                    if (!recordedRequestIds.has(invReq.request_id)) {
+                        records.push(invReq);
+                    }
+                }
+            }
+
+            // Sort combined list descending by date
+            records.sort((a, b) => new Date(b.service_date || 0) - new Date(a.service_date || 0));
+
+            res.json({ success: true, data: records });
         } catch (error) {
             console.error('SERVER_PORTAL_ERROR:', error);
             res.status(500).json({ error: 'Failed to access service records' });

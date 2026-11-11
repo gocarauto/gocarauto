@@ -106,19 +106,27 @@ const serviceRequestController = {
             const records = await database.query(
                 `SELECT sr.*, si.item_name, si.item_name_ar, si.category
                  FROM service_records sr
-                 JOIN service_items si ON sr.item_id = si.id
+                 LEFT JOIN service_items si ON sr.item_id = si.id
                  WHERE sr.request_id = ?`,
                 [req.params.id]
             );
 
-            const maintenanceLedger = await database.query(
-                'SELECT * FROM vehicle_maintenance_ledger WHERE vehicle_id = ?',
-                [request.vehicle_id]
-            );
+            let maintenanceLedger = [];
+            try {
+                if (request.vehicle_id) {
+                    maintenanceLedger = await database.query(
+                        'SELECT * FROM vehicle_maintenance_ledger WHERE vehicle_id = ?',
+                        [request.vehicle_id]
+                    );
+                }
+            } catch (ledgerErr) {
+                console.warn('vehicle_maintenance_ledger query non-critical error:', ledgerErr.message);
+                maintenanceLedger = [];
+            }
 
             res.json({
                 success: true,
-                data: { ...request, records, maintenanceLedger }
+                data: { ...request, records: records || [], maintenanceLedger: maintenanceLedger || [] }
             });
         } catch (error) {
             console.error('SERVER_REQUEST_ERROR:', error);

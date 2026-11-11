@@ -228,6 +228,69 @@ CREATE TABLE consignment_listings (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
+-- VEHICLE MAINTENANCE LEDGER
+-- ============================================
+CREATE TABLE IF NOT EXISTS vehicle_maintenance_ledger (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id INT NOT NULL,
+    tracking_point VARCHAR(255) NOT NULL,
+    last_service_id INT NULL,
+    last_mileage INT NULL,
+    last_date VARCHAR(50) NULL,
+    next_due_mileage INT NULL,
+    next_due_date VARCHAR(50) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_veh_tracking (vehicle_id, tracking_point),
+    INDEX idx_vml_vehicle (vehicle_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
+-- SERVICE REQUEST COMMENTS
+-- ============================================
+CREATE TABLE IF NOT EXISTS service_request_comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    request_id INT NOT NULL,
+    author_name VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_src_request (request_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
+-- EXTERNAL SERVICES
+-- ============================================
+CREATE TABLE IF NOT EXISTS external_services (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id INT NOT NULL,
+    workshop_name VARCHAR(255) NOT NULL,
+    service_type VARCHAR(100) NULL,
+    service_date VARCHAR(50) NOT NULL,
+    mileage INT NULL,
+    total_amount DECIMAL(10,2) NULL,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_ext_vehicle (vehicle_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
+-- NOTIFICATION LOGS
+-- ============================================
+CREATE TABLE IF NOT EXISTS notification_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT NOT NULL,
+    vehicle_id INT NULL,
+    notification_type VARCHAR(100) NOT NULL,
+    message TEXT NOT NULL,
+    sent_via VARCHAR(50) DEFAULT 'Both',
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) DEFAULT 'Sent',
+    INDEX idx_nl_client (client_id),
+    INDEX idx_nl_vehicle (vehicle_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
 -- SERVICE HISTORY VIEW (Reporting & Customer Portal)
 -- ============================================
 CREATE OR REPLACE VIEW service_history AS

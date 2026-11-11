@@ -58,7 +58,7 @@ const ServiceHistory = () => {
     useEffect(() => {
         const fetchHistory = async () => {
             try {
-                const response = await api.get('/customer-portal/service-history');
+                const response = await api.get('/customer-portal/service-history', { skipCache: history.length === 0 });
                 const list = response.data?.data || [];
                 setHistory(list);
                 try {

@@ -128,6 +128,8 @@ async function startServer() {
         if (!initialized) {
             console.log('Initializing database schema for first run...');
             await database.initSchema();
+        } else {
+            await database.ensureTables();
         }
 
         app.listen(PORT, () => {

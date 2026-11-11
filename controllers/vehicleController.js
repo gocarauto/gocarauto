@@ -208,14 +208,60 @@ const vehicleController = {
                 }
             }
 
-            const history = await database.query(
-                `SELECT * FROM service_history 
-                 WHERE vehicle_id = ? 
-                 ORDER BY service_date DESC`,
-                [req.params.id]
-            );
+            let history;
+            try {
+                history = await database.query(
+                    `SELECT * FROM service_history 
+                     WHERE vehicle_id = ? 
+                     ORDER BY service_date DESC`,
+                    [req.params.id]
+                );
+            } catch (viewError) {
+                const isMySQL = process.env.DB_TYPE === 'mysql';
+                const vehicleConcat = isMySQL
+                    ? "CONCAT(COALESCE(v.make, ''), ' ', COALESCE(v.model, ''), ' (', COALESCE(v.year, ''), ')')"
+                    : "(COALESCE(v.make, '') || ' ' || COALESCE(v.model, '') || ' (' || COALESCE(v.year, '') || ')')";
 
-            res.json({ success: true, data: history });
+                history = await database.query(`
+                    SELECT 
+                        sr.id AS record_id,
+                        sr.service_date,
+                        c.id AS client_id,
+                        c.full_name AS client_name,
+                        v.id AS vehicle_id,
+                        ${vehicleConcat} AS vehicle_info,
+                        v.license_plate,
+                        v.vin,
+                        COALESCE(sr.mileage, sreq.mileage, v.current_mileage, 0) as mileage,
+                        COALESCE(si.item_name, sreq.service_type, 'Service') AS item_name,
+                        COALESCE(si.item_name_ar, sreq.service_type, 'صيانة') AS item_name_ar,
+                        COALESCE(si.category, 'Service') AS category,
+                        sr.quantity,
+                        sr.unit_price,
+                        sr.total_price,
+                        u.name AS serviced_by,
+                        sreq.id AS request_id,
+                        sreq.service_type,
+                        sreq.status AS request_status,
+                        ft.id AS invoice_id,
+                        ft.invoice_number,
+                        ft.payment_status,
+                        ft.service_fee,
+                        ft.spare_parts_markup,
+                        ft.total_amount_due
+                    FROM service_records sr
+                    JOIN service_requests sreq ON sr.request_id = sreq.id
+                    JOIN clients c ON sreq.client_id = c.id
+                    JOIN vehicles v ON sreq.vehicle_id = v.id
+                    LEFT JOIN service_items si ON sr.item_id = si.id
+                    LEFT JOIN users u ON sr.user_id = u.id
+                    LEFT JOIN financial_transactions ft ON sreq.id = ft.request_id
+                    WHERE v.id = ?
+                    ORDER BY sr.service_date DESC, sr.id DESC
+                `, [req.params.id]);
+            }
+
+            res.json({ success: true, data: history || [] });
         } catch (error) {
             console.error('SERVER_VEHICLE_ERROR:', error);
             res.status(500).json({ error: 'Failed to fetch history' });

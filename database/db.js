@@ -133,6 +133,111 @@ class Database {
     }
 
     /**
+     * Ensure all required operational tables and views exist across both MySQL and SQLite.
+     * Runs idempotently (CREATE TABLE IF NOT EXISTS) so existing data is never disturbed.
+     */
+    async ensureTables() {
+        if (DB_TYPE === 'mysql') {
+            const tableQueries = [
+                `CREATE TABLE IF NOT EXISTS vehicle_maintenance_ledger (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    vehicle_id INT NOT NULL,
+                    tracking_point VARCHAR(255) NOT NULL,
+                    last_service_id INT NULL,
+                    last_mileage INT NULL,
+                    last_date VARCHAR(50) NULL,
+                    next_due_mileage INT NULL,
+                    next_due_date VARCHAR(50) NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    UNIQUE KEY uq_veh_tracking (vehicle_id, tracking_point),
+                    INDEX idx_vml_vehicle (vehicle_id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+
+                `CREATE TABLE IF NOT EXISTS service_request_comments (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    request_id INT NOT NULL,
+                    author_name VARCHAR(255) NOT NULL,
+                    content TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    INDEX idx_src_request (request_id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+
+                `CREATE TABLE IF NOT EXISTS external_services (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    vehicle_id INT NOT NULL,
+                    workshop_name VARCHAR(255) NOT NULL,
+                    service_type VARCHAR(100) NULL,
+                    service_date VARCHAR(50) NOT NULL,
+                    mileage INT NULL,
+                    total_amount DECIMAL(10,2) NULL,
+                    notes TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    INDEX idx_ext_vehicle (vehicle_id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+
+                `CREATE TABLE IF NOT EXISTS notification_logs (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    client_id INT NOT NULL,
+                    vehicle_id INT NULL,
+                    notification_type VARCHAR(100) NOT NULL,
+                    message TEXT NOT NULL,
+                    sent_via VARCHAR(50) DEFAULT 'Both',
+                    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    status VARCHAR(50) DEFAULT 'Sent',
+                    INDEX idx_nl_client (client_id),
+                    INDEX idx_nl_vehicle (vehicle_id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+
+                `CREATE OR REPLACE VIEW service_history AS
+                SELECT 
+                    sr.id AS record_id,
+                    sr.service_date,
+                    c.id AS client_id,
+                    c.full_name AS client_name,
+                    c.email AS client_email,
+                    c.phone AS client_mobile,
+                    v.id AS vehicle_id,
+                    CONCAT(v.make, ' ', v.model, ' (', COALESCE(v.year, ''), ')') AS vehicle_info,
+                    v.license_plate,
+                    v.vin,
+                    sr.mileage,
+                    si.item_name,
+                    si.item_name_ar,
+                    si.category,
+                    sr.quantity,
+                    sr.unit_price,
+                    sr.total_price,
+                    u.name AS serviced_by,
+                    sreq.id AS request_id,
+                    sreq.status AS request_status,
+                    ft.id AS invoice_id,
+                    ft.invoice_number,
+                    ft.payment_status,
+                    ft.service_fee,
+                    ft.spare_parts_markup,
+                    ft.total_amount_due
+                FROM service_records sr
+                JOIN service_requests sreq ON sr.request_id = sreq.id
+                JOIN clients c ON sreq.client_id = c.id
+                JOIN vehicles v ON sreq.vehicle_id = v.id
+                JOIN service_items si ON sr.item_id = si.id
+                LEFT JOIN users u ON sr.user_id = u.id
+                LEFT JOIN financial_transactions ft ON sreq.id = ft.request_id`
+            ];
+
+            for (const query of tableQueries) {
+                try {
+                    await this.client.query(query);
+                } catch (e) {
+                    console.warn('ensureTables warning on MySQL:', e.message);
+                }
+            }
+        }
+    }
+
+    /**
      * Load seed data (SQLite only).
      */
     async loadSeedData() {
