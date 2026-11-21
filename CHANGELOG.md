@@ -4,6 +4,13 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-21
 
+### Primary Action Button Layout & Border-Radius Harmonization (CR-022)
+- **Resolved Broken Button Styling Across Staff Interface:**
+  - Root cause: `.btn-primary` in `staff-interface/src/index.css` previously declared only color properties (`background-color`, `border-color`, `box-shadow`) under the DaisyUI adapter, lacking base button ergonomics (`display: inline-flex`, `padding`, `border-radius: 0.75rem`, `font-weight: 700`, `gap: 0.5rem`). Unlike `.btn-secondary`, any element using `className="btn-primary"` without the `.btn` base class rendered as a raw, sharp-cornered unrounded browser element.
+  - Upgraded `.btn-primary`, `.btn-neutral`, and `.btn-outline` with full standalone utility applications (`@apply ... font-bold py-2.5 px-4 rounded-xl border transition-all duration-150 inline-flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 text-sm cursor-pointer select-none`), restoring flawless visual consistency across all forms and views.
+  - Fixed button appearance across `VehicleForm.jsx` ("UPDATE VEHICLE"), `CustomerDossier.jsx` ("MODIFY RECORDS"), `ServiceRequestDetail.jsx` ("VIEW INVOICE", "POST", "COMPLETE MISSION"), and related action triggers.
+  - Eliminated invalid nested `<button>` tags within React Router `<Link>` components in `CustomerDossier.jsx`.
+
 ### Financial Stats Parity & Service Passport Theme Harmonization (CR-021)
 - **Financial Statistics Unification Across Customer Portal:**
   - Resolved discrepancy between Dashboard/Invoices (77,380 EGP) and Service History (70,200 EGP) for customer accounts.

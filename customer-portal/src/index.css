@@ -212,16 +212,10 @@
     }
 
     .btn-primary {
-        background-color: #fbbf24;
-        color: #0f172a;
-        border-color: #f59e0b;
-        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+        @apply bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-2.5 px-4 rounded-xl border border-amber-500/50 shadow-md shadow-amber-400/20 hover:shadow-lg hover:shadow-amber-400/30 transition-all duration-150 inline-flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 text-sm cursor-pointer select-none;
     }
     .btn-primary:hover {
-        background-color: #f59e0b;
-        color: #020617;
-        border-color: #d97706;
-        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+        @apply bg-amber-500 text-slate-950 border-amber-600/50;
     }
 
     .btn-neutral {

@@ -258,61 +258,22 @@
 
     /* DaisyUI Button Variants */
     .btn-primary {
-        background-color: #fbbf24;
-        color: #0f172a;
-        border-color: #f59e0b;
-        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+        @apply bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-2.5 px-4 rounded-xl border border-amber-500/50 shadow-md shadow-amber-400/20 hover:shadow-lg hover:shadow-amber-400/30 transition-all duration-150 inline-flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 text-sm cursor-pointer select-none;
     }
     .btn-primary:hover {
-        background-color: #f59e0b;
-        color: #020617;
-        border-color: #d97706;
-        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+        @apply bg-amber-500 text-slate-950 border-amber-600/50;
     }
 
     .btn-secondary {
-        @apply bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-white/[0.05] dark:hover:bg-white/[0.1] dark:text-slate-200 dark:hover:text-white font-semibold py-2.5 px-4 rounded-xl border border-slate-200/80 dark:border-white/[0.08] transition-all duration-150 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 text-sm cursor-pointer;
+        @apply bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-white/[0.05] dark:hover:bg-white/[0.1] dark:text-slate-200 dark:hover:text-white font-semibold py-2.5 px-4 rounded-xl border border-slate-200/80 dark:border-white/[0.08] transition-all duration-150 inline-flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 text-sm cursor-pointer select-none;
     }
 
     .btn-neutral {
-        background-color: #0f172a;
-        color: #ffffff;
-        border-color: #1e293b;
-        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
-    }
-    .btn-neutral:hover {
-        background-color: #1e293b;
-        border-color: #334155;
-    }
-    .dark .btn-neutral, html.dark .btn-neutral {
-        background-color: #1e293b;
-        color: #f8fafc;
-        border-color: rgba(255, 255, 255, 0.12);
-    }
-    .dark .btn-neutral:hover, html.dark .btn-neutral:hover {
-        background-color: #334155;
-        border-color: rgba(255, 255, 255, 0.2);
+        @apply bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-800 dark:hover:bg-slate-700 font-bold py-2.5 px-4 rounded-xl border border-slate-800 dark:border-white/10 shadow-sm transition-all duration-150 inline-flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 text-sm cursor-pointer select-none;
     }
 
     .btn-outline {
-        background-color: #ffffff;
-        color: #1e293b;
-        border-color: #cbd5e1;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-    }
-    .btn-outline:hover {
-        background-color: #f8fafc;
-        border-color: #94a3b8;
-        color: #0f172a;
-    }
-    .dark .btn-outline, html.dark .btn-outline {
-        background-color: rgba(255, 255, 255, 0.04);
-        color: #f8fafc;
-        border-color: rgba(255, 255, 255, 0.12);
-    }
-    .dark .btn-outline:hover, html.dark .btn-outline:hover {
-        background-color: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.25);
+        @apply bg-white hover:bg-slate-50 text-slate-800 dark:bg-white/[0.04] dark:hover:bg-white/[0.08] dark:text-slate-200 font-semibold py-2.5 px-4 rounded-xl border border-slate-300 dark:border-white/10 shadow-xs transition-all duration-150 inline-flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 text-sm cursor-pointer select-none;
     }
 
     .btn-soft {

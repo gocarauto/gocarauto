@@ -127,10 +127,8 @@ const CustomerDossier = () => {
                     <button onClick={() => navigate('/customers')} className="btn-secondary">
                         RETURN TO DIRECTORY
                     </button>
-                    <Link to={`/customers/${id}/edit`}>
-                        <button className="btn-primary">
-                            MODIFY RECORDS
-                        </button>
+                    <Link to={`/customers/${id}/edit`} className="btn-primary">
+                        MODIFY RECORDS
                     </Link>
                 </div>
             </div>
@@ -267,7 +265,7 @@ const CustomerDossier = () => {
                         {vehicles.length === 0 ? (
                             <div className="text-center py-16 bg-slate-50/50 dark:bg-white/[0.02] border border-dashed border-slate-200 dark:border-white/10 rounded-3xl">
                                 <p className="text-slate-600 dark:text-slate-400 text-xs font-black tracking-widest uppercase mb-4">NO VEHICLES REGISTERED.</p>
-                                <Link to="/vehicles/new"><button className="btn-secondary">+ ADD ASSET TO FLEET</button></Link>
+                                <Link to="/vehicles/new" className="btn-secondary inline-flex">+ ADD ASSET TO FLEET</Link>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
