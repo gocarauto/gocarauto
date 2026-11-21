@@ -4,6 +4,18 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-21
 
+### Blueprint Sketch Seamless Screen Blending & Feathered Radial Masking (CR-027)
+- **Eliminated Rectangular Box & Hard Edges Around Vehicle Blueprint Artwork:**
+  - Root cause: Vehicle sketch PNG assets are solid rectangular images without transparent alpha channels (`8-bit sRGB`, dark navy background `#010611`). Previously rendered in `Dashboard.jsx`, `VehicleFleet.jsx`, and `ServiceBooking.jsx` with `object-contain` and `drop-shadow-[0_25px_50px_rgba(0,0,0,0.95)]`, casting a box shadow around the rectangular image frame and creating sharp, unblended rectangular borders against the stage.
+  - Implemented `mix-blend-screen` across `Dashboard.jsx`, `VehicleFleet.jsx`, and `ServiceBooking.jsx`, mathematically knocking out dark background pixels ($Blend \approx 0$) so the glowing neon wireframe and headlights float directly on the stage.
+  - Applied soft elliptical radial mask (`mask-image: radial-gradient(ellipse 80% 75% at 50% 50%, black 40%, transparent 85%)`), feathering the outer boundary to 0% opacity and eliminating any remaining edge seams or corner artifacts.
+  - Removed rectangular `drop-shadow` filter in favor of clean `contrast-[1.2] brightness-[0.95]`, enhancing line sharpness while letting the showroom ambient floor glow illuminate the vehicle naturally.
+
+### Database Multi-Engine Vehicle Archival Schema Verification (CR-028)
+- **Automatic Multi-Engine Archival Migration for MySQL & TiDB Cloud:**
+  - Added `migrateVehicleArchivalMySQL` to `scripts/migrate-vehicle-archival.js` and hooked into `database/db.js` MySQL pool initialization.
+  - Applied additive migration to TiDB Cloud (`is_archived`, `archive_reason`, `archive_notes`, `archived_at`, `archived_by`, `idx_vehicles_archived`), restoring customer portal endpoints (`/dashboard`, `/vehicles`, `/appointments`, `/reminders`) for all live accounts.
+
 ### Service Passport Arabic Typography Fix & Invoice Theme Harmonization (CR-026)
 - **Eliminated Arabic Mojibake Character Corruption on Service Passports:**
   - Root cause: `staff-interface` (`VehicleList.jsx`, `ConsignmentHub.jsx`) was opening the binary route `/service-passport/pdf` instead of the interactive viewer `/service-passport/view`. In headless environments where Puppeteer is unavailable, the backend fell back to PDFKit, whose OpenType subsetting of Noto Sans Arabic corrupted Arabic character codes into ASCII mojibake (`dV5df9d!) d6Gc (bv!`, `c6Ed61b.`).

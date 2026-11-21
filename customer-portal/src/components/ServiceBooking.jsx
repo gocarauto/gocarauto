@@ -372,7 +372,11 @@ const ServiceBooking = () => {
                                                         <img 
                                                             src={sketch} 
                                                             alt="" 
-                                                            className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform" 
+                                                            className="max-h-full max-w-full object-contain mix-blend-screen filter contrast-[1.2] brightness-[0.95] group-hover:scale-105 transition-transform select-none" 
+                                                            style={{
+                                                                WebkitMaskImage: 'radial-gradient(ellipse 85% 80% at 50% 50%, black 45%, transparent 90%)',
+                                                                maskImage: 'radial-gradient(ellipse 85% 80% at 50% 50%, black 45%, transparent 90%)'
+                                                            }}
                                                         />
                                                     </div>
                                                     <h3 className="font-extrabold text-slate-950 dark:text-white text-base">
