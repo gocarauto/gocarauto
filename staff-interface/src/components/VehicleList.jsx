@@ -64,10 +64,8 @@ const VehicleList = () => {
                     <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">Global fleet registry</p>
                 </div>
                 <div className="flex items-center gap-4">
-                    <Link to="/vehicles/new">
-                        <button className="btn btn-primary btn-md">
-                            + Register New Vehicle
-                        </button>
+                    <Link to="/vehicles/new" className="btn btn-primary btn-md">
+                        + Register New Vehicle
                     </Link>
                 </div>
             </div>

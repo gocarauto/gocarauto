@@ -494,7 +494,7 @@ const ServiceRequestDetail = () => {
                             </button>
                         </>
                     )}
-                    <button className="btn-secondary border-red-500/30 text-red-500 hover:bg-red-500/10" onClick={handleDeleteRequest}><Trash2 size={16} /></button>
+                    <button className="h-10 w-10 p-0 inline-flex items-center justify-center rounded-xl bg-slate-100 hover:bg-red-500/10 dark:bg-white/5 border border-red-500/30 text-red-500 transition-all" onClick={handleDeleteRequest} title="Delete Request"><Trash2 size={16} /></button>
                 </div>
             </div>
 

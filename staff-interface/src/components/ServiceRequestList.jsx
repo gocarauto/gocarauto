@@ -76,10 +76,8 @@ const ServiceRequestList = () => {
                     <p className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-widest font-bold mt-1">Active workshop floor missions & work orders</p>
                 </div>
                 <div className="flex items-center gap-4">
-                    <Link to="/service-requests/new">
-                        <button className="btn-primary">
-                            <Wrench size={16} /> NEW WORK ORDER
-                        </button>
+                    <Link to="/service-requests/new" className="btn-primary">
+                        <Wrench size={16} /> NEW WORK ORDER
                     </Link>
                 </div>
             </div>
@@ -257,11 +255,9 @@ const ServiceRequestList = () => {
                                             </span>
                                         </div>
 
-                                        <Link to={`/service-requests/${req.id}`} className="block pt-1">
-                                            <button className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200/80 dark:border-white/10 text-slate-800 dark:text-white rounded-xl font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all">
-                                                MANAGE WORK ORDER
-                                                <ChevronRight size={14} className="text-amber-500 dark:text-amber-400" />
-                                            </button>
+                                        <Link to={`/service-requests/${req.id}`} className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200/80 dark:border-white/10 text-slate-800 dark:text-white rounded-xl font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all">
+                                            MANAGE WORK ORDER
+                                            <ChevronRight size={14} className="text-amber-500 dark:text-amber-400" />
                                         </Link>
                                     </div>
                                 ))
@@ -334,11 +330,9 @@ const ServiceRequestList = () => {
                                                     )}
                                                 </td>
                                                 <td className="px-8 py-5 text-right">
-                                                    <Link to={`/service-requests/${req.id}`}>
-                                                        <button className="btn btn-primary btn-sm gap-1 ml-auto">
-                                                            <span>Manage</span>
-                                                            <ChevronRight size={14} />
-                                                        </button>
+                                                    <Link to={`/service-requests/${req.id}`} className="btn btn-primary btn-sm gap-1 ml-auto">
+                                                        <span>Manage</span>
+                                                        <ChevronRight size={14} />
                                                     </Link>
                                                 </td>
                                             </tr>

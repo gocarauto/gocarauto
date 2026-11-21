@@ -4,6 +4,15 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-21
 
+### Full Platform Button Alignment Audit & DOM Nesting Refactoring (CR-023)
+- **App-Wide Button Alignment & Styling Verification (Customer Portal & Staff Interface):**
+  - Conducted an AST-based audit across all 44 JSX files and 223 `<button>` / `<Link>` elements across both `customer-portal` and `staff-interface`.
+  - Confirmed 0 unstyled buttons remain across the entire codebase; all buttons declare verified typography, rounded borders (`rounded-xl` / `rounded-2xl`), and flex alignments (`inline-flex items-center justify-center gap-2`).
+  - Refactored all 12 invalid nested `<Link><button>` anti-patterns into semantic, direct `<Link className="...">` components across `CustomerDossier.jsx`, `CustomerList.jsx`, `Dashboard.jsx`, `ServiceRequestForm.jsx`, `ServiceRequestList.jsx`, and `VehicleList.jsx`.
+  - Harmonized icon button dimensions in `ServiceRequestDetail.jsx` (trash action button upgraded to `h-10 w-10 p-0 inline-flex items-center justify-center rounded-xl`) to achieve pixel-perfect vertical alignment with adjacent action triggers.
+- **Strict Human Approval Gate for Deployments:**
+  - Enforced strict human approval mandate: zero automated or unapproved pushes to production branches (`origin/main`). All changes remain staged locally awaiting explicit human confirmation.
+
 ### Primary Action Button Layout & Border-Radius Harmonization (CR-022)
 - **Resolved Broken Button Styling Across Staff Interface:**
   - Root cause: `.btn-primary` in `staff-interface/src/index.css` previously declared only color properties (`background-color`, `border-color`, `box-shadow`) under the DaisyUI adapter, lacking base button ergonomics (`display: inline-flex`, `padding`, `border-radius: 0.75rem`, `font-weight: 700`, `gap: 0.5rem`). Unlike `.btn-secondary`, any element using `className="btn-primary"` without the `.btn` base class rendered as a raw, sharp-cornered unrounded browser element.

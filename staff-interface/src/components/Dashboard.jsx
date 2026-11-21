@@ -338,11 +338,9 @@ const Dashboard = () => {
                                         </span>
                                     </td>
                                     <td className="px-8 py-5 text-right">
-                                        <Link to={`/service-requests/${activity.id}`}>
-                                            <button className="btn btn-primary btn-sm gap-1 ml-auto">
-                                                <span>Manage</span>
-                                                <ChevronRight size={14} />
-                                            </button>
+                                        <Link to={`/service-requests/${activity.id}`} className="btn btn-primary btn-sm gap-1 ml-auto">
+                                            <span>Manage</span>
+                                            <ChevronRight size={14} />
                                         </Link>
                                     </td>
                                 </tr>

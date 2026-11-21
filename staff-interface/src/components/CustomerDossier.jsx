@@ -287,18 +287,20 @@ const CustomerDossier = () => {
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <Link to={`/vehicles/${vehicle.id}/edit`}>
-                                                    <button className="h-10 w-10 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 rounded-xl flex items-center justify-center border border-slate-200/80 dark:border-white/10 hover:border-blue-500/50 text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-all shadow-sm">
-                                                        <Edit2 size={16} />
-                                                    </button>
+                                                <Link 
+                                                    to={`/vehicles/${vehicle.id}/edit`}
+                                                    className="h-10 w-10 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 rounded-xl flex items-center justify-center border border-slate-200/80 dark:border-white/10 hover:border-blue-500/50 text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-all shadow-sm"
+                                                >
+                                                    <Edit2 size={16} />
                                                 </Link>
                                                 <button onClick={() => handleDeleteVehicle(vehicle.id, vehicle.make, vehicle.model)} className="h-10 w-10 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 rounded-xl flex items-center justify-center border border-slate-200/80 dark:border-white/10 hover:border-red-500/50 text-slate-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-sm">
                                                     <Trash2 size={16} />
                                                 </button>
-                                                <Link to={`/vehicles/${vehicle.id}`}>
-                                                    <button className="h-10 w-10 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 rounded-full flex items-center justify-center border border-slate-200/80 dark:border-white/10 text-slate-600 dark:text-slate-400 group-hover:text-amber-500 dark:group-hover:text-primary transition-all">
-                                                        →
-                                                    </button>
+                                                <Link 
+                                                    to={`/vehicles/${vehicle.id}`}
+                                                    className="h-10 w-10 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 rounded-full flex items-center justify-center border border-slate-200/80 dark:border-white/10 text-slate-600 dark:text-slate-400 group-hover:text-amber-500 dark:group-hover:text-primary transition-all"
+                                                >
+                                                    →
                                                 </Link>
                                             </div>
                                         </div>

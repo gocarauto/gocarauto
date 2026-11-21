@@ -142,10 +142,8 @@ const ServiceRequestForm = () => {
                                     Search by client name, mobile phone, or email address
                                 </p>
                             </div>
-                            <Link to="/customers/new">
-                                <button className="btn-secondary text-xs">
-                                    <UserPlus size={15} /> + REGISTER NEW CLIENT
-                                </button>
+                            <Link to="/customers/new" className="btn-secondary text-xs">
+                                <UserPlus size={15} /> + REGISTER NEW CLIENT
                             </Link>
                         </div>
                         
@@ -225,10 +223,8 @@ const ServiceRequestForm = () => {
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
-                                <Link to={`/vehicles/new?clientId=${selectedClient?.id}`}>
-                                    <button className="btn-secondary text-xs">
-                                        + REGISTER NEW VEHICLE
-                                    </button>
+                                <Link to={`/vehicles/new?clientId=${selectedClient?.id}`} className="btn-secondary text-xs">
+                                    + REGISTER NEW VEHICLE
                                 </Link>
                                 <button onClick={() => setStep(1)} className="px-4 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-slate-200 dark:hover:text-white text-xs font-bold uppercase transition-all">
                                     CHANGE CLIENT

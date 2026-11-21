@@ -35,10 +35,8 @@ const CustomerList = () => {
                         <ShieldCheck size={14} className="mr-2 inline" />
                         {customers.length} REGISTERED
                     </div>
-                    <Link to="/customers/new">
-                        <button className="btn btn-primary btn-md">
-                            + Register New Client
-                        </button>
+                    <Link to="/customers/new" className="btn btn-primary btn-md">
+                        + Register New Client
                     </Link>
                 </div>
             </div>
@@ -112,11 +110,9 @@ const CustomerList = () => {
                                                         customerId={customer.id}
                                                     />
                                                 )}
-                                                <Link to={`/customers/${customer.id}`}>
-                                                    <button className="btn btn-primary btn-sm gap-1">
-                                                        <span>Profile</span>
-                                                        <ChevronRight size={14} />
-                                                    </button>
+                                                <Link to={`/customers/${customer.id}`} className="btn btn-primary btn-sm gap-1">
+                                                    <span>Profile</span>
+                                                    <ChevronRight size={14} />
                                                 </Link>
                                             </div>
                                         </div>
@@ -161,11 +157,9 @@ const CustomerList = () => {
                                             </td>
                                             <td className="px-8 py-5 text-right">
                                                 <div className="flex items-center justify-end gap-3">
-                                                    <Link to={`/customers/${customer.id}`}>
-                                                        <button className="btn btn-primary btn-sm gap-1">
-                                                            <span>Profile</span>
-                                                            <ChevronRight size={14} />
-                                                        </button>
+                                                    <Link to={`/customers/${customer.id}`} className="btn btn-primary btn-sm gap-1">
+                                                        <span>Profile</span>
+                                                        <ChevronRight size={14} />
                                                     </Link>
                                                 </div>
                                             </td>
