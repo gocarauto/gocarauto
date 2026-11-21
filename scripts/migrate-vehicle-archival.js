@@ -86,6 +86,37 @@ export async function migrateVehicleArchival(customDbPath = null) {
 }
 
 // Direct execution CLI support
+export async function migrateVehicleArchivalMySQL(pool) {
+    if (!pool) return;
+    try {
+        const [cols] = await pool.query('SHOW COLUMNS FROM vehicles');
+        if (!cols || cols.length === 0) return;
+        const existingCols = new Set(cols.map(c => c.Field));
+        if (!existingCols.has('is_archived')) {
+            await pool.query('ALTER TABLE vehicles ADD COLUMN is_archived TINYINT(1) NOT NULL DEFAULT 0');
+        }
+        if (!existingCols.has('archive_reason')) {
+            await pool.query('ALTER TABLE vehicles ADD COLUMN archive_reason VARCHAR(255) NULL');
+        }
+        if (!existingCols.has('archive_notes')) {
+            await pool.query('ALTER TABLE vehicles ADD COLUMN archive_notes TEXT NULL');
+        }
+        if (!existingCols.has('archived_at')) {
+            await pool.query('ALTER TABLE vehicles ADD COLUMN archived_at DATETIME NULL');
+        }
+        if (!existingCols.has('archived_by')) {
+            await pool.query('ALTER TABLE vehicles ADD COLUMN archived_by INT NULL');
+        }
+        const [indexes] = await pool.query('SHOW INDEX FROM vehicles WHERE Key_name = "idx_vehicles_archived"');
+        if (indexes.length === 0) {
+            await pool.query('ALTER TABLE vehicles ADD INDEX idx_vehicles_archived (is_archived)');
+        }
+        console.log('✓ Vehicle archival columns verified in MySQL vehicles table.');
+    } catch (err) {
+        console.warn('MySQL vehicle archival migration check notice:', err.message);
+    }
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
     migrateVehicleArchival()
         .then(res => {

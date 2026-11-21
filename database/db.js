@@ -52,6 +52,12 @@ class Database {
                 }
                 this.client = await mysql.createPool(poolConfig);
                 console.log('Connected to MySQL database with Releem-tuned connection pool');
+                try {
+                    const { migrateVehicleArchivalMySQL } = await import('../scripts/migrate-vehicle-archival.js');
+                    await migrateVehicleArchivalMySQL(this.client);
+                } catch (mErr) {
+                    // Graceful fallback
+                }
             } catch (err) {
                 console.error('Error connecting to MySQL database:', err);
                 throw err;
