@@ -71,9 +71,15 @@ class Database {
                             this.db.run('PRAGMA cache_size = -64000'); // 64MB memory page cache
                             this.db.run('PRAGMA temp_store = MEMORY');  // In-memory temp tables & sorts
                             this.db.run('PRAGMA mmap_size = 268435456'); // 256MB memory-mapped I/O
-                            this.db.run('PRAGMA busy_timeout = 5000', (err) => {
-                                if (err) reject(err);
-                                else resolve();
+                            this.db.run('PRAGMA busy_timeout = 5000', async (err) => {
+                                if (err) return reject(err);
+                                try {
+                                    const { migrateVehicleArchival } = await import('../scripts/migrate-vehicle-archival.js');
+                                    await migrateVehicleArchival(DB_PATH);
+                                } catch (mErr) {
+                                    // Graceful fallback
+                                }
+                                resolve();
                             });
                         });
                     }

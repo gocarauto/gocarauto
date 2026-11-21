@@ -12,7 +12,7 @@ const vehicleController = {
      */
     getAllVehicles: async (req, res) => {
         try {
-            const { clientId, search } = req.query;
+            const { clientId, search, archived } = req.query;
 
             let query = `
                 SELECT v.*, COALESCE(open_sr.open_count, 0) as open_requests_count
@@ -26,6 +26,15 @@ const vehicleController = {
                 WHERE 1=1
             `;
             const params = [];
+
+            if (archived === 'true') {
+                query += ' AND v.is_archived = 1';
+            } else if (archived === 'all') {
+                // Return both active and archived
+            } else {
+                // Default: active only
+                query += ' AND COALESCE(v.is_archived, 0) = 0';
+            }
 
             if (clientId) {
                 query += ' AND v.client_id = ?';
@@ -180,21 +189,99 @@ const vehicleController = {
     },
 
     /**
-     * Delete a vehicle record.
+     * Archive/Decommission a vehicle record with mandatory reason.
+     * Cancels any pending reminders and preserves accounting/history.
      */
-    deleteVehicle: async (req, res) => {
+    archiveVehicle: async (req, res) => {
         try {
-            const result = await database.run('DELETE FROM vehicles WHERE id = ?', [req.params.id]);
+            const { id } = req.params;
+            const { reason, notes } = req.body;
 
-            if (result.changes === 0) {
+            if (!reason || !reason.trim()) {
+                return res.status(400).json({ error: 'A decommission/archival reason is required' });
+            }
+
+            const vehicle = await database.get('SELECT id, make, model FROM vehicles WHERE id = ?', [id]);
+            if (!vehicle) {
                 return res.status(404).json({ error: 'Vehicle not found' });
             }
 
-            res.json({ success: true, message: 'Vehicle deleted successfully' });
+            const archivedBy = req.user?.id || null;
+            const finalNotes = notes && notes.trim() ? notes.trim() : null;
+
+            // 1. Soft-delete/Archive vehicle
+            await database.run(
+                `UPDATE vehicles 
+                 SET is_archived = 1, 
+                     archive_reason = ?, 
+                     archive_notes = ?, 
+                     archived_at = CURRENT_TIMESTAMP, 
+                     archived_by = ? 
+                 WHERE id = ?`,
+                [reason.trim(), finalNotes, archivedBy, id]
+            );
+
+            // 2. Immediately cancel and dismiss all pending reminders for this vehicle
+            await database.run(
+                `UPDATE service_reminders 
+                 SET status = 'Dismissed', 
+                     notes = COALESCE(notes || ' [Vehicle Decommissioned: ' || ? || ']', 'Vehicle Decommissioned: ' || ?) 
+                 WHERE vehicle_id = ? AND status = 'Pending'`,
+                [reason.trim(), reason.trim(), id]
+            );
+
+            res.json({
+                success: true,
+                message: `Vehicle ${vehicle.make} ${vehicle.model} successfully decommissioned and archived. Reminders cancelled.`
+            });
         } catch (error) {
-            console.error('SERVER_VEHICLE_ERROR:', error);
-            res.status(500).json({ error: 'Failed to delete vehicle' });
+            console.error('SERVER_VEHICLE_ARCHIVE_ERROR:', error);
+            res.status(500).json({ error: 'Failed to archive vehicle' });
         }
+    },
+
+    /**
+     * Restore an archived vehicle back to active fleet.
+     */
+    restoreVehicle: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const vehicle = await database.get('SELECT id, make, model FROM vehicles WHERE id = ?', [id]);
+            if (!vehicle) {
+                return res.status(404).json({ error: 'Vehicle not found' });
+            }
+
+            await database.run(
+                `UPDATE vehicles 
+                 SET is_archived = 0, 
+                     archive_reason = NULL, 
+                     archive_notes = NULL, 
+                     archived_at = NULL, 
+                     archived_by = NULL 
+                 WHERE id = ?`,
+                [id]
+            );
+
+            res.json({
+                success: true,
+                message: `Vehicle ${vehicle.make} ${vehicle.model} successfully restored to active fleet.`
+            });
+        } catch (error) {
+            console.error('SERVER_VEHICLE_RESTORE_ERROR:', error);
+            res.status(500).json({ error: 'Failed to restore vehicle' });
+        }
+    },
+
+    /**
+     * Delete a vehicle record (soft-delete / archive if reason provided, or safe fallback).
+     */
+    deleteVehicle: async (req, res) => {
+        if (req.body?.reason) {
+            return vehicleController.archiveVehicle(req, res);
+        }
+        return res.status(400).json({ 
+            error: 'Decommission reason is required for vehicle removal. Please provide a reason to archive this vehicle.' 
+        });
     },
 
     /**
@@ -285,6 +372,7 @@ const vehicleController = {
                  FROM vehicles v
                  JOIN clients c ON v.client_id = c.id
                  WHERE v.next_service_due IS NOT NULL 
+                 AND COALESCE(v.is_archived, 0) = 0
                  AND v.next_service_due <= ?
                  AND v.next_service_due >= ?
                  ORDER BY v.next_service_due ASC`,

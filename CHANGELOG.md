@@ -4,6 +4,22 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-21
 
+### Vehicle Decommissioning, Mandatory Archival Reasons & Reminder Disconnection (CR-024)
+- **Mandatory Archival Workflow & Modal in Staff Interface:**
+  - Implemented `ArchiveVehicleModal.jsx` for vehicle decommissioning with mandatory reason selection: `Sold / Ownership Transferred`, `Owner Got a New Car`, `Owner Inactive / Deceased`, `Vehicle Scrapped / Total Loss`, and `Other Reason` (with mandatory explanation text).
+  - Integrated modal into `CustomerDossier.jsx` and `VehicleList.jsx`, replacing unguided deletion prompts with formal archival documentation.
+- **Active Fleet vs. Archived Fleet Management:**
+  - Added filter tabs in `VehicleList.jsx`: `Active Fleet` vs. `Archived / Decommissioned Assets`.
+  - Archived vehicles display decommission reason badge, archival date, notes, and a one-click `Restore Asset` action to reactivate if needed.
+- **Automatic Reminder Disconnection & Automation Isolation:**
+  - Immediate Reminder Cancellation: Archiving a vehicle automatically cancels all pending reminders in `service_reminders` (`status = 'Dismissed'`).
+  - Isolated Reminders Engine: `reminderController.js` (`getRemindersByClient`, `getAllReminders`, `syncAndGenerateReminders`), `vehicleController.js` (`getUpcomingService`), and `financialController.js` (invoice settlement auto-reminder generation) now strictly filter `WHERE COALESCE(is_archived, 0) = 0`.
+  - Customer Portal Garage Isolation: `customerPortalController.js` (`getVehicles`, `getAppointments`, `getReminders`, and dashboard `upcomingService`) excludes archived vehicles from active customer garage and booking dropdowns.
+- **Additive Database Schema & Zero-Destructive Discipline:**
+  - Added `is_archived` (DEFAULT 0), `archive_reason`, `archive_notes`, `archived_at`, `archived_by` columns and index `idx_vehicles_archived` across SQLite and MySQL schemas.
+  - Implemented automatic migration script `scripts/migrate-vehicle-archival.js`.
+  - Comprehensive unit test suite `tests/vehicle-archival.test.js` verifying archival, reminder cancellation, garage isolation, and fleet restoration (6 tests, 100% pass).
+
 ### Full Platform Button Alignment Audit & DOM Nesting Refactoring (CR-023)
 - **App-Wide Button Alignment & Styling Verification (Customer Portal & Staff Interface):**
   - Conducted an AST-based audit across all 44 JSX files and 223 `<button>` / `<Link>` elements across both `customer-portal` and `staff-interface`.

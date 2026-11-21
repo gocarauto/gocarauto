@@ -27,7 +27,7 @@ const customerPortalController = {
             );
 
             const upcomingService = await database.query(
-                `SELECT * FROM vehicles WHERE client_id = ? 
+                `SELECT * FROM vehicles WHERE client_id = ? AND COALESCE(is_archived, 0) = 0
                  ORDER BY CASE WHEN next_service_due IS NULL THEN 1 ELSE 0 END, next_service_due ASC, id DESC LIMIT 3`,
                 [customerId]
             );
@@ -199,7 +199,7 @@ const customerPortalController = {
         try {
             const customerId = req.user.id;
             const vehicles = await database.query(
-                'SELECT * FROM vehicles WHERE client_id = ? ORDER BY last_service_date DESC',
+                'SELECT * FROM vehicles WHERE client_id = ? AND COALESCE(is_archived, 0) = 0 ORDER BY last_service_date DESC',
                 [customerId]
             );
             res.json({ success: true, data: vehicles });
@@ -221,6 +221,7 @@ const customerPortalController = {
                  FROM service_requests sr
                  JOIN vehicles v ON sr.vehicle_id = v.id
                  WHERE v.client_id = ?
+                   AND COALESCE(v.is_archived, 0) = 0
                    AND sr.scheduled_date IS NOT NULL
                  ORDER BY sr.scheduled_date ASC`,
                 [customerId]
@@ -244,7 +245,9 @@ const customerPortalController = {
                         v.make, v.model, v.year, v.license_plate
                  FROM service_reminders r
                  JOIN vehicles v ON r.vehicle_id = v.id
-                 WHERE r.client_id = ? AND r.status = 'Pending'
+                 WHERE r.client_id = ? 
+                   AND r.status = 'Pending'
+                   AND COALESCE(v.is_archived, 0) = 0
                  ORDER BY r.due_date ASC
                  LIMIT 5`,
                 [customerId]

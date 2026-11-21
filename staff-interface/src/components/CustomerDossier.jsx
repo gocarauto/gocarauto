@@ -3,6 +3,7 @@ import api from '../utils/api';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import WhatsAppButton from './WhatsAppButton';
 import ReminderManager from './ReminderManager';
+import ArchiveVehicleModal from './ArchiveVehicleModal';
 import { User, Mail, Phone, MapPin, Link as LinkIcon, Lock, Save, AlertTriangle, CheckCircle2, Copy, Shield, Settings, Activity, Car, CreditCard, Trash2, Edit2, Share2 } from 'lucide-react';
 
 const CustomerDossier = () => {
@@ -10,6 +11,7 @@ const CustomerDossier = () => {
     const navigate = useNavigate();
     const [client, setClient] = useState(null);
     const [vehicles, setVehicles] = useState([]);
+    const [vehicleToArchive, setVehicleToArchive] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [magicLink, setMagicLink] = useState('');
@@ -293,7 +295,11 @@ const CustomerDossier = () => {
                                                 >
                                                     <Edit2 size={16} />
                                                 </Link>
-                                                <button onClick={() => handleDeleteVehicle(vehicle.id, vehicle.make, vehicle.model)} className="h-10 w-10 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 rounded-xl flex items-center justify-center border border-slate-200/80 dark:border-white/10 hover:border-red-500/50 text-slate-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-sm">
+                                                <button 
+                                                    onClick={() => setVehicleToArchive({ ...vehicle, client_name: client?.full_name })} 
+                                                    className="h-10 w-10 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 rounded-xl flex items-center justify-center border border-slate-200/80 dark:border-white/10 hover:border-red-500/50 text-slate-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-all shadow-sm"
+                                                    title="Decommission & Archive Vehicle"
+                                                >
                                                     <Trash2 size={16} />
                                                 </button>
                                                 <Link 
@@ -337,6 +343,16 @@ const CustomerDossier = () => {
                     <ReminderManager clientId={id} vehicles={vehicles} />
                 </div>
             )}
+
+            {/* Decommission & Archive Vehicle Modal */}
+            <ArchiveVehicleModal
+                vehicle={vehicleToArchive}
+                isOpen={Boolean(vehicleToArchive)}
+                onClose={() => setVehicleToArchive(null)}
+                onArchived={(archivedId) => {
+                    setVehicles(prev => prev.filter(v => v.id !== archivedId));
+                }}
+            />
         </div>
     );
 };

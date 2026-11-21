@@ -35,7 +35,17 @@ router.put('/:id', verifyToken, isStaff, vehicleController.updateVehicle);
 router.patch('/:id/transfer', verifyToken, isStaff, vehicleController.transferVehicle);
 
 /**
- * Remove vehicle asset
+ * Decommission & archive vehicle record with mandatory reason
+ */
+router.post('/:id/archive', verifyToken, isStaff, vehicleController.archiveVehicle);
+
+/**
+ * Restore decommissioned/archived vehicle back to active fleet
+ */
+router.post('/:id/restore', verifyToken, isStaff, vehicleController.restoreVehicle);
+
+/**
+ * Remove vehicle asset (decommissions/archives with reason)
  */
 router.delete('/:id', verifyToken, isStaff, vehicleController.deleteVehicle);
 

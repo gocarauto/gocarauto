@@ -17,6 +17,7 @@ const reminderController = {
                 FROM service_reminders r
                 JOIN vehicles v ON r.vehicle_id = v.id
                 WHERE r.client_id = ?
+                  AND COALESCE(v.is_archived, 0) = 0
                 ORDER BY r.due_date ASC
             `;
             const reminders = await database.query(query, [clientId]);
@@ -37,14 +38,15 @@ const reminderController = {
                 FROM service_reminders r
                 JOIN vehicles v ON r.vehicle_id = v.id
                 JOIN clients c ON r.client_id = c.id
+                WHERE COALESCE(v.is_archived, 0) = 0
             `;
             const params = [];
             if (status && status !== 'all') {
-                query += ` WHERE r.status = ?`;
+                query += ` AND r.status = ?`;
                 params.push(status);
             } else if (!status) {
                 // Default to Pending if no status specified for backward compatibility
-                query += ` WHERE r.status = 'Pending'`;
+                query += ` AND r.status = 'Pending'`;
             }
             query += ` ORDER BY r.due_date ASC, r.id DESC`;
 
@@ -210,11 +212,12 @@ const reminderController = {
                 JOIN vehicles v ON sreq.vehicle_id = v.id
                 JOIN clients c ON v.client_id = c.id
                 JOIN service_items si ON sr.item_id = si.id
-                WHERE si.tracking_point IN ('ENGINE_OIL', 'TRANS_OIL')
+                WHERE (si.tracking_point IN ('ENGINE_OIL', 'TRANS_OIL')
                    OR si.item_name LIKE '%زيت%'
                    OR si.item_name_ar LIKE '%زيت%'
                    OR si.item_name LIKE '%oil%'
-                   OR si.item_name_ar LIKE '%oil%'
+                   OR si.item_name_ar LIKE '%oil%')
+                   AND COALESCE(v.is_archived, 0) = 0
             `);
 
             // Group by vehicle_id + classified type to find latest done
@@ -307,7 +310,8 @@ const reminderController = {
                        julianday('now') - julianday(v.created_at) as days_since_registered
                 FROM vehicles v
                 JOIN clients c ON v.client_id = c.id
-                WHERE v.id NOT IN (
+                WHERE COALESCE(v.is_archived, 0) = 0
+                AND v.id NOT IN (
                     SELECT DISTINCT sreq.vehicle_id
                     FROM service_records sr
                     JOIN service_requests sreq ON sr.request_id = sreq.id

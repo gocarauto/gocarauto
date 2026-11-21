@@ -266,6 +266,11 @@ const financialController = {
                 );
                 
                 if (sr) {
+                    const targetVeh = await database.get('SELECT is_archived FROM vehicles WHERE id = ?', [sr.vehicle_id]);
+                    if (targetVeh && targetVeh.is_archived === 1) {
+                        return; // Decommissioned vehicle: do not auto-create future reminders
+                    }
+
                     // Get all distinct tracking_point items from this invoice's records
                     const trackedItems = await database.query(
                         `SELECT DISTINCT si.tracking_point, si.km_interval, si.month_interval, si.item_name_ar

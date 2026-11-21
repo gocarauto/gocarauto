@@ -59,6 +59,11 @@ CREATE TABLE IF NOT EXISTS vehicles (
     next_service_due DATE,
     services_count INTEGER DEFAULT 0,
     total_spent DECIMAL(10,2) DEFAULT 0.00,
+    is_archived INTEGER NOT NULL DEFAULT 0,
+    archive_reason TEXT,
+    archive_notes TEXT,
+    archived_at DATETIME,
+    archived_by INTEGER,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE
@@ -302,6 +307,7 @@ CREATE TABLE IF NOT EXISTS consignment_listings (
 -- ============================================
 
 CREATE INDEX IF NOT EXISTS idx_vehicles_client ON vehicles(client_id);
+CREATE INDEX IF NOT EXISTS idx_vehicles_archived ON vehicles(is_archived);
 CREATE INDEX IF NOT EXISTS idx_vehicles_license ON vehicles(license_plate);
 CREATE INDEX IF NOT EXISTS idx_vehicles_vin ON vehicles(vin);
 CREATE INDEX IF NOT EXISTS idx_vehicles_next_service_due ON vehicles(next_service_due);
