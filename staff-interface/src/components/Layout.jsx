@@ -233,11 +233,10 @@ const Layout = () => {
 
                             <Link
                                 to="/service-requests/new"
-                                className="h-10 px-3.5 sm:px-4 bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-950 font-bold text-xs sm:text-sm rounded-xl flex items-center gap-1.5 sm:gap-2 shadow-md shadow-amber-400/20 active:scale-95 transition-all duration-150 shrink-0"
+                                className="hidden sm:flex h-10 px-3.5 sm:px-4 bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-950 font-bold text-xs sm:text-sm rounded-xl items-center gap-1.5 sm:gap-2 shadow-md shadow-amber-400/20 active:scale-95 transition-all duration-150 shrink-0"
                             >
                                 <Plus size={16} strokeWidth={2.5} />
-                                <span className="hidden sm:inline">New Work Order</span>
-                                <span className="sm:hidden">Intake</span>
+                                <span>New Work Order</span>
                             </Link>
                         </div>
                     </div>

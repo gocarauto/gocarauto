@@ -137,14 +137,14 @@ const VehicleForm = () => {
                         {isEditMode ? `Updating telemetry for Asset #${id}` : 'Register a new customer vehicle into the master fleet repository'}
                     </p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <button type="button" onClick={() => navigate('/vehicles')} className="btn-secondary">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                    <button type="button" onClick={() => navigate('/vehicles')} className="btn-secondary justify-center">
                         <X size={16} /> CANCEL
                     </button>
                     <button 
                         type="button" 
                         onClick={handleSubmit} 
-                        className="btn-primary min-w-[200px]" 
+                        className="btn-primary min-w-[200px] justify-center" 
                         disabled={loading}
                     >
                         <Save size={18} />
@@ -251,7 +251,7 @@ const VehicleForm = () => {
                                 </div>
 
                                 <div className="space-y-5">
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <label htmlFor="vehicle-make" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                                 <span>Make *</span>
@@ -285,7 +285,7 @@ const VehicleForm = () => {
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <label htmlFor="vehicle-year" className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                                 <Calendar size={11} className="text-slate-500 dark:text-slate-400" />
@@ -396,15 +396,15 @@ const VehicleForm = () => {
                     </div>
 
                     {/* Bottom Action Footer */}
-                    <div className="flex items-center justify-between pt-6 border-t border-slate-200/80 dark:border-white/5">
-                        <span className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-6 border-t border-slate-200/80 dark:border-white/5">
+                        <span className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider text-center sm:text-left">
                             Mandatory fields marked with <span className="text-primary">*</span>
                         </span>
-                        <div className="flex items-center gap-4">
-                            <button type="button" onClick={() => navigate('/vehicles')} className="btn-secondary">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                            <button type="button" onClick={() => navigate('/vehicles')} className="btn-secondary justify-center">
                                 CANCEL
                             </button>
-                            <button type="submit" className="btn-primary min-w-[220px]" disabled={loading}>
+                            <button type="submit" className="btn-primary min-w-[200px] justify-center" disabled={loading}>
                                 <Save size={18} />
                                 {loading ? 'SAVING...' : isEditMode ? 'UPDATE VEHICLE' : 'REGISTER VEHICLE'}
                             </button>

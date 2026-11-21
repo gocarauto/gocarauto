@@ -345,8 +345,8 @@ const VehicleFleet = () => {
                                             <span>{isAr ? 'حجز موعد صيانة' : 'Book Service Appointment'}</span>
                                         </button>
 
-                                        {/* Tier 2: 3 Segmented Secondary Actions */}
-                                        <div className="grid grid-cols-3 gap-2.5">
+                                        {/* Tier 2: 3 Segmented Secondary Actions (Fluid on Mobile, 3-Col on sm+) */}
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                                             <button
                                                 type="button"
                                                 onClick={() => setSellModalVehicle(v)}

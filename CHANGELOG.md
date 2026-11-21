@@ -4,6 +4,30 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-21
 
+### Service Passport Arabic Typography Fix & Invoice Theme Harmonization (CR-026)
+- **Eliminated Arabic Mojibake Character Corruption on Service Passports:**
+  - Root cause: `staff-interface` (`VehicleList.jsx`, `ConsignmentHub.jsx`) was opening the binary route `/service-passport/pdf` instead of the interactive viewer `/service-passport/view`. In headless environments where Puppeteer is unavailable, the backend fell back to PDFKit, whose OpenType subsetting of Noto Sans Arabic corrupted Arabic character codes into ASCII mojibake (`dV5df9d!) d6Gc (bv!`, `c6Ed61b.`).
+  - Switched all Passport action links in `VehicleList.jsx` (grid & table views) and `ConsignmentHub.jsx` to `/service-passport/view`, serving the pristine HTML view with Google Fonts (Cairo & Outfit) and built-in native browser print/save PDF trigger.
+  - Hardened `controllers/vehicleController.js` (`getServicePassportPDF`): when Puppeteer is unavailable, the server automatically redirects directly to `/service-passport/view`, preventing corrupted PDFKit binary downloads.
+  - Verified Arabic text rendering for all parts and labor items (e.g. "مصنعية كهرباء", "اوكرة باب امامى داخلى", "كلالس", "سمكرة") with 100% Cairo font fidelity.
+
+### Mobile Viewport Responsiveness, Fluid Layouts & Touch Optimization (CR-025)
+- **Deep Mobile Audit Across Customer Portal & Staff Interface (360px–414px Viewports):**
+  - Audited all 45 JSX files for layout cramping, fixed pixel overflows, form input squishing, and modal keyboard clipping.
+- **Customer Portal Fleet Action Grid Fluidity (`VehicleFleet.jsx`):**
+  - Upgraded secondary action grid from rigid `grid-cols-3` to fluid `grid-cols-1 sm:grid-cols-3 gap-2.5`.
+  - Replaces cramped <100px slices with comfortable, 44px touch targets on mobile screens (iPhone SE, Galaxy S, iPhone 12/13/14).
+- **Staff Interface Header Decluttering (`Layout.jsx`):**
+  - Added `hidden sm:flex` to top-bar `+ New Work Order` CTA button on mobile headers (< 375px), eliminating icon cramming and horizontal header scroll; mobile staff already have the dedicated center **(+) Intake** button in the bottom navigation bar.
+- **Staff Intake & Update Vehicle Form Responsiveness (`VehicleForm.jsx`):**
+  - Upgraded Year/Make/Model grids from `grid-cols-2` to responsive `grid-cols-1 sm:grid-cols-2 gap-4`, preventing label/input squishing on narrow devices.
+  - Upgraded top navigation and bottom action bars to responsive `flex-col sm:flex-row items-stretch sm:items-center gap-3`.
+- **Customer Dossier Fluid Spacing (`CustomerDossier.jsx`):**
+  - Converted desktop hardcoded `p-10` padding to responsive `p-6 sm:p-8 md:p-10`, reclaiming 40px of usable screen width on mobile devices.
+  - Upgraded `RETURN TO DIRECTORY` and `MODIFY RECORDS` action bar to `flex-col sm:flex-row items-stretch sm:items-center gap-3`.
+- **Modal Virtual Keyboard Safety (`ArchiveVehicleModal.jsx`, `FirstTimePasswordModal.jsx`):**
+  - Added `max-h-[90vh] overflow-y-auto` container constraints so mobile virtual keyboards do not obscure inputs or action triggers.
+
 ### Vehicle Decommissioning, Mandatory Archival Reasons & Reminder Disconnection (CR-024)
 - **Mandatory Archival Workflow & Modal in Staff Interface:**
   - Implemented `ArchiveVehicleModal.jsx` for vehicle decommissioning with mandatory reason selection: `Sold / Ownership Transferred`, `Owner Got a New Car`, `Owner Inactive / Deceased`, `Vehicle Scrapped / Total Loss`, and `Other Reason` (with mandatory explanation text).

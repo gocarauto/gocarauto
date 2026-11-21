@@ -501,26 +501,32 @@ const vehicleController = {
             const passportId = `GCP-${vehicle.id}-${(vehicle.vin || vehicle.license_plate || 'AUT').replace(/[^a-zA-Z0-9]/g, '').slice(-4)}-${new Date().getFullYear()}`;
             const verificationUrl = `${req.protocol}://${req.get('host')}/api/public/passport/${encodeURIComponent(vehicle.vin || vehicle.license_plate || vehicle.id)}`;
 
-            const pdfBuffer = await generateServicePassportPDF({
-                vehicle,
-                records,
-                passportId,
-                verificationUrl
-            });
+            try {
+                const pdfBuffer = await generateServicePassportPDF({
+                    vehicle,
+                    records,
+                    passportId,
+                    verificationUrl
+                });
 
-            const safePlateId = (vehicle.id || 'doc').toString();
-            const rawPlate = vehicle.license_plate || vehicle.id;
-            const encodedPlate = encodeURIComponent(rawPlate);
+                const safePlateId = (vehicle.id || 'doc').toString();
+                const rawPlate = vehicle.license_plate || vehicle.id;
+                const encodedPlate = encodeURIComponent(rawPlate);
 
-            res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader(
-                'Content-Disposition',
-                `inline; filename="GoCar-Service-Passport-${safePlateId}.pdf"; filename*=UTF-8''GoCar-Service-Passport-${encodedPlate}.pdf`
-            );
-            res.send(pdfBuffer);
+                res.setHeader('Content-Type', 'application/pdf');
+                res.setHeader(
+                    'Content-Disposition',
+                    `inline; filename="GoCar-Service-Passport-${safePlateId}.pdf"; filename*=UTF-8''GoCar-Service-Passport-${encodedPlate}.pdf`
+                );
+                return res.send(pdfBuffer);
+            } catch (pdfErr) {
+                console.warn('PDF generation fallback: redirecting to interactive HTML passport viewer:', pdfErr.message);
+                const tokenParam = req.query.token ? `?token=${encodeURIComponent(req.query.token)}` : '';
+                return res.redirect(`/api/vehicles/${id}/service-passport/view${tokenParam}`);
+            }
         } catch (error) {
             console.error('SERVER_SERVICE_PASSPORT_ERROR:', error);
-            res.status(500).json({ success: false, error: 'Failed to generate service passport PDF' });
+            res.status(500).json({ success: false, error: 'Failed to generate service passport' });
         }
     },
 

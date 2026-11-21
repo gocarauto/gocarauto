@@ -86,7 +86,7 @@ const FirstTimePasswordModal = ({ isOpen = true }) => {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.92, y: 16 }}
                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                    className="w-full max-w-lg bg-[#0e1017] border border-amber-400/30 rounded-3xl p-6 sm:p-8 shadow-[0_0_50px_rgba(251,191,36,0.15)] relative overflow-hidden"
+                    className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#0e1017] border border-amber-400/30 rounded-3xl p-6 sm:p-8 shadow-[0_0_50px_rgba(251,191,36,0.15)] relative"
                 >
                     {/* Atmospheric Glow */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/2" />

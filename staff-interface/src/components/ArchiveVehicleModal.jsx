@@ -75,7 +75,7 @@ const ArchiveVehicleModal = ({ vehicle, isOpen, onClose, onArchived }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="glass-card max-w-lg w-full p-6 sm:p-8 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-2xl relative">
+            <div className="glass-card max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-2xl relative">
                 {/* Close Button */}
                 <button
                     onClick={onClose}

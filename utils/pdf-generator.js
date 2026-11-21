@@ -234,8 +234,8 @@ export async function generateServicePassportPDF(data) {
         });
         return Buffer.from(pdfBuffer);
     } catch (puppeteerErr) {
-        console.warn('Puppeteer passport generation failed or unconfigured, falling back to PDFKit:', puppeteerErr.message);
-        return await generatePassportPDFKit(data);
+        console.warn('Puppeteer passport generation unavailable in current environment:', puppeteerErr.message);
+        throw new Error(`Puppeteer unavailable: ${puppeteerErr.message}`);
     } finally {
         if (page) {
             try { await page.close(); } catch {}

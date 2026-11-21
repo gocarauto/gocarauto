@@ -218,7 +218,7 @@ const VehicleList = () => {
 
                                         <div className="flex items-center gap-2 pt-1">
                                             <a
-                                                href={`${API_BASE}/vehicles/${vehicle.id}/service-passport/pdf?token=${localStorage.getItem('token') || ''}`}
+                                                href={`${API_BASE}/vehicles/${vehicle.id}/service-passport/view?token=${localStorage.getItem('token') || ''}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="btn btn-outline btn-sm flex-1 text-xs font-bold gap-1.5"
@@ -336,7 +336,7 @@ const VehicleList = () => {
                                             <td className="px-6 py-5 text-right">
                                                 <div className="inline-flex items-center gap-2">
                                                     <a
-                                                        href={`${API_BASE}/vehicles/${vehicle.id}/service-passport/pdf?token=${localStorage.getItem('token') || ''}`}
+                                                        href={`${API_BASE}/vehicles/${vehicle.id}/service-passport/view?token=${localStorage.getItem('token') || ''}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="btn btn-outline btn-sm text-xs font-bold gap-1.5"

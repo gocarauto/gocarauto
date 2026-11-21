@@ -125,11 +125,11 @@ const CustomerDossier = () => {
                         Dossier for {client.full_name}
                     </p>
                 </div>
-                <div className="flex items-center gap-4">
-                    <button onClick={() => navigate('/customers')} className="btn-secondary">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <button onClick={() => navigate('/customers')} className="btn-secondary justify-center">
                         RETURN TO DIRECTORY
                     </button>
-                    <Link to={`/customers/${id}/edit`} className="btn-primary">
+                    <Link to={`/customers/${id}/edit`} className="btn-primary justify-center">
                         MODIFY RECORDS
                     </Link>
                 </div>
@@ -163,7 +163,7 @@ const CustomerDossier = () => {
             {activeTab === 'overview' && (
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-8 animate-in fade-in duration-300">
                     {/* Profile Information Card */}
-                    <div className="glass-card p-10 h-fit space-y-8">
+                    <div className="glass-card p-6 sm:p-8 md:p-10 h-fit space-y-8">
                         <div className="text-center relative">
                             <div className="absolute inset-0 bg-primary/5 rounded-full"></div>
                             <div className="relative w-24 h-24 rounded-full bg-slate-100 dark:bg-black/50 border border-amber-400/30 flex items-center justify-center text-4xl mx-auto mb-4 shadow-[0_0_30px_rgba(251,191,36,0.1)]">
@@ -250,7 +250,7 @@ const CustomerDossier = () => {
                         </div>
                     </div>
 
-                    <div className="glass-card p-10 h-fit">
+                    <div className="glass-card p-6 sm:p-8 md:p-10 h-fit">
                         <div className="flex justify-between items-center mb-10">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-amber-500 dark:text-primary">

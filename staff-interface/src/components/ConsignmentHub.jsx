@@ -421,7 +421,7 @@ const ConsignmentHub = () => {
                                             Convert to Listing
                                         </button>
                                         <a
-                                            href={`${API_BASE}/vehicles/${lead.vehicle_id}/service-passport/pdf?token=${token}`}
+                                            href={`${API_BASE}/vehicles/${lead.vehicle_id}/service-passport/view?token=${token}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 rounded-xl text-amber-600 dark:text-amber-400 transition-all"
@@ -549,7 +549,7 @@ const ConsignmentHub = () => {
                                         <div className="mt-5 pt-4 border-t border-slate-200 dark:border-white/10 flex flex-wrap items-center justify-between gap-2">
                                             {/* Passport Link */}
                                             <a
-                                                href={`${API_BASE}/vehicles/${item.vehicle_id}/service-passport/pdf?token=${token}`}
+                                                href={`${API_BASE}/vehicles/${item.vehicle_id}/service-passport/view?token=${token}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-600 dark:text-amber-400 rounded-xl text-xs font-bold tracking-wider uppercase flex items-center gap-1.5 transition-all"
