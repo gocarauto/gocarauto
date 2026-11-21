@@ -105,7 +105,13 @@ const CustomerList = () => {
                                                 <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{customer.email || '—'}</div>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                {customer.phone && <WhatsAppButton phone={customer.phone} clientName={customer.full_name} />}
+                                                {customer.phone && (
+                                                    <WhatsAppButton
+                                                        phone={customer.phone}
+                                                        customerName={customer.full_name}
+                                                        customerId={customer.id}
+                                                    />
+                                                )}
                                                 <Link to={`/customers/${customer.id}`}>
                                                     <button className="btn btn-primary btn-sm gap-1">
                                                         <span>Profile</span>

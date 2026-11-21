@@ -419,10 +419,15 @@ const vehicleController = {
                 verificationUrl
             });
 
-            const cleanPlate = (vehicle.license_plate || vehicle.id).toString().replace(/[^a-zA-Z0-9]/g, '-');
-            const filename = `GoCar-Service-Passport-${cleanPlate}.pdf`;
+            const safePlateId = (vehicle.id || 'doc').toString();
+            const rawPlate = vehicle.license_plate || vehicle.id;
+            const encodedPlate = encodeURIComponent(rawPlate);
+
             res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+            res.setHeader(
+                'Content-Disposition',
+                `inline; filename="GoCar-Service-Passport-${safePlateId}.pdf"; filename*=UTF-8''GoCar-Service-Passport-${encodedPlate}.pdf`
+            );
             res.send(pdfBuffer);
         } catch (error) {
             console.error('SERVER_SERVICE_PASSPORT_ERROR:', error);

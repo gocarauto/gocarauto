@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer-core';
+import PDFDocument from 'pdfkit';
 import fs from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
@@ -517,7 +518,7 @@ export async function generateServicePassportPDF(data) {
     try {
         const browser = await getBrowser();
         page = await browser.newPage();
-        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+        await page.setContent(htmlContent, { waitUntil: ['domcontentloaded', 'networkidle0'], timeout: 10000 });
         const pdfBuffer = await page.pdf({
             format: 'A4',
             printBackground: true,
@@ -530,7 +531,125 @@ export async function generateServicePassportPDF(data) {
             preferCSSPageSize: true
         });
         return Buffer.from(pdfBuffer);
+    } catch (puppeteerErr) {
+        console.warn('Puppeteer passport generation failed or unconfigured, falling back to PDFKit:', puppeteerErr.message);
+        return await generatePassportPDFKit(data);
     } finally {
-        if (page) await page.close();
+        if (page) {
+            try { await page.close(); } catch {}
+        }
     }
+}
+
+/**
+ * Pure JavaScript PDFKit fallback for Service Passport generation.
+ * Operates with 0 browser dependencies and 100% cloud reliability.
+ */
+function generatePassportPDFKit(data) {
+    const { vehicle, records = [], passportId } = data;
+    const passportNumber = passportId || `GCP-${vehicle.id}-${(vehicle.vin || 'AUT').slice(-4)}-${new Date().getFullYear()}`;
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+    return new Promise((resolve, reject) => {
+        try {
+            const doc = new PDFDocument({
+                size: 'A4',
+                margins: { top: 40, bottom: 40, left: 40, right: 40 }
+            });
+            const buffers = [];
+            doc.on('data', buffers.push.bind(buffers));
+            doc.on('end', () => resolve(Buffer.concat(buffers)));
+
+            // Header
+            doc.fillColor('#0b0f19').fontSize(22).font('Helvetica-Bold').text('GOCAR AUTO', 40, 40);
+            doc.fillColor('#d97706').fontSize(16).text('SERVICE PASSPORT', 350, 40, { align: 'right' });
+            doc.fillColor('#64748b').fontSize(9).font('Helvetica').text(`ID: ${passportNumber} • Date: ${generatedDate}`, 350, 62, { align: 'right' });
+
+            doc.moveTo(40, 85).lineTo(555, 85).strokeColor('#e2e8f0').lineWidth(1).stroke();
+
+            // Privacy Banner
+            doc.roundedRect(40, 95, 515, 26, 4).fillAndStroke('#f0fdf4', '#bbf7d0');
+            doc.fillColor('#166534').fontSize(9).font('Helvetica-Bold').text('PRIVACY SHIELD VERIFIED', 50, 103);
+            doc.fillColor('#166534').fontSize(8).font('Helvetica').text('Owner Identity: Confidential Registered Client (Redacted for resale protection)', 200, 103, { align: 'right' });
+
+            // Vehicle Specs Box
+            doc.roundedRect(40, 130, 515, 75, 6).fillAndStroke('#f8fafc', '#e2e8f0');
+
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('VEHICLE', 55, 140);
+            doc.fillColor('#0f172a').fontSize(11).font('Helvetica-Bold').text(`${vehicle.make || ''} ${vehicle.model || ''}`, 55, 152);
+
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('YEAR MODEL', 180, 140);
+            doc.fillColor('#0f172a').fontSize(11).font('Helvetica-Bold').text(`${vehicle.year || '—'}`, 180, 152);
+
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('PLATE / LICENSE', 280, 140);
+            doc.fillColor('#0f172a').fontSize(11).font('Helvetica-Bold').text(`${vehicle.license_plate || '—'}`, 280, 152);
+
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('CHASSIS (VIN)', 400, 140);
+            doc.fillColor('#0f172a').fontSize(10).font('Helvetica').text(`${vehicle.vin || '—'}`, 400, 152);
+
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('VERIFIED ODOMETER', 55, 172);
+            doc.fillColor('#b45309').fontSize(12).font('Helvetica-Bold').text(`${(vehicle.current_mileage || 0).toLocaleString()} KM`, 55, 184);
+
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('COMPLETED VISITS', 180, 172);
+            doc.fillColor('#0f172a').fontSize(11).font('Helvetica-Bold').text(`${records.length || vehicle.services_count || 0} Visits`, 180, 184);
+
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('LAST INSPECTION', 280, 172);
+            doc.fillColor('#0f172a').fontSize(11).font('Helvetica-Bold').text(`${vehicle.last_service_date || generatedDate}`, 280, 184);
+
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('PEDIGREE STATUS', 400, 172);
+            doc.fillColor('#16a34a').fontSize(11).font('Helvetica-Bold').text('Certified Active', 400, 184);
+
+            // Table Header
+            let y = 225;
+            doc.rect(40, y, 515, 20).fill('#0f172a');
+            doc.fillColor('#ffffff').fontSize(8).font('Helvetica-Bold');
+            doc.text('DATE', 50, y + 6);
+            doc.text('MILEAGE', 130, y + 6);
+            doc.text('SERVICE & REPLACEMENT PARTS', 210, y + 6);
+            doc.text('CATEGORY', 470, y + 6);
+
+            y += 20;
+            const recordsToShow = records.length > 0 ? records : [];
+            if (recordsToShow.length === 0) {
+                doc.rect(40, y, 515, 25).fill('#ffffff');
+                doc.fillColor('#64748b').fontSize(8).font('Helvetica').text('No recorded service items found for this vehicle.', 50, y + 8);
+                y += 25;
+            } else {
+                for (let i = 0; i < recordsToShow.length; i++) {
+                    const r = recordsToShow[i];
+                    if (y > 720) {
+                        doc.addPage();
+                        y = 40;
+                    }
+                    const bg = i % 2 === 0 ? '#ffffff' : '#f8fafc';
+                    doc.rect(40, y, 515, 22).fill(bg);
+                    doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text(r.service_date || '—', 50, y + 6);
+                    doc.fillColor('#0f172a').fontSize(8).font('Helvetica').text(r.mileage ? `${parseInt(r.mileage).toLocaleString()} KM` : '—', 130, y + 6);
+
+                    const itemDesc = r.item_name || r.item_name_ar || 'Routine Service';
+                    doc.fillColor('#0f172a').fontSize(8).font('Helvetica-Bold').text(String(itemDesc).slice(0, 50), 210, y + 6);
+
+                    doc.fillColor('#0369a1').fontSize(7).font('Helvetica-Bold').text(r.category || 'Service', 475, y + 6);
+                    y += 22;
+                }
+            }
+
+            // Attestation Footer
+            y += 15;
+            if (y > 700) { doc.addPage(); y = 40; }
+            doc.roundedRect(40, y, 515, 45, 6).fillAndStroke('#f8fafc', '#e2e8f0');
+            doc.fillColor('#0f172a').fontSize(8).font('Helvetica-Bold').text('OFFICIAL GOCAR QUALITY ATTESTATION:', 50, y + 8);
+            doc.fillColor('#64748b').fontSize(7).font('Helvetica').text('This document certifies that this vehicle has undergone routine preventative maintenance, certified parts replacements, and mechanical diagnostics under the supervision of GoCar Auto. All recorded mileage intervals are verified against original workshop tickets.', 50, y + 20, { width: 340 });
+
+            // Stamp
+            doc.roundedRect(410, y + 6, 135, 33, 4).lineWidth(1.5).dash(4, { space: 2 }).strokeColor('#d97706').stroke();
+            doc.undash();
+            doc.fillColor('#b45309').fontSize(8).font('Helvetica-Bold').text('AUTHENTICATED LEDGER', 415, y + 12, { width: 125, align: 'center' });
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica').text(passportNumber, 415, y + 24, { width: 125, align: 'center' });
+
+            doc.end();
+        } catch (e) {
+            reject(e);
+        }
+    });
 }

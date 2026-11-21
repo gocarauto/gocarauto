@@ -304,6 +304,43 @@ const customerPortalController = {
     },
 
     /**
+     * Set initial password for first-time customer onboarding (e.g. entering via magic link).
+     * Rejects if account already has an established password (must use changePassword instead).
+     */
+    setInitialPassword: async (req, res) => {
+        try {
+            const customerId = req.user.id;
+            const { password } = req.body;
+
+            if (!password || typeof password !== 'string' || password.length < 6) {
+                return res.status(400).json({ error: 'Password must be at least 6 characters' });
+            }
+
+            const customer = await database.get('SELECT password_hash FROM clients WHERE id = ?', [customerId]);
+            if (!customer) {
+                return res.status(404).json({ error: 'Customer not found' });
+            }
+
+            if (customer.password_hash) {
+                return res.status(409).json({ error: 'Password has already been established. Please use change password.' });
+            }
+
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+
+            await database.run(
+                'UPDATE clients SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+                [hashedPassword, customerId]
+            );
+
+            res.json({ success: true, message: 'Initial password established successfully' });
+        } catch (error) {
+            console.error('SERVER_PORTAL_PASSWORD_ERROR:', error);
+            res.status(500).json({ error: 'Failed to establish initial password' });
+        }
+    },
+
+    /**
      * Submit a request to sell a customer's registered vehicle (Used Car Consignment).
      */
     createSellRequest: async (req, res) => {

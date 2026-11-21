@@ -125,6 +125,14 @@ export const getVehicleAnchors = (make, model, year) => {
     const modelKey = `${normalizedMake}-${normalizedModel}`;
 
     if (VEHICLE_CONFIGS[specificKey]) return VEHICLE_CONFIGS[specificKey].anchors;
+
+    const tokens = normalizedModel.split('-').filter(Boolean);
+    const baseModel = tokens[0] || normalizedModel;
+    const baseYearKey = `${normalizedMake}-${baseModel}-${normalizedYear}`;
+    const baseModelKey = `${normalizedMake}-${baseModel}`;
+
+    if (VEHICLE_CONFIGS[baseYearKey]) return VEHICLE_CONFIGS[baseYearKey].anchors;
     if (VEHICLE_CONFIGS[modelKey]) return VEHICLE_CONFIGS[modelKey].anchors;
+    if (VEHICLE_CONFIGS[baseModelKey]) return VEHICLE_CONFIGS[baseModelKey].anchors;
     return DEFAULT_ANCHORS;
 };

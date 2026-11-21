@@ -214,7 +214,7 @@ const clientController = {
     },
 
     /**
-     * Generate a 24-hour magic login link for a client.
+     * Generate a 30-day magic login link for a client onboarding / direct portal access.
      */
     generateMagicLink: async (req, res) => {
         try {
@@ -227,10 +227,10 @@ const clientController = {
             const magicToken = jwt.sign(
                 { id: client.id, type: 'magic_link' },
                 process.env.JWT_SECRET,
-                { expiresIn: '24h' }
+                { expiresIn: '30d' }
             );
 
-            const portalUrl = process.env.CUSTOMER_PORTAL_URL || 'http://localhost:5174';
+            const portalUrl = process.env.CUSTOMER_PORTAL_URL || 'https://gocarauto.vercel.app';
             const magicUrl = `${portalUrl}/magic/${magicToken}`;
 
             res.json({
@@ -238,7 +238,7 @@ const clientController = {
                 data: {
                     token: magicToken,
                     url: magicUrl,
-                    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
+                    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
                 }
             });
         } catch (error) {

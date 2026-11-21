@@ -39,6 +39,7 @@ router.get('/reminders', verifyToken, isCustomer, customerPortalController.getRe
  */
 router.put('/profile', verifyToken, isCustomer, customerPortalController.updateProfile);
 router.put('/password', verifyToken, isCustomer, customerPortalController.changePassword);
+router.post('/set-initial-password', verifyToken, isCustomer, customerPortalController.setInitialPassword);
 
 /**
  * Submit and retrieve Used Car Consignment / Sell requests

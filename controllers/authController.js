@@ -89,9 +89,31 @@ const authController = {
                 return res.status(400).json({ error: 'Identifier and password are required' });
             }
 
+            const trimmedIdentifier = identifier.trim();
+            const cleanDigits = trimmedIdentifier.replace(/\D/g, '');
+
+            // Build candidate phone representations to match DB records (+20..., 20..., 01..., etc.)
+            const candidates = [trimmedIdentifier];
+            if (cleanDigits.length >= 10) {
+                if (cleanDigits.startsWith('01') && cleanDigits.length === 11) {
+                    candidates.push(`+20${cleanDigits.substring(1)}`);
+                    candidates.push(`20${cleanDigits.substring(1)}`);
+                    candidates.push(cleanDigits);
+                } else if (cleanDigits.startsWith('201') && cleanDigits.length === 12) {
+                    candidates.push(`+${cleanDigits}`);
+                    candidates.push(cleanDigits);
+                    candidates.push(`0${cleanDigits.substring(2)}`);
+                } else if (cleanDigits.startsWith('1') && cleanDigits.length === 10) {
+                    candidates.push(`+20${cleanDigits}`);
+                    candidates.push(`0${cleanDigits}`);
+                    candidates.push(`20${cleanDigits}`);
+                }
+            }
+
+            const placeholders = candidates.map(() => '?').join(', ');
             const customer = await database.get(
-                'SELECT * FROM clients WHERE email = ? OR phone = ?',
-                [identifier, identifier]
+                `SELECT * FROM clients WHERE email = ? OR phone IN (${placeholders})`,
+                [trimmedIdentifier, ...candidates]
             );
 
             if (!customer) {
@@ -107,7 +129,8 @@ const authController = {
                 return res.status(401).json({ error: 'Invalid security key' });
             }
 
-            // WHY: Include full_name, phone, and mobile in JWT and response body for consistent client hydration
+            // WHY: Include full_name, phone, mobile, and hasPassword in JWT and response body for consistent client hydration
+            const hasPassword = !!customer.password_hash;
             const token = jwt.sign(
                 {
                     id: customer.id,
@@ -115,7 +138,8 @@ const authController = {
                     email: customer.email,
                     mobile: customer.phone,
                     phone: customer.phone,
-                    userType: 'customer'
+                    userType: 'customer',
+                    hasPassword
                 },
                 process.env.JWT_SECRET,
                 { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
@@ -138,7 +162,8 @@ const authController = {
                     email: customer.email,
                     mobile: customer.phone,
                     phone: customer.phone,
-                    userType: 'customer'
+                    userType: 'customer',
+                    hasPassword
                 }
             });
         } catch (error) {
@@ -207,7 +232,8 @@ const authController = {
                 return res.status(401).json({ error: 'Client not found' });
             }
 
-            // WHY: Include full_name, phone, and mobile in magic session token for consistent client hydration
+            // WHY: Include full_name, phone, mobile, and hasPassword in magic session token for consistent client hydration
+            const hasPassword = !!customer.password_hash;
             const sessionToken = jwt.sign(
                 {
                     id: customer.id,
@@ -215,7 +241,8 @@ const authController = {
                     email: customer.email,
                     mobile: customer.phone,
                     phone: customer.phone,
-                    userType: 'customer'
+                    userType: 'customer',
+                    hasPassword
                 },
                 process.env.JWT_SECRET,
                 { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
@@ -237,7 +264,8 @@ const authController = {
                     email: customer.email,
                     mobile: customer.phone,
                     phone: customer.phone,
-                    userType: 'customer'
+                    userType: 'customer',
+                    hasPassword
                 }
             });
         } catch (error) {
@@ -254,6 +282,12 @@ const authController = {
             const token = req.cookies?.token || req.headers['authorization']?.split(' ')[1];
             if (!token) return res.status(401).json({ error: 'Invalid session' });
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+            if (decoded.userType === 'customer') {
+                const client = await database.get('SELECT password_hash FROM clients WHERE id = ?', [decoded.id]);
+                decoded.hasPassword = !!(client && client.password_hash);
+            }
+
             res.json({ success: true, user: decoded });
         } catch (error) {
             res.status(401).json({ error: 'Invalid session' });

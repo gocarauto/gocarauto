@@ -4,16 +4,24 @@ import { useLanguage } from '../context/LanguageContext';
 import { X, DollarSign, Gauge, Tag, ShieldCheck, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import api from '../utils/api';
 
-const SellCarModal = ({ isOpen, onClose, vehicle, onSuccess }) => {
+const SellCarModal = ({ isOpen, onClose, vehicle, vehicles, selectedVehicleId, onSuccess }) => {
     const { lang } = useLanguage();
     const isAr = lang === 'ar';
 
+    const activeCar = vehicle || (vehicles && selectedVehicleId ? vehicles.find(v => v.id === selectedVehicleId) : vehicles?.[0]);
+
     const [askingPrice, setAskingPrice] = useState('');
-    const [currentMileage, setCurrentMileage] = useState(vehicle?.current_mileage || '');
+    const [currentMileage, setCurrentMileage] = useState(activeCar?.current_mileage || '');
     const [notes, setNotes] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+
+    useEffect(() => {
+        if (activeCar?.current_mileage) {
+            setCurrentMileage(activeCar.current_mileage);
+        }
+    }, [activeCar]);
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -27,7 +35,7 @@ const SellCarModal = ({ isOpen, onClose, vehicle, onSuccess }) => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [isOpen, loading, onClose]);
 
-    if (!isOpen || !vehicle) return null;
+    if (!isOpen || !activeCar) return null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -36,9 +44,9 @@ const SellCarModal = ({ isOpen, onClose, vehicle, onSuccess }) => {
 
         try {
             const res = await api.post('/customer-portal/sell-requests', {
-                vehicleId: vehicle.id,
+                vehicleId: activeCar.id,
                 askingPrice: askingPrice ? parseFloat(askingPrice) : null,
-                currentMileage: currentMileage ? parseInt(currentMileage, 10) : vehicle.current_mileage,
+                currentMileage: currentMileage ? parseInt(currentMileage, 10) : activeCar.current_mileage,
                 notes
             });
 
@@ -111,7 +119,7 @@ const SellCarModal = ({ isOpen, onClose, vehicle, onSuccess }) => {
                                     {isAr ? 'طلب وساطة بيع المركبة' : 'List Vehicle for Consignment'}
                                 </h3>
                                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                                    {vehicle.make} {vehicle.model} {vehicle.year} ({vehicle.license_plate || '—'})
+                                    {activeCar.make} {activeCar.model} {activeCar.year} ({activeCar.license_plate || '—'})
                                 </p>
                             </div>
 

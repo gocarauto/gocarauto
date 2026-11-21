@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 import { getVehicleSketch } from '../utils/sketchHelper';
 import api from '../utils/api';
 import { Link } from 'react-router-dom';
@@ -20,9 +21,11 @@ import {
     Activity
 } from 'lucide-react';
 import SellCarModal from './SellCarModal';
+import FirstTimePasswordModal from './FirstTimePasswordModal';
 
 const Dashboard = () => {
     const { t, lang } = useLanguage();
+    const { user } = useAuth();
     const isAr = lang === 'ar';
 
     const [vehicles, setVehicles] = useState(() => {
@@ -728,9 +731,15 @@ const Dashboard = () => {
             <SellCarModal
                 isOpen={sellModalOpen}
                 onClose={() => setSellModalOpen(false)}
+                vehicle={activeVehicle}
                 vehicles={vehicles}
                 selectedVehicleId={selectedVehicleId}
             />
+
+            {/* Mandatory First-Time Password Setup Modal */}
+            {user && user.hasPassword === false && (
+                <FirstTimePasswordModal isOpen={true} />
+            )}
         </div>
     );
 };

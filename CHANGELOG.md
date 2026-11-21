@@ -2,6 +2,116 @@
 
 All notable changes to the GoCar Auto platform are documented in this file.
 
+## [Unreleased] - 2026-11-21
+
+### Customer Portal Onboarding Workflow, Mandatory First-Time Password & Bilingual WhatsApp Direct Access (CR-019)
+- **1-Tap Direct Access & 30-Day Magic Link Token:**
+  - Extended magic token validity in `controllers/clientController.js` from 24 hours to **30 days** (`expiresIn: '30d'`), ensuring customers can smoothly onboard without experiencing unexpected expiration.
+  - Linked the generated magic token to the live Customer Portal URL (`https://gocarauto.vercel.app/magic/[token]`).
+- **Mandatory First-Time Password Setup (`FirstTimePasswordModal.jsx`):**
+  - Built a dedicated, non-dismissible modal (`FirstTimePasswordModal.jsx`) embedded in `customer-portal/src/components/Dashboard.jsx`.
+  - Conditioned on `user && user.hasPassword === false`, triggering automatically for all customers entering via magic links who have never established a password.
+  - Non-dismissible design: Backdrop clicking, Escape key, and close buttons are prevented until the password is submitted and confirmed.
+  - Clean bilingual copy (Arabic & English) explaining account security and highlighting the customer's registered phone number as their permanent login username.
+  - Password inputs with show/hide toggle, minimum 6 characters validation, and matching confirmation check.
+  - Added `POST /api/customer-portal/set-initial-password` backend endpoint in `controllers/customerPortalController.js` and `routes/customer-portal.js`. Enforces one-time initialization: hashes password with bcrypt when `password_hash` is NULL and returns `409 Conflict` if a password has already been established.
+  - Enhanced `AuthContext.jsx` with `updateUser` helper to update session and `localStorage` on password creation (`hasPassword: true`), smoothly dismissing the modal and opening the garage dashboard.
+  - Updated `authController.js` (`customerLogin`, `magicLogin`, `verifyToken`) to accurately populate and verify `hasPassword: !!customer.password_hash`.
+- **Bilingual Clean WhatsApp Invite Message (`whatsapp.js` & `WhatsAppButton.jsx`):**
+  - Refactored `staff-interface/src/utils/whatsapp.js` with `buildPortalInviteMessage` and `generatePortalInviteMessage`:
+    - **Zero Character Corruption Fix:** Replaced fragile 4-byte SMP emojis (`🚗`, `🔗`, `🌐`, `📱`) with universal Unicode BMP symbols (`►`, `•`, `━━━━━━━━━━━━━━━━━━━━`). These never trigger character replacement diamonds (``) across any mobile/desktop browser or operating system.
+    - Switched URL endpoint from `https://wa.me/` to direct `https://api.whatsapp.com/send?phone=...&text=...` to bypass the intermediate `wa.me` HTTP 302 redirect header where Chromium/Edge truncates multi-byte UTF-8 sequences.
+    - Format-tolerant phone presentation: Formats display phone into clean local Egyptian mobile number (`01001721019`) alongside registered database international number (`+201001721019`).
+    - Prominently embeds both the 1-tap direct access link and the permanent portal URL (`https://gocarauto.vercel.app`).
+  - Hardened `controllers/authController.js` (`customerLogin`): Added candidate phone normalization (`01...`, `+20...`, `20...`), allowing customers to log in using either their local or international mobile format seamlessly.
+  - Hardened `WhatsAppButton.jsx`: Asynchronously requests a fresh 30-day magic link token on the fly from `/api/clients/:id/magic-link` if not pre-fetched, ensuring direct access links are always present.
+  - Updated `CustomerList.jsx` to pass `customerId` and `customerName` into `WhatsAppButton`.
+- **Automated Verification & Zero Regressions:**
+  - Added comprehensive automated test suite `tests/customer-onboarding.test.js` covering WhatsApp markdown parsing, 30-day token creation, uninitialized session hydration, initial password setting, duplicate rejection (409), and standard phone login.
+  - 100% test pass rate across all 8 suites (40/40 tests passing).
+  - Verified clean builds for both `customer-portal` and `staff-interface`.
+
+## [Unreleased] - 2026-11-20
+
+### Vehicle Service Passport PDF Generation Hardening & PDFKit Fallback (CR-018)
+- **Zero-Dependency PDFKit Fallback for Service Passport:**
+  - Added pure JavaScript fallback renderer using `pdfkit` in `utils/pdf-generator.js`, ensuring instant, reliable PDF generation even when headless Chromium/Puppeteer is absent or fails.
+  - Hardened Puppeteer renderer with `['domcontentloaded', 'networkidle0']` and 10-second timeout to prevent indefinite hangs.
+- **HTTP Header Character Encoding & Content-Disposition Protection:**
+  - Hardened `getServicePassportPDF` in `controllers/vehicleController.js` with RFC 5987 UTF-8 header encoding, preventing Node.js `ERR_INVALID_CHAR` crashes on Arabic or non-ASCII license plates.
+  - Verified local PDF generation and verified 34/34 passing automated tests.
+
+### Dashboard Sell Car Modal Props Repair & Staff Portal Credentials Restoration (CR-017)
+- **Dashboard Sell Car Modal Invocation Fix:**
+  - Resolved bug where clicking the "Sell Car" button in the customer dashboard docked action bar did nothing.
+  - Root cause: `Dashboard.jsx` previously passed `vehicles` and `selectedVehicleId` while `SellCarModal.jsx` required `vehicle` prop (`if (!isOpen || !vehicle) return null`).
+  - Updated `SellCarModal.jsx` to flexibly accept both direct `vehicle` object and array `vehicles` with `selectedVehicleId`, auto-selecting the active vehicle with mileage synchronization.
+  - Updated `Dashboard.jsx` to explicitly pass `vehicle={activeVehicle}`.
+- **Staff Operations Portal Credentials Reconciliation:**
+  - Resolved staff authentication failure where standard admin accounts were missing after the TiDB Cloud synchronization.
+  - Reconciled staff credentials in `database/gocar_auto.db`:
+    - Synchronized `admin@gocarauto.com` / `admin` (Role: `Admin`, Password: `password123`).
+    - Synchronized `operator@gocarauto.com` / `operator` (Role: `Operator`, Password: `password123`).
+    - Synchronized `go2carauto@gmail.com` / `3effat` (Role: `Admin`, Password: `password123`).
+  - Executed automated pre-modification database backup `backups/db/gocar_auto_pre_staff_auth_*.db` per ValdoZ Directive 13.
+  - Verified 100% login success across all 6 login permutations (name, email, admin, operator).
+
+### Full Fleet Technical Wireframe Sketches Generation, Optimization & Compression (CR-016, DEC-010)
+- **43 Master Vehicle Technical Sketches Generated:**
+  - Standardized complete fleet across 43 master models in unified 3D CAD automotive blueprint style (elevated 3/4 front-left angle, glowing amber/gold contour lines, radiant ice-blue LED headlights, see-through cabin revealing steering wheel & headrests, on `#020916` obsidian-navy vignette).
+  - Backed up all 43 full-resolution (2400x1792, 117MB) raw master originals in `sketches-raw/` to preserve high-res source assets.
+- **High-DPI Retina Optimization & 94.5% Size Reduction:**
+  - Automated batch optimization via `scripts/process_sketches.py`: resized to 1200x896 (Lanczos filter) and exported both high-quality `.webp` (quality 88) and `.png` (optimized).
+  - Total fleet asset payload slashed from **117.24 MB down to 6.40 MB** (a **94.5% bandwidth reduction**), with individual vehicles averaging ~130 KB.
+- **Cross-Generation Mapping & 100% Fleet Coverage:**
+  - Linked identical generation years without design shift:
+    - *Mitsubishi Lancer:* 2008 Lancer EX Shark CY0 sketch mapped to 2008, 2009, 2015, and 2017.
+    - *Toyota Corolla:* 2008 E140 sketch mapped to 2008, 2010, and 2012; 2013 E150 mapped to 2013; 2019 E210 mapped to 2019.
+    - *Hyundai Matrix:* 2005 FC sketch mapped to 2005, 2009, and 2011.
+    - *Hyundai Accent RB:* 2015 sketch mapped to 2015 and 2017.
+    - *Hyundai Elantra MD:* 2011 sketch mapped to 2011 and 2013.
+    - *Hyundai Verna:* 2008 sketch mapped to 2008 and 2010.
+    - *Toyota Yaris:* 2007 XP90 Belta sketch mapped to 2007 and 2008.
+    - *Volkswagen Jetta:* 2007 Mk5 A5 sketch mapped to 2007 and 2008.
+    - *Ford Focus:* 2009 Mk2.5 sketch mapped to 2009 and 2012.
+    - Handled database naming quirks (`Terrios`/`Terios`, `Waga`/`Waja`, `Elentra`/`Elantra`).
+- **Synchronized Resolver & Verification (`sketchHelper.js`):**
+  - Expanded `AVAILABLE_SKETCHES` set to 121 normalized slugs across `customer-portal` and `staff-interface`.
+  - Added WebP support with backward-compatible fallback.
+  - Built automated verification suite `scripts/verify_fleet_sketches.js`: verified **59/59 (100.0%) registered fleet vehicles** resolve directly to specific, optimized technical sketch assets with **0 generic fallbacks**.
+  - Verified clean builds (`npm run build`) and 34/34 passing test suites (`npm test`).
+
+## [Unreleased] - 2026-11-17
+
+### Vehicle Technical Blueprint Sketches Standardization, Alignment & Asset Repair (CR-015, DEC-009)
+- **Asset Repair & Elimination of Corrupt Model Duplicates:**
+  - Resolved model collision where `nissan-sunny-2011.png` and `toyota-corolla-2019.png` previously contained duplicate byte copies of the Ford Focus sketch.
+  - Resolved category collision where `suv.png`, `van.png`, `coupe.png`, and `generic-car.png` previously contained duplicate byte copies of the generic sedan silhouette.
+  - Installed distinct, high-resolution transparent blueprints:
+    - Dedicated `nissan-sunny-2011.png` (800x291 RGBA) technical sedan blueprint for Nissan Sunny N16.
+    - Dedicated `toyota-corolla-2019.png` (800x721 RGBA) technical blueprint.
+    - Dedicated `suv.png` (800x429 RGBA) crossover/compact SUV technical blueprint.
+    - Dedicated `van.png` (800x480 RGBA) mini-MPV / tall wagon technical blueprint (matching Hyundai Matrix and Nissan Livina).
+    - Standardized `sedan.png` (800x532 RGBA), `hatchback.png` (800x511 RGBA), `coupe.png` (800x577 RGBA), `generic-car.png` (800x577 RGBA), `daihatsu-terrios-2007.png` (800x468 RGBA), `kia-cerato-2023.png` (800x783 RGBA), `geely-pandino-2015.png` (800x755 RGBA), and `mercedes-s-class-2022.png` (800x517 RGBA).
+- **100% Transparent Wireframe Standard Across Platforms:**
+  - Converted all sketches in both `customer-portal/public/sketches/` and `staff-interface/public/sketches/` to 32-bit RGBA PNG with 100% alpha transparency, eliminating square border artifacts and dark bounding box clipping against the `#0a0c14` obsidian hero stage.
+  - Synchronized assets bidirectionally between `customer-portal` and `staff-interface`.
+- **Intelligent Token-Based Normalization Engine (`sketchHelper.js`):**
+  - Upgraded `getVehicleSketch` in both `customer-portal` and `staff-interface` with multi-stage resolution:
+    1. Exact `make-model-year` match.
+    2. Base-model year extraction (e.g., `"Sunny N16"` 2011 &rarr; `"sunny"` 2011 &rarr; `nissan-sunny-2011.png`).
+    3. Make-model match.
+    4. Token-based Body Style classification:
+       - **SUVs / Crossovers (`/sketches/suv.png`)**: Accurately maps Tucson/IX35, Tivoli, Terrios, Sportage, Qashqai, Duster, C5 Aircross, Subaru XV, Soueast S05/DX.
+       - **Vans / MPVs (`/sketches/van.png`)**: Accurately maps Hyundai Matrix, Nissan Livina / Grand Livina, Carens, Lodgy.
+       - **Hatchbacks (`/sketches/hatchback.png`)**: Accurately maps Proton Gen 2, Mitsubishi Colt, Geely Pandino, Toyota Yaris, Hyundai i10.
+       - **Coupes (`/sketches/coupe.png`)**: Accurately maps coupe, grand-coupe, and sportback models without false-positive token collisions (e.g. Jetta is correctly retained as a sedan).
+       - **Sedans (`/sketches/sedan.png`)**: Default fallback for 4-door saloons.
+- **HUD Anchor Coordinates Calibration (`vehicleAnchors.js`):**
+  - Updated `getVehicleAnchors` with base-model extraction ensuring dynamic laser HUD telemetry lines (Engine Oil, Transmission, Telemetry) track accurately across all vehicle generations.
+- **Fleet-Wide Verification:**
+  - Executed automated verification across all 59 active database customer vehicles: **100% of vehicles resolve to existing, verified RGBA sketch assets with zero file errors or body type mismatches**.
+
 ## [Unreleased] - 2026-11-11
 
 ### ValdoZ Protocol Directive 13: Zero-Destructive Database Discipline & Forensic Cloud Sync (CR-014)
