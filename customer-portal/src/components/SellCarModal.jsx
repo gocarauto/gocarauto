@@ -113,7 +113,7 @@ const SellCarModal = ({ isOpen, onClose, vehicle, vehicles, selectedVehicleId, o
                             <div>
                                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-400/10 text-amber-600 dark:text-amber-400 text-xs font-bold border border-amber-400/20 mb-2">
                                     <Tag size={13} />
-                                    <span>{isAr ? 'خدمة وساطة السيارات • جوكار' : 'GoCar Brokerage Concierge'}</span>
+                                    <span>{isAr ? 'خدمة وساطة السيارات • جوكار' : 'GoCar Brokerage Service'}</span>
                                 </div>
                                 <h3 className="text-lg sm:text-xl font-bold text-slate-950 dark:text-white">
                                     {isAr ? 'طلب وساطة بيع المركبة' : 'List Vehicle for Consignment'}

@@ -615,8 +615,8 @@ const Dashboard = () => {
                         </h3>
                         <p className="text-xs text-slate-400 max-w-sm mx-auto">
                             {isAr 
-                                ? 'سجل سيارتك مع خدمة العملاء لتمكين العدادات الرقمية وتتبع الصيانات الدورية.' 
-                                : 'Add your first vehicle with our concierge to enable automated telemetry and digital service records.'}
+                                ? 'سجل سيارتك مع فريق خدمة العملاء لتمكين العدادات الرقمية وتتبع الصيانات الدورية.' 
+                                : 'Add your first vehicle with our team to enable automated telemetry and digital service records.'}
                         </p>
                         <Link
                             to="/vehicles"

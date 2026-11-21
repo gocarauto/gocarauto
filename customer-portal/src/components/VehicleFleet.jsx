@@ -400,7 +400,7 @@ const VehicleFleet = () => {
                         {isAr ? 'لم يتم العثور على سيارات مطابقة' : 'No Matching Vehicles'}
                     </h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-                        {isAr ? 'جرب البحث بكلمات مختلفة أو تواصل مع كونسيرج جوكار لإضافة مركبة جديدة.' : 'Adjust search terms or contact GoCar concierge to register an additional vehicle.'}
+                        {isAr ? 'جرب البحث بكلمات مختلفة أو تواصل مع فريق جوكار لإضافة مركبة جديدة.' : 'Adjust search terms or contact GoCar team to register an additional vehicle.'}
                     </p>
                 </div>
             )}

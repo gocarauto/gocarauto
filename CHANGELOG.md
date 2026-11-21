@@ -4,6 +4,13 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-21
 
+### Social Preview Meta Tags & Customer Portal Brand Vocabulary Simplification (CR-020)
+- **WhatsApp Link Preview & Meta Tags Modernization:**
+  - Updated `customer-portal/index.html` meta description from `"GoCar Auto - Premier Automotive Concierge, Fleet Management & Certified Workshop System"` to the simpler, user-friendly `"GoCar Auto - Automotive Care & Maintenance Services"`.
+  - Added dedicated Open Graph and Twitter Card tags (`og:title`, `og:description`, `og:url`, `og:site_name`, `twitter:card`) ensuring crystal-clear previews on WhatsApp, iMessage, and social channels.
+- **In-App Vocabulary Refinement:**
+  - Replaced jargon terms ("concierge") with natural, friendly language across `Dashboard.jsx`, `VehicleFleet.jsx`, and `SellCarModal.jsx` in both English and Arabic (`our team` / `فريق جوكار`, `Brokerage Service` / `خدمة وساطة السيارات`).
+
 ### Customer Portal Onboarding Workflow, Mandatory First-Time Password & Bilingual WhatsApp Direct Access (CR-019)
 - **1-Tap Direct Access & 30-Day Magic Link Token:**
   - Extended magic token validity in `controllers/clientController.js` from 24 hours to **30 days** (`expiresIn: '30d'`), ensuring customers can smoothly onboard without experiencing unexpected expiration.
