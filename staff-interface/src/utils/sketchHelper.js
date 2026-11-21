@@ -62,6 +62,8 @@ const COUPES = new Set([
 ]);
 
 export const getVehicleSketch = (makeOrVehicle, modelArg, yearArg, ext = 'webp') => {
+    const formatUrl = (name) => `/sketches/${name}.${ext}?v=3`;
+
     let make = makeOrVehicle;
     let model = modelArg;
     let year = yearArg;
@@ -72,7 +74,7 @@ export const getVehicleSketch = (makeOrVehicle, modelArg, yearArg, ext = 'webp')
         year = makeOrVehicle.year;
     }
 
-    if (!make || typeof make !== 'string') return `/sketches/generic-car.${ext}`;
+    if (!make || typeof make !== 'string') return formatUrl('generic-car');
 
     const normalizedMake = make.toLowerCase()
         .replace('mercedes-benz', 'mercedes')
@@ -84,35 +86,35 @@ export const getVehicleSketch = (makeOrVehicle, modelArg, yearArg, ext = 'webp')
 
     // 1. Exact match make-model-year
     const specificPath = `${normalizedMake}-${normalizedModel}-${normalizedYear}`;
-    if (AVAILABLE_SKETCHES.has(specificPath)) return `/sketches/${specificPath}.${ext}`;
+    if (AVAILABLE_SKETCHES.has(specificPath)) return formatUrl(specificPath);
 
     // 2. Base-model extraction (e.g. "sunny-n16" -> "sunny", "elentra-hd" -> "elentra")
     const tokens = normalizedModel.split('-').filter(Boolean);
     const baseModel = tokens[0] || normalizedModel;
 
     const baseYearPath = `${normalizedMake}-${baseModel}-${normalizedYear}`;
-    if (AVAILABLE_SKETCHES.has(baseYearPath)) return `/sketches/${baseYearPath}.${ext}`;
+    if (AVAILABLE_SKETCHES.has(baseYearPath)) return formatUrl(baseYearPath);
 
     // 3. Make-model match
     const modelPath = `${normalizedMake}-${normalizedModel}`;
-    if (AVAILABLE_SKETCHES.has(modelPath)) return `/sketches/${modelPath}.${ext}`;
+    if (AVAILABLE_SKETCHES.has(modelPath)) return formatUrl(modelPath);
 
     const baseModelPath = `${normalizedMake}-${baseModel}`;
-    if (AVAILABLE_SKETCHES.has(baseModelPath)) return `/sketches/${baseModelPath}.${ext}`;
+    if (AVAILABLE_SKETCHES.has(baseModelPath)) return formatUrl(baseModelPath);
 
     // 4. Token-based Body Style Categorization
     for (const t of tokens) {
-        if (SUVS.has(t)) return `/sketches/suv.${ext}`;
-        if (VANS.has(t)) return `/sketches/van.${ext}`;
-        if (HATCHBACKS.has(t)) return `/sketches/hatchback.${ext}`;
-        if (COUPES.has(t)) return `/sketches/coupe.${ext}`;
+        if (SUVS.has(t)) return formatUrl('suv');
+        if (VANS.has(t)) return formatUrl('van');
+        if (HATCHBACKS.has(t)) return formatUrl('hatchback');
+        if (COUPES.has(t)) return formatUrl('coupe');
     }
 
     // Compound phrases
-    if (normalizedModel.includes('gen-2')) return `/sketches/hatchback.${ext}`;
-    if (normalizedModel.includes('aircross') || normalizedModel.includes('s05')) return `/sketches/suv.${ext}`;
-    if (normalizedModel.includes('matrix') || normalizedModel.includes('livina')) return `/sketches/van.${ext}`;
+    if (normalizedModel.includes('gen-2')) return formatUrl('hatchback');
+    if (normalizedModel.includes('aircross') || normalizedModel.includes('s05')) return formatUrl('suv');
+    if (normalizedModel.includes('matrix') || normalizedModel.includes('livina')) return formatUrl('van');
 
     // 5. Default Sedan fallback
-    return `/sketches/sedan.${ext}`;
+    return formatUrl('sedan');
 };

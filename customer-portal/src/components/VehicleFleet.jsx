@@ -213,11 +213,8 @@ const VehicleFleet = () => {
                                         <img
                                             src={sketch}
                                             alt={`${v.make} ${v.model}`}
-                                            className="w-full max-h-[200px] sm:max-h-[220px] object-contain mix-blend-screen filter contrast-[1.2] brightness-[0.95] transition-transform duration-300 group-hover:scale-105 select-none"
-                                            style={{
-                                                WebkitMaskImage: 'radial-gradient(ellipse 85% 80% at 50% 50%, black 45%, transparent 90%)',
-                                                maskImage: 'radial-gradient(ellipse 85% 80% at 50% 50%, black 45%, transparent 90%)'
-                                            }}
+                                            style={{ mixBlendMode: 'screen' }}
+                                            className="w-full max-h-[200px] sm:max-h-[220px] object-contain select-none filter contrast-[1.1] transition-transform duration-300 group-hover:scale-105"
                                         />
                                     </div>
 

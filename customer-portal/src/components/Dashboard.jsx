@@ -398,11 +398,8 @@ const Dashboard = () => {
                                             animate={{ opacity: 1, scale: 1 }}
                                             exit={{ opacity: 0, scale: 0.95 }}
                                             transition={{ duration: 0.3 }}
-                                            className="h-[390px] sm:h-[470px] lg:h-[500px] w-auto max-w-[92%] sm:max-w-[80%] object-contain mix-blend-screen filter contrast-[1.2] brightness-[0.95] select-none"
-                                            style={{
-                                                WebkitMaskImage: 'radial-gradient(ellipse 80% 75% at 50% 50%, black 40%, transparent 85%)',
-                                                maskImage: 'radial-gradient(ellipse 80% 75% at 50% 50%, black 40%, transparent 85%)'
-                                            }}
+                                            style={{ mixBlendMode: 'screen' }}
+                                            className="h-[390px] sm:h-[470px] lg:h-[500px] w-auto max-w-[92%] sm:max-w-[80%] object-contain select-none filter contrast-[1.1]"
                                         />
                                     ) : (
                                         <div className="text-center text-slate-500 text-xs">

@@ -4,6 +4,16 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-21
 
+### Vehicle Blueprint Native RGBA Alpha Transparency & Cache-Buster Invalidation (CR-029)
+- **Native RGBA Alpha Transparency Across All 246 Sketches:**
+  - Batch-processed all 123 WebP and 123 PNG blueprint sketches across both `customer-portal` and `staff-interface` using ImageMagick alpha compositing (`-colorspace gray -level 8%,100% -alpha off -compose copy_opacity -composite`), converting solid navy background pixels (`#010611`) to true transparent alpha (`A = 0`).
+  - Vehicle neon blueprint wireframes, cyan headlights, and golden accents retain 100% anti-aliased edge glow and detail.
+- **Eliminated CSS Stacking Context Failures & Box Shadows:**
+  - Removed box `drop-shadow` from `Dashboard.jsx`, preventing rectangular shadow rendering around image file boundaries.
+  - Added dual-protection `style={{ mixBlendMode: 'screen' }}` across `Dashboard.jsx`, `VehicleFleet.jsx`, and `ServiceBooking.jsx`.
+- **Cache-Buster Query Invalidation (`sketchHelper.js`):**
+  - Updated `getVehicleSketch` in both `customer-portal` and `staff-interface` to append `?v=3` to sketch asset URLs, busting browser disk caches and PWA Service Worker caching so local and live browsers instantly fetch the transparent RGBA assets.
+
 ### Blueprint Sketch Seamless Screen Blending & Feathered Radial Masking (CR-027)
 - **Eliminated Rectangular Box & Hard Edges Around Vehicle Blueprint Artwork:**
   - Root cause: Vehicle sketch PNG assets are solid rectangular images without transparent alpha channels (`8-bit sRGB`, dark navy background `#010611`). Previously rendered in `Dashboard.jsx`, `VehicleFleet.jsx`, and `ServiceBooking.jsx` with `object-contain` and `drop-shadow-[0_25px_50px_rgba(0,0,0,0.95)]`, casting a box shadow around the rectangular image frame and creating sharp, unblended rectangular borders against the stage.
