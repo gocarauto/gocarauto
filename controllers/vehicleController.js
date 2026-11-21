@@ -1,5 +1,6 @@
 import database from '../database/db.js';
 import { generateServicePassportPDF } from '../utils/pdf-generator.js';
+import { generatePassportHTML } from '../utils/passport-viewer.js';
 
 /**
  * Vehicle Controller
@@ -432,6 +433,54 @@ const vehicleController = {
         } catch (error) {
             console.error('SERVER_SERVICE_PASSPORT_ERROR:', error);
             res.status(500).json({ success: false, error: 'Failed to generate service passport PDF' });
+        }
+    },
+
+    /**
+     * Browser-based interactive HTML viewer for Vehicle Service Passport.
+     * Matches the exact GoCar Auto Invoice Design Theme (Cairo/Outfit, navy & orange, print/save PDF button).
+     */
+    getServicePassportView: async (req, res) => {
+        try {
+            const { id } = req.params;
+
+            const vehicle = await database.get('SELECT * FROM vehicles WHERE id = ?', [id]);
+            if (!vehicle) {
+                return res.status(404).send('Vehicle not found');
+            }
+
+            // If user is a customer, verify ownership
+            if (req.user?.userType === 'customer' && vehicle.client_id !== req.user.id) {
+                return res.status(403).send('Access denied: You do not own this vehicle');
+            }
+
+            // Fetch chronologic service records for this vehicle
+            const records = await database.query(
+                `SELECT sr.service_date, sr.mileage, sr.notes,
+                        si.item_name, si.item_name_ar, si.category
+                 FROM service_records sr
+                 JOIN service_requests sreq ON sr.request_id = sreq.id
+                 JOIN service_items si ON sr.item_id = si.id
+                 WHERE sreq.vehicle_id = ?
+                 ORDER BY sr.service_date DESC, sr.id DESC`,
+                [id]
+            );
+
+            const passportId = `GCP-${vehicle.id}-${(vehicle.vin || vehicle.license_plate || 'AUT').replace(/[^a-zA-Z0-9]/g, '').slice(-4)}-${new Date().getFullYear()}`;
+            const verificationUrl = `${req.protocol}://${req.get('host')}/api/public/passport/${encodeURIComponent(vehicle.vin || vehicle.license_plate || vehicle.id)}`;
+
+            const htmlContent = generatePassportHTML({
+                vehicle,
+                records,
+                passportId,
+                verificationUrl
+            });
+
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.send(htmlContent);
+        } catch (error) {
+            console.error('SERVER_SERVICE_PASSPORT_VIEW_ERROR:', error);
+            res.status(500).send('Failed to generate service passport view');
         }
     },
 

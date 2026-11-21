@@ -154,7 +154,16 @@ const customerPortalController = {
             // Sort combined list descending by date
             records.sort((a, b) => new Date(b.service_date || 0) - new Date(a.service_date || 0));
 
-            res.json({ success: true, data: records });
+            // Compute true total maintenance invested (matching settled invoices on Dashboard & Invoices)
+            const totalInvestedResult = await database.get(
+                `SELECT COALESCE(SUM(total_amount_due), 0) as totalInvested
+                 FROM financial_transactions
+                 WHERE request_id IN (SELECT id FROM service_requests WHERE client_id = ?)`,
+                [customerId]
+            );
+            const totalInvested = totalInvestedResult ? parseFloat(totalInvestedResult.totalInvested) : 0;
+
+            res.json({ success: true, data: records, totalInvested });
         } catch (error) {
             console.error('SERVER_PORTAL_ERROR:', error);
             res.status(500).json({ error: 'Failed to access service records' });

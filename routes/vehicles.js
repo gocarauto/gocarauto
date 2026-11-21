@@ -50,6 +50,11 @@ router.get('/:id/service-history', verifyToken, vehicleController.getServiceHist
 router.get('/:id/service-passport/pdf', verifyToken, vehicleController.getServicePassportPDF);
 
 /**
+ * Interactive HTML browser-based viewer for Vehicle Service Passport
+ */
+router.get('/:id/service-passport/view', verifyToken, vehicleController.getServicePassportView);
+
+/**
  * Public vehicle pedigree verification
  */
 router.get('/public-passport/:identifier', vehicleController.getPublicPassport);

@@ -4,6 +4,22 @@ import fs from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { generatePassportHTML } from './passport-viewer.js';
+import reshaper from 'arabic-reshaper';
+import bidiFactory from 'bidi-js';
+
+const bidi = bidiFactory();
+
+function formatArabicForPDFKit(text) {
+    if (!text || !/[\u0600-\u06FF]/.test(text)) return text;
+    try {
+        const reshaped = reshaper.convertArabic(text);
+        const levels = bidi.getEmbeddingLevels(reshaped);
+        return bidi.getReorderedString(reshaped, levels);
+    } catch {
+        return text;
+    }
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -198,334 +214,20 @@ export async function generateInvoicePDF(data) {
  * @returns {Buffer} - PDF binary buffer.
  */
 export async function generateServicePassportPDF(data) {
-    const { vehicle, records = [], passportId, verificationUrl } = data;
-
-    const logoPath = path.join(__dirname, '../public/logo.png');
-    const logoBase64 = existsSync(logoPath) ? `data:image/png;base64,${(await fs.readFile(logoPath)).toString('base64')}` : '';
-
-    const fontPath = path.join(__dirname, 'Arabic.ttf');
-    const fontBoldPath = path.join(__dirname, 'Arabic-Bold.ttf');
-    const fontBase64 = existsSync(fontPath) ? (await fs.readFile(fontPath)).toString('base64') : '';
-    const fontBoldBase64 = existsSync(fontBoldPath) ? (await fs.readFile(fontBoldPath)).toString('base64') : '';
-
-    const passportNumber = passportId || `GCP-${vehicle.id}-${(vehicle.vin || 'AUT').slice(-4)}-${new Date().getFullYear()}`;
-    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-
-    const htmlContent = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <style>
-        @font-face {
-            font-family: 'CairoLocal';
-            src: url(data:font/truetype;charset=utf-8;base64,${fontBase64}) format('truetype');
-            font-weight: 400; font-style: normal;
-        }
-        @font-face {
-            font-family: 'CairoLocal';
-            src: url(data:font/truetype;charset=utf-8;base64,${fontBoldBase64}) format('truetype');
-            font-weight: 700; font-style: normal;
-        }
-        :root {
-            --gocar-dark: #0b0f19;
-            --gocar-gold: #fbbf24;
-            --gocar-blue: #1e3a5f;
-            --gocar-light: #f8fafc;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --border-light: #e2e8f0;
-        }
-        * { box-sizing: border-box; }
-        body {
-            font-family: 'CairoLocal', sans-serif;
-            margin: 0; padding: 0;
-            color: var(--text-dark);
-            line-height: 1.45;
-            background: #ffffff;
-        }
-        .passport-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 25px;
-            border-bottom: 2px solid var(--border-light);
-            margin-bottom: 25px;
-        }
-        .logo { height: 55px; }
-        .passport-badge {
-            text-align: right;
-        }
-        .badge-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--gocar-blue);
-            margin: 0;
-            letter-spacing: -0.5px;
-            text-transform: uppercase;
-        }
-        .badge-subtitle {
-            font-size: 13px;
-            font-weight: 700;
-            color: #d97706;
-            margin: 2px 0;
-            direction: rtl;
-        }
-        .passport-no {
-            font-size: 10px;
-            font-family: monospace;
-            font-weight: 700;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-        .privacy-banner {
-            background-color: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: 8px;
-            padding: 10px 14px;
-            font-size: 10px;
-            color: #166534;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 25px;
-        }
-        .privacy-tag {
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .vehicle-identity-card {
-            background: #f8fafc;
-            border: 1px solid var(--border-light);
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 30px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-        }
-        .spec-item {
-            display: flex;
-            flex-direction: column;
-        }
-        .spec-label {
-            font-size: 9px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-            margin-bottom: 3px;
-        }
-        .spec-value {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-        .spec-value-gold {
-            color: #b45309;
-            font-size: 15px;
-        }
-        .section-title {
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--gocar-blue);
-            margin: 0 0 12px 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-            font-size: 11px;
-        }
-        thead {
-            background-color: #0f172a;
-            color: #ffffff;
-        }
-        th {
-            padding: 10px 12px;
-            text-align: left;
-            font-size: 9px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        td {
-            padding: 10px 12px;
-            border-bottom: 1px solid var(--border-light);
-        }
-        tr:nth-child(even) td {
-            background-color: #f8fafc;
-        }
-        .arabic-text {
-            direction: rtl;
-            unicode-bidi: embed;
-        }
-        .category-pill {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-size: 9px;
-            font-weight: 700;
-            text-transform: uppercase;
-            background-color: #e0f2fe;
-            color: #0369a1;
-        }
-        .certification-footer {
-            margin-top: 35px;
-            padding: 18px;
-            background: #f8fafc;
-            border-left: 4px solid var(--gocar-gold);
-            border-radius: 0 10px 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .cert-statement {
-            font-size: 9px;
-            color: var(--text-muted);
-            max-width: 480px;
-            line-height: 1.5;
-        }
-        .verification-stamp {
-            text-align: right;
-            border: 2px dashed #d97706;
-            padding: 8px 12px;
-            border-radius: 8px;
-            background: #fffbeb;
-        }
-        .stamp-title {
-            font-size: 9px;
-            font-weight: 700;
-            color: #b45309;
-            text-transform: uppercase;
-        }
-        .stamp-code {
-            font-family: monospace;
-            font-size: 11px;
-            font-weight: 700;
-            color: #78350f;
-        }
-    </style>
-</head>
-<body>
-    <div class="passport-header">
-        <img src="${logoBase64}" class="logo" alt="GoCar Auto">
-        <div class="passport-badge">
-            <h1 class="badge-title">SERVICE PASSPORT</h1>
-            <p class="badge-subtitle">جواز الصيانة الفني المعتمد</p>
-            <div class="passport-no">ID: ${escapeHtml(passportNumber)} • Date: ${escapeHtml(generatedDate)}</div>
-        </div>
-    </div>
-
-    <div class="privacy-banner">
-        <span class="privacy-tag">🛡️ Privacy Shield Verified</span>
-        <span>Owner Identity: <strong>Confidential Registered Client</strong> (Redacted for resale protection)</span>
-    </div>
-
-    <div class="vehicle-identity-card">
-        <div class="spec-item">
-            <span class="spec-label">Vehicle</span>
-            <span class="spec-value">${escapeHtml(vehicle.make)} ${escapeHtml(vehicle.model)}</span>
-        </div>
-        <div class="spec-item">
-            <span class="spec-label">Year Model</span>
-            <span class="spec-value">${escapeHtml(vehicle.year || '—')}</span>
-        </div>
-        <div class="spec-item">
-            <span class="spec-label">Plate / License</span>
-            <span class="spec-value">${escapeHtml(vehicle.license_plate || '—')}</span>
-        </div>
-        <div class="spec-item">
-            <span class="spec-label">Chassis (VIN)</span>
-            <span class="spec-value font-mono" style="font-size: 11px;">${escapeHtml(vehicle.vin || '—')}</span>
-        </div>
-        <div class="spec-item" style="margin-top: 10px;">
-            <span class="spec-label">Verified Odometer</span>
-            <span class="spec-value spec-value-gold">${(vehicle.current_mileage || 0).toLocaleString()} KM</span>
-        </div>
-        <div class="spec-item" style="margin-top: 10px;">
-            <span class="spec-label">Total Completed Visits</span>
-            <span class="spec-value">${records.length || vehicle.services_count || 0} Visits</span>
-        </div>
-        <div class="spec-item" style="margin-top: 10px;">
-            <span class="spec-label">Last Inspection</span>
-            <span class="spec-value">${vehicle.last_service_date || generatedDate}</span>
-        </div>
-        <div class="spec-item" style="margin-top: 10px;">
-            <span class="spec-label">Pedigree Status</span>
-            <span class="spec-value" style="color: #16a34a;">Certified Active</span>
-        </div>
-    </div>
-
-    <div class="section-title">
-        <span>Verified Maintenance Ledger & Parts History</span>
-        <span style="font-size: 9px; color: var(--text-muted); font-weight: 400;">Chronological Workshop Records</span>
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th style="width: 85px;">Date</th>
-                <th style="width: 85px;">Mileage</th>
-                <th>Service & Replacement Parts</th>
-                <th style="width: 90px; text-align: center;">Category</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${records.length > 0 ? records.map(r => `
-                <tr>
-                    <td style="font-weight: 700; color: var(--text-muted);">${escapeHtml(r.service_date || '—')}</td>
-                    <td style="font-family: monospace; font-weight: 700;">${r.mileage ? parseInt(r.mileage).toLocaleString() + ' KM' : '—'}</td>
-                    <td class="${/[\u0600-\u06FF]/.test(r.item_name || r.item_name_ar) ? 'arabic-text' : ''}">
-                        <strong>${escapeHtml(r.item_name_ar || r.item_name || 'Routine Service')}</strong>
-                        ${r.notes ? `<div style="font-size: 9px; color: var(--text-muted); margin-top: 2px;">${escapeHtml(r.notes)}</div>` : ''}
-                    </td>
-                    <td style="text-align: center;">
-                        <span class="category-pill">${escapeHtml(r.category || 'Service')}</span>
-                    </td>
-                </tr>
-            `).join('') : `
-                <tr>
-                    <td colspan="4" style="text-align: center; padding: 20px; color: var(--text-muted);">
-                        No recorded service items found for this vehicle.
-                    </td>
-                </tr>
-            `}
-        </tbody>
-    </table>
-
-    <div class="certification-footer">
-        <div class="cert-statement">
-            <strong>OFFICIAL GOCAR QUALITY ATTESTATION:</strong><br>
-            This document certifies that the above-identified vehicle has undergone routine preventative maintenance, certified parts replacements, and mechanical diagnostics under the supervision of GoCar Auto. All recorded mileage intervals are verified against original workshop tickets.
-        </div>
-        <div class="verification-stamp">
-            <div class="stamp-title">AUTHENTICATED LEDGER</div>
-            <div class="stamp-code">${escapeHtml(passportNumber)}</div>
-        </div>
-    </div>
-</body>
-</html>
-    `;
+    const htmlContent = generatePassportHTML(data);
 
     let page;
     try {
         const browser = await getBrowser();
         page = await browser.newPage();
-        await page.setContent(htmlContent, { waitUntil: ['domcontentloaded', 'networkidle0'], timeout: 10000 });
+        await page.setContent(htmlContent, { waitUntil: ['domcontentloaded', 'networkidle0'], timeout: 15000 });
         const pdfBuffer = await page.pdf({
             format: 'A4',
             printBackground: true,
             margin: {
-                top: '15mm',
+                top: '12mm',
                 right: '15mm',
-                bottom: '15mm',
+                bottom: '12mm',
                 left: '15mm'
             },
             preferCSSPageSize: true
@@ -544,10 +246,12 @@ export async function generateServicePassportPDF(data) {
 /**
  * Pure JavaScript PDFKit fallback for Service Passport generation.
  * Operates with 0 browser dependencies and 100% cloud reliability.
+ * Fully styled in GoCar Auto Invoice Design Theme (Navy #0b192c, Amber/Orange #f97316)
+ * with robust Arabic reshaping and TrueType font rendering.
  */
 function generatePassportPDFKit(data) {
-    const { vehicle, records = [], passportId } = data;
-    const passportNumber = passportId || `GCP-${vehicle.id}-${(vehicle.vin || 'AUT').slice(-4)}-${new Date().getFullYear()}`;
+    const { vehicle = {}, records = [], passportId } = data;
+    const passportNumber = passportId || `GCP-${vehicle.id}-${(vehicle.vin || vehicle.license_plate || 'AUT').toString().replace(/[^a-zA-Z0-9]/g, '').slice(-4)}-${new Date().getFullYear()}`;
     const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
     return new Promise((resolve, reject) => {
@@ -560,48 +264,63 @@ function generatePassportPDFKit(data) {
             doc.on('data', buffers.push.bind(buffers));
             doc.on('end', () => resolve(Buffer.concat(buffers)));
 
-            // Header
-            doc.fillColor('#0b0f19').fontSize(22).font('Helvetica-Bold').text('GOCAR AUTO', 40, 40);
-            doc.fillColor('#d97706').fontSize(16).text('SERVICE PASSPORT', 350, 40, { align: 'right' });
-            doc.fillColor('#64748b').fontSize(9).font('Helvetica').text(`ID: ${passportNumber} • Date: ${generatedDate}`, 350, 62, { align: 'right' });
+            const arabicFontPath = path.join(__dirname, 'Arabic.ttf');
+            const arabicBoldFontPath = path.join(__dirname, 'Arabic-Bold.ttf');
+            const hasArabicFont = existsSync(arabicFontPath);
+            const hasArabicBoldFont = existsSync(arabicBoldFontPath);
 
-            doc.moveTo(40, 85).lineTo(555, 85).strokeColor('#e2e8f0').lineWidth(1).stroke();
+            if (hasArabicFont) {
+                doc.registerFont('Arabic', arabicFontPath);
+            }
+            if (hasArabicBoldFont) {
+                doc.registerFont('Arabic-Bold', arabicBoldFontPath);
+            }
+
+            // Header matching Invoice Theme
+            doc.fillColor('#0b192c').fontSize(22).font('Helvetica-Bold').text('GOCAR AUTO', 40, 40);
+            doc.fillColor('#64748b').fontSize(8.5).font('Helvetica').text('Automotive Care & Maintenance Services • Cairo, Egypt', 40, 65);
+            doc.fillColor('#0b192c').fontSize(18).font('Helvetica-Bold').text('SERVICE PASSPORT', 350, 40, { align: 'right' });
+            doc.fillColor('#f97316').fontSize(11).font('Helvetica-Bold').text(`ID: ${passportNumber}`, 350, 60, { align: 'right' });
+            doc.fillColor('#64748b').fontSize(8.5).font('Helvetica').text(`Date: ${generatedDate}`, 350, 74, { align: 'right' });
+
+            doc.moveTo(40, 90).lineTo(555, 90).strokeColor('#e2e8f0').lineWidth(1).stroke();
 
             // Privacy Banner
-            doc.roundedRect(40, 95, 515, 26, 4).fillAndStroke('#f0fdf4', '#bbf7d0');
-            doc.fillColor('#166534').fontSize(9).font('Helvetica-Bold').text('PRIVACY SHIELD VERIFIED', 50, 103);
-            doc.fillColor('#166534').fontSize(8).font('Helvetica').text('Owner Identity: Confidential Registered Client (Redacted for resale protection)', 200, 103, { align: 'right' });
+            doc.roundedRect(40, 100, 515, 26, 4).fillAndStroke('#ecfdf5', '#a7f3d0');
+            doc.fillColor('#065f46').fontSize(9).font('Helvetica-Bold').text('PRIVACY SHIELD VERIFIED', 50, 108);
+            doc.fillColor('#065f46').fontSize(8).font('Helvetica').text('Owner Identity: Confidential Registered Client (Redacted for resale protection)', 200, 108, { align: 'right' });
 
             // Vehicle Specs Box
-            doc.roundedRect(40, 130, 515, 75, 6).fillAndStroke('#f8fafc', '#e2e8f0');
+            doc.roundedRect(40, 135, 515, 75, 6).fillAndStroke('#f8fafc', '#e2e8f0');
+            doc.rect(40, 135, 5, 75).fill('#f97316');
 
-            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('VEHICLE', 55, 140);
-            doc.fillColor('#0f172a').fontSize(11).font('Helvetica-Bold').text(`${vehicle.make || ''} ${vehicle.model || ''}`, 55, 152);
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('VEHICLE', 55, 145);
+            doc.fillColor('#0b192c').fontSize(11).font('Helvetica-Bold').text(`${vehicle.make || ''} ${vehicle.model || ''}`.trim() || 'Fleet Asset', 55, 157);
 
-            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('YEAR MODEL', 180, 140);
-            doc.fillColor('#0f172a').fontSize(11).font('Helvetica-Bold').text(`${vehicle.year || '—'}`, 180, 152);
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('YEAR MODEL', 180, 145);
+            doc.fillColor('#0b192c').fontSize(11).font('Helvetica-Bold').text(`${vehicle.year || '—'}`, 180, 157);
 
-            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('PLATE / LICENSE', 280, 140);
-            doc.fillColor('#0f172a').fontSize(11).font('Helvetica-Bold').text(`${vehicle.license_plate || '—'}`, 280, 152);
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('PLATE / LICENSE', 280, 145);
+            doc.fillColor('#0b192c').fontSize(11).font('Helvetica-Bold').text(`${vehicle.license_plate || '—'}`, 280, 157);
 
-            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('CHASSIS (VIN)', 400, 140);
-            doc.fillColor('#0f172a').fontSize(10).font('Helvetica').text(`${vehicle.vin || '—'}`, 400, 152);
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('CHASSIS (VIN)', 400, 145);
+            doc.fillColor('#0b192c').fontSize(10).font('Helvetica').text(`${vehicle.vin || '—'}`, 400, 157);
 
-            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('VERIFIED ODOMETER', 55, 172);
-            doc.fillColor('#b45309').fontSize(12).font('Helvetica-Bold').text(`${(vehicle.current_mileage || 0).toLocaleString()} KM`, 55, 184);
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('VERIFIED ODOMETER', 55, 177);
+            doc.fillColor('#f97316').fontSize(12).font('Helvetica-Bold').text(`${(vehicle.current_mileage || 0).toLocaleString()} KM`, 55, 189);
 
-            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('COMPLETED VISITS', 180, 172);
-            doc.fillColor('#0f172a').fontSize(11).font('Helvetica-Bold').text(`${records.length || vehicle.services_count || 0} Visits`, 180, 184);
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('COMPLETED VISITS', 180, 177);
+            doc.fillColor('#0b192c').fontSize(11).font('Helvetica-Bold').text(`${records.length || vehicle.services_count || 0} Visits`, 180, 189);
 
-            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('LAST INSPECTION', 280, 172);
-            doc.fillColor('#0f172a').fontSize(11).font('Helvetica-Bold').text(`${vehicle.last_service_date || generatedDate}`, 280, 184);
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('LAST INSPECTION', 280, 177);
+            doc.fillColor('#0b192c').fontSize(11).font('Helvetica-Bold').text(`${vehicle.last_service_date || generatedDate}`, 280, 189);
 
-            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('PEDIGREE STATUS', 400, 172);
-            doc.fillColor('#16a34a').fontSize(11).font('Helvetica-Bold').text('Certified Active', 400, 184);
+            doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text('PEDIGREE STATUS', 400, 177);
+            doc.fillColor('#16a34a').fontSize(11).font('Helvetica-Bold').text('Certified Active', 400, 189);
 
             // Table Header
             let y = 225;
-            doc.rect(40, y, 515, 20).fill('#0f172a');
+            doc.rect(40, y, 515, 20).fill('#0b192c');
             doc.fillColor('#ffffff').fontSize(8).font('Helvetica-Bold');
             doc.text('DATE', 50, y + 6);
             doc.text('MILEAGE', 130, y + 6);
@@ -624,27 +343,35 @@ function generatePassportPDFKit(data) {
                     const bg = i % 2 === 0 ? '#ffffff' : '#f8fafc';
                     doc.rect(40, y, 515, 22).fill(bg);
                     doc.fillColor('#64748b').fontSize(8).font('Helvetica-Bold').text(r.service_date || '—', 50, y + 6);
-                    doc.fillColor('#0f172a').fontSize(8).font('Helvetica').text(r.mileage ? `${parseInt(r.mileage).toLocaleString()} KM` : '—', 130, y + 6);
+                    doc.fillColor('#0b192c').fontSize(8).font('Helvetica').text(r.mileage ? `${parseInt(r.mileage).toLocaleString()} KM` : '—', 130, y + 6);
 
                     const itemDesc = r.item_name || r.item_name_ar || 'Routine Service';
-                    doc.fillColor('#0f172a').fontSize(8).font('Helvetica-Bold').text(String(itemDesc).slice(0, 50), 210, y + 6);
+                    const isAr = /[\u0600-\u06FF]/.test(itemDesc);
 
-                    doc.fillColor('#0369a1').fontSize(7).font('Helvetica-Bold').text(r.category || 'Service', 475, y + 6);
+                    if (isAr && hasArabicBoldFont) {
+                        doc.font('Arabic-Bold').fontSize(8.5).fillColor('#0b192c').text(formatArabicForPDFKit(itemDesc), 210, y + 5);
+                    } else if (isAr && hasArabicFont) {
+                        doc.font('Arabic').fontSize(8.5).fillColor('#0b192c').text(formatArabicForPDFKit(itemDesc), 210, y + 5);
+                    } else {
+                        doc.font('Helvetica-Bold').fontSize(8).fillColor('#0b192c').text(String(itemDesc).slice(0, 50), 210, y + 6);
+                    }
+
+                    doc.font('Helvetica-Bold').fillColor('#f97316').fontSize(7.5).text(r.category || 'Service', 470, y + 6);
                     y += 22;
                 }
             }
 
             // Attestation Footer
-            y += 15;
+            y += 20;
             if (y > 700) { doc.addPage(); y = 40; }
             doc.roundedRect(40, y, 515, 45, 6).fillAndStroke('#f8fafc', '#e2e8f0');
-            doc.fillColor('#0f172a').fontSize(8).font('Helvetica-Bold').text('OFFICIAL GOCAR QUALITY ATTESTATION:', 50, y + 8);
+            doc.fillColor('#0b192c').fontSize(8).font('Helvetica-Bold').text('OFFICIAL GOCAR QUALITY ATTESTATION:', 50, y + 8);
             doc.fillColor('#64748b').fontSize(7).font('Helvetica').text('This document certifies that this vehicle has undergone routine preventative maintenance, certified parts replacements, and mechanical diagnostics under the supervision of GoCar Auto. All recorded mileage intervals are verified against original workshop tickets.', 50, y + 20, { width: 340 });
 
             // Stamp
-            doc.roundedRect(410, y + 6, 135, 33, 4).lineWidth(1.5).dash(4, { space: 2 }).strokeColor('#d97706').stroke();
+            doc.roundedRect(410, y + 6, 135, 33, 4).lineWidth(1.5).dash(4, { space: 2 }).strokeColor('#f97316').stroke();
             doc.undash();
-            doc.fillColor('#b45309').fontSize(8).font('Helvetica-Bold').text('AUTHENTICATED LEDGER', 415, y + 12, { width: 125, align: 'center' });
+            doc.fillColor('#f97316').fontSize(8).font('Helvetica-Bold').text('AUTHENTICATED LEDGER', 415, y + 12, { width: 125, align: 'center' });
             doc.fillColor('#64748b').fontSize(8).font('Helvetica').text(passportNumber, 415, y + 24, { width: 125, align: 'center' });
 
             doc.end();

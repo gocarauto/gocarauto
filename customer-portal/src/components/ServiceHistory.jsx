@@ -37,6 +37,14 @@ const ServiceHistory = () => {
             return [];
         }
     });
+    const [totalInvested, setTotalInvested] = useState(() => {
+        try {
+            const cached = sessionStorage.getItem('gocar_history_invested');
+            return cached ? Number(cached) : 0;
+        } catch {
+            return 0;
+        }
+    });
     const [loading, setLoading] = useState(() => {
         try {
             return !sessionStorage.getItem('gocar_history_cache');
@@ -61,6 +69,13 @@ const ServiceHistory = () => {
                 const response = await api.get('/customer-portal/service-history', { skipCache: history.length === 0 });
                 const list = response.data?.data || [];
                 setHistory(list);
+                const invested = response.data?.totalInvested;
+                if (typeof invested === 'number') {
+                    setTotalInvested(invested);
+                    try {
+                        sessionStorage.setItem('gocar_history_invested', String(invested));
+                    } catch {}
+                }
                 try {
                     sessionStorage.setItem('gocar_history_cache', JSON.stringify(list));
                 } catch {
@@ -187,7 +202,8 @@ const ServiceHistory = () => {
         URL.revokeObjectURL(url);
     };
 
-    const totalSpent = history.reduce((s, i) => s + getItemCost(i), 0);
+    const rawItemsSum = history.reduce((s, i) => s + getItemCost(i), 0);
+    const totalSpent = totalInvested > 0 ? totalInvested : rawItemsSum;
     const uniqueVehicles = new Set(history.map(i => getItemVehicle(i))).size;
 
     const getIcon = (type) => {

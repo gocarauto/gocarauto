@@ -4,6 +4,21 @@ All notable changes to the GoCar Auto platform are documented in this file.
 
 ## [Unreleased] - 2026-11-21
 
+### Financial Stats Parity & Service Passport Theme Harmonization (CR-021)
+- **Financial Statistics Unification Across Customer Portal:**
+  - Resolved discrepancy between Dashboard/Invoices (77,380 EGP) and Service History (70,200 EGP) for customer accounts.
+  - Root cause: Invoices and Dashboard aggregated total paid amount from settled invoices (`financial_transactions.total_amount_due`), including workshop parts, labor, and GoCar service fees. Service History was summing only raw parts/labor records (`service_records.total_price`).
+  - Updated `controllers/customerPortalController.js` (`getServiceHistory`): computes and returns `totalInvested` from settled invoices.
+  - Updated `customer-portal/src/components/ServiceHistory.jsx`: displays `totalInvested`, achieving 100% financial metric consistency (77,380 EGP) across Dashboard, Invoices, and Service History.
+- **Service Passport Design Alignment with GoCar Auto Invoice Theme:**
+  - Implemented `utils/passport-viewer.js` (`generatePassportHTML`): styled in strict accordance with `utils/invoice-viewer.js` using Outfit and Cairo Google Fonts, GoCar navy (`#0b192c`), amber/orange (`#f97316`), vehicle specs card with accent bar, privacy shield banner, certified logbook ledger, and authenticated ledger stamp.
+  - Added dedicated interactive viewer route: `GET /api/vehicles/:id/service-passport/view` in `controllers/vehicleController.js` and `routes/vehicles.js` with `verifyToken` authentication.
+  - Updated `customer-portal/src/components/VehicleFleet.jsx`: Passport button now opens the interactive HTML viewer in a new tab with built-in `🖨️ PRINT / SAVE PDF` action bar.
+- **Eliminated Character Corruption (Mojibake) in PDF Generation:**
+  - Registered `Arabic.ttf` and `Arabic-Bold.ttf` in `utils/` for PDFKit fallback.
+  - Integrated `arabic-reshaper` and `bidi-js` in `utils/pdf-generator.js` (`generatePassportPDFKit`) to ensure Arabic glyph joining and bidirectional text flow render cleanly without Latin-1 character mangling (`dV5df9d!,) d6Gc (bv!)`).
+  - Switched `generateServicePassportPDF` Puppeteer template to use `generatePassportHTML`, guaranteeing identical visual presentation in both web and PDF formats.
+
 ### Social Preview Meta Tags & Customer Portal Brand Vocabulary Simplification (CR-020)
 - **WhatsApp Link Preview & Meta Tags Modernization:**
   - Updated `customer-portal/index.html` meta description from `"GoCar Auto - Premier Automotive Concierge, Fleet Management & Certified Workshop System"` to the simpler, user-friendly `"GoCar Auto - Automotive Care & Maintenance Services"`.

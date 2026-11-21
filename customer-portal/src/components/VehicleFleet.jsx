@@ -357,7 +357,7 @@ const VehicleFleet = () => {
                                             </button>
 
                                             <a
-                                                href={`${API_BASE}/vehicles/${v.id}/service-passport/pdf?token=${localStorage.getItem('token') || ''}`}
+                                                href={`${API_BASE}/vehicles/${v.id}/service-passport/view?token=${encodeURIComponent(localStorage.getItem('token') || '')}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="py-3 px-3.5 rounded-2xl bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/[0.08] text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer text-center"
