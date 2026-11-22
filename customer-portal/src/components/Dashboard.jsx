@@ -128,9 +128,36 @@ const Dashboard = () => {
     // Automotive telemetry & interval calculations
     const stats = data?.stats || {};
     const mileage = activeVehicle?.current_mileage || stats.mileage || 0;
-    const kmUntilService = activeVehicle ? Math.max(0, 10000 - (mileage % 10000)) : 10000;
-    const oilLifePercent = Math.min(100, Math.max(0, Math.round((kmUntilService / 10000) * 100)));
-    const transmissionLifePercent = activeVehicle ? (activeVehicle.services_count > 0 ? 92 : 100) : 100;
+
+    // Real Vehicle Telemetry from GoCar Auto service records & reminders
+    const telemetry = activeVehicle?.telemetry || {};
+    const engineTelemetry = telemetry.engine_oil || {};
+    const transTelemetry = telemetry.transmission_oil || {};
+
+    const hasEngineHistory = Boolean(engineTelemetry.has_history);
+    const hasTransHistory = Boolean(transTelemetry.has_history);
+
+    const fallbackKmUntil = activeVehicle ? Math.max(0, 10000 - (mileage % 10000)) : 10000;
+    const oilLifePercent = typeof engineTelemetry.life_percent === 'number'
+        ? engineTelemetry.life_percent
+        : (hasEngineHistory ? 0 : 100);
+
+    const transmissionLifePercent = typeof transTelemetry.life_percent === 'number'
+        ? transTelemetry.life_percent
+        : (hasTransHistory ? 0 : 100);
+
+    const kmUntilService = typeof engineTelemetry.km_remaining === 'number'
+        ? engineTelemetry.km_remaining
+        : fallbackKmUntil;
+
+    const transKmUntil = typeof transTelemetry.km_remaining === 'number'
+        ? transTelemetry.km_remaining
+        : null;
+
+    // Status classifications: 'good' (>30%), 'warning' (<=30%), 'critical' (<=10%), 'untracked'
+    const engineStatus = engineTelemetry.status || (oilLifePercent <= 10 ? 'critical' : oilLifePercent <= 30 ? 'warning' : 'good');
+    const transStatus = transTelemetry.status || (transmissionLifePercent <= 10 ? 'critical' : transmissionLifePercent <= 30 ? 'warning' : 'good');
+
     const sketch = activeVehicle ? getVehicleSketch(activeVehicle.make, activeVehicle.model, activeVehicle.year) : null;
 
     // Check for an active ongoing appointment
@@ -432,14 +459,14 @@ const Dashboard = () => {
                                     <path
                                         d={`M ${lineCoords.oil.x1} ${lineCoords.oil.y1} C ${(lineCoords.oil.x1 + lineCoords.oil.x2) / 2} ${lineCoords.oil.y1}, ${(lineCoords.oil.x1 + lineCoords.oil.x2) / 2} ${lineCoords.oil.y2}, ${lineCoords.oil.x2} ${lineCoords.oil.y2}`}
                                         fill="none"
-                                        stroke="#10b981"
+                                        stroke={engineStatus === 'critical' ? '#f43f5e' : engineStatus === 'warning' ? '#f59e0b' : !hasEngineHistory ? '#64748b' : '#10b981'}
                                         strokeWidth="1.5"
                                         strokeDasharray="4 4"
                                         opacity="0.9"
                                     />
-                                    <circle cx={lineCoords.oil.x1} cy={lineCoords.oil.y1} r="3.5" fill="#10b981" />
-                                    <circle cx={lineCoords.oil.x2} cy={lineCoords.oil.y2} r="5" fill="#10b981" />
-                                    <circle cx={lineCoords.oil.x2} cy={lineCoords.oil.y2} r="10" fill="none" stroke="#10b981" strokeWidth="1" opacity="0.4" />
+                                    <circle cx={lineCoords.oil.x1} cy={lineCoords.oil.y1} r="3.5" fill={engineStatus === 'critical' ? '#f43f5e' : engineStatus === 'warning' ? '#f59e0b' : !hasEngineHistory ? '#64748b' : '#10b981'} />
+                                    <circle cx={lineCoords.oil.x2} cy={lineCoords.oil.y2} r="5" fill={engineStatus === 'critical' ? '#f43f5e' : engineStatus === 'warning' ? '#f59e0b' : !hasEngineHistory ? '#64748b' : '#10b981'} />
+                                    <circle cx={lineCoords.oil.x2} cy={lineCoords.oil.y2} r="10" fill="none" stroke={engineStatus === 'critical' ? '#f43f5e' : engineStatus === 'warning' ? '#f59e0b' : !hasEngineHistory ? '#64748b' : '#10b981'} strokeWidth="1" opacity="0.4" />
                                 </g>
 
                                 {/* Point B: Upper Right Telemetry Card Line (Locked from card border -> Roof/B-Pillar) */}
@@ -462,14 +489,14 @@ const Dashboard = () => {
                                     <path
                                         d={`M ${lineCoords.trans.x1} ${lineCoords.trans.y1} C ${(lineCoords.trans.x1 + lineCoords.trans.x2) / 2} ${lineCoords.trans.y1}, ${(lineCoords.trans.x1 + lineCoords.trans.x2) / 2} ${lineCoords.trans.y2}, ${lineCoords.trans.x2} ${lineCoords.trans.y2}`}
                                         fill="none"
-                                        stroke="#06b6d4"
+                                        stroke={transStatus === 'critical' ? '#f43f5e' : transStatus === 'warning' ? '#f59e0b' : !hasTransHistory ? '#64748b' : '#06b6d4'}
                                         strokeWidth="1.5"
                                         strokeDasharray="4 4"
                                         opacity="0.9"
                                     />
-                                    <circle cx={lineCoords.trans.x1} cy={lineCoords.trans.y1} r="3.5" fill="#06b6d4" />
-                                    <circle cx={lineCoords.trans.x2} cy={lineCoords.trans.y2} r="5" fill="#06b6d4" />
-                                    <circle cx={lineCoords.trans.x2} cy={lineCoords.trans.y2} r="10" fill="none" stroke="#06b6d4" strokeWidth="1" opacity="0.4" />
+                                    <circle cx={lineCoords.trans.x1} cy={lineCoords.trans.y1} r="3.5" fill={transStatus === 'critical' ? '#f43f5e' : transStatus === 'warning' ? '#f59e0b' : !hasTransHistory ? '#64748b' : '#06b6d4'} />
+                                    <circle cx={lineCoords.trans.x2} cy={lineCoords.trans.y2} r="5" fill={transStatus === 'critical' ? '#f43f5e' : transStatus === 'warning' ? '#f59e0b' : !hasTransHistory ? '#64748b' : '#06b6d4'} />
+                                    <circle cx={lineCoords.trans.x2} cy={lineCoords.trans.y2} r="10" fill="none" stroke={transStatus === 'critical' ? '#f43f5e' : transStatus === 'warning' ? '#f59e0b' : !hasTransHistory ? '#64748b' : '#06b6d4'} strokeWidth="1" opacity="0.4" />
                                 </g>
                             </svg>
                         )}
@@ -479,31 +506,46 @@ const Dashboard = () => {
                             ref={oilCardRef}
                             className="hidden md:block absolute left-6 sm:left-10 lg:left-14 top-[50%] -translate-y-1/2 z-20 pointer-events-auto"
                         >
-                            <div className="relative p-3.5 sm:p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-2xl space-y-1.5 w-[210px]">
+                            <div className="relative p-3.5 sm:p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-2xl space-y-1.5 w-[215px]">
                                 <div className="flex items-center justify-between">
                                     <span className="text-xs font-bold text-slate-300 uppercase tracking-wider font-sans">
                                         {t('oil_life')}
                                     </span>
-                                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                                    <span className={`w-2 h-2 rounded-full ${
+                                        engineStatus === 'critical' ? 'bg-rose-500 animate-ping' :
+                                        engineStatus === 'warning' ? 'bg-amber-400' :
+                                        !hasEngineHistory ? 'bg-slate-500' : 'bg-emerald-400 animate-pulse'
+                                    }`} />
                                 </div>
                                 <div className="flex items-center gap-3 pt-0.5">
-                                    <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shrink-0">
+                                    <div className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 ${
+                                        engineStatus === 'critical' ? 'bg-rose-500/15 border-rose-500/30 text-rose-400' :
+                                        engineStatus === 'warning' ? 'bg-amber-500/15 border-amber-500/30 text-amber-400' :
+                                        !hasEngineHistory ? 'bg-slate-800/80 border-slate-700 text-slate-400' :
+                                        'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+                                    }`}>
                                         <Droplet size={18} />
                                     </div>
                                     <div className="min-w-0">
                                         <span className="text-2xl font-extrabold text-white tabular-nums font-mono leading-none block">
-                                            {oilLifePercent}%
+                                            {hasEngineHistory ? `${oilLifePercent}%` : '—%'}
                                         </span>
                                         <div className="w-24 h-1.5 bg-slate-800 rounded-full mt-1.5 overflow-hidden border border-white/[0.05]">
                                             <div
-                                                className="h-full bg-emerald-400 rounded-full transition-all duration-500"
-                                                style={{ width: `${oilLifePercent}%` }}
+                                                className={`h-full rounded-full transition-all duration-500 ${
+                                                    engineStatus === 'critical' ? 'bg-rose-500' :
+                                                    engineStatus === 'warning' ? 'bg-amber-400' :
+                                                    !hasEngineHistory ? 'bg-slate-600' : 'bg-emerald-400'
+                                                }`}
+                                                style={{ width: `${hasEngineHistory ? oilLifePercent : 100}%` }}
                                             />
                                         </div>
                                     </div>
                                 </div>
                                 <span className="text-xs text-slate-300 font-sans block pt-1">
-                                    {isAr ? `الصيانة القادمة خلال ~${kmUntilService.toLocaleString()} كم` : `Next due in ~${kmUntilService.toLocaleString()} km`}
+                                    {hasEngineHistory
+                                        ? (isAr ? `الصيانة القادمة خلال ~${kmUntilService.toLocaleString()} كم` : `Next due in ~${kmUntilService.toLocaleString()} km`)
+                                        : (isAr ? 'يوصى بفحص زيت المحرك' : t('inspection_recommended'))}
                                 </span>
                             </div>
                         </div>
@@ -544,31 +586,48 @@ const Dashboard = () => {
                             ref={transCardRef}
                             className="hidden md:block absolute right-6 sm:right-10 lg:right-14 top-[60%] sm:top-[62%] z-20 pointer-events-auto text-left rtl:text-right"
                         >
-                            <div className="relative p-3.5 sm:p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-2xl space-y-1.5 w-[230px]">
+                            <div className="relative p-3.5 sm:p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-2xl space-y-1.5 w-[235px]">
                                 <div className="flex items-center justify-between">
                                     <span className="text-xs font-bold text-slate-300 uppercase tracking-wider font-sans">
                                         {t('transmission_oil')}
                                     </span>
-                                    <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                                    <span className={`w-2 h-2 rounded-full ${
+                                        transStatus === 'critical' ? 'bg-rose-500 animate-ping' :
+                                        transStatus === 'warning' ? 'bg-amber-400' :
+                                        !hasTransHistory ? 'bg-slate-500' : 'bg-cyan-400'
+                                    }`} />
                                 </div>
                                 <div className="flex items-center gap-3 pt-0.5">
-                                    <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center shrink-0">
+                                    <div className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 ${
+                                        transStatus === 'critical' ? 'bg-rose-500/15 border-rose-500/30 text-rose-400' :
+                                        transStatus === 'warning' ? 'bg-amber-500/15 border-amber-500/30 text-amber-400' :
+                                        !hasTransHistory ? 'bg-slate-800/80 border-slate-700 text-slate-400' :
+                                        'bg-cyan-500/15 border-cyan-500/30 text-cyan-400'
+                                    }`}>
                                         <Cog size={18} />
                                     </div>
                                     <div className="min-w-0">
                                         <span className="text-2xl font-extrabold text-white tabular-nums font-mono leading-none block">
-                                            {transmissionLifePercent}%
+                                            {hasTransHistory ? `${transmissionLifePercent}%` : '—%'}
                                         </span>
                                         <div className="w-24 h-1.5 bg-slate-800 rounded-full mt-1.5 overflow-hidden border border-white/[0.05]">
                                             <div
-                                                className="h-full bg-cyan-400 rounded-full transition-all duration-500"
-                                                style={{ width: `${transmissionLifePercent}%` }}
+                                                className={`h-full rounded-full transition-all duration-500 ${
+                                                    transStatus === 'critical' ? 'bg-rose-500' :
+                                                    transStatus === 'warning' ? 'bg-amber-400' :
+                                                    !hasTransHistory ? 'bg-slate-600' : 'bg-cyan-400'
+                                                }`}
+                                                style={{ width: `${hasTransHistory ? transmissionLifePercent : 100}%` }}
                                             />
                                         </div>
                                     </div>
                                 </div>
                                 <span className="text-xs text-slate-300 font-sans block pt-1">
-                                    {isAr ? 'تم التحقق من جدول الصيانة' : 'Scheduled interval verified'}
+                                    {hasTransHistory
+                                        ? (transKmUntil !== null
+                                            ? (isAr ? `الفتيس: متبقي ~${transKmUntil.toLocaleString()} كم` : `Trans: ~${transKmUntil.toLocaleString()} km left`)
+                                            : (isAr ? 'تم التحقق من جدول الصيانة' : t('scheduled_verified')))
+                                        : (isAr ? 'يوصى بفحص زيت الفتيس' : t('inspection_recommended'))}
                                 </span>
                             </div>
                         </div>
@@ -635,7 +694,12 @@ const Dashboard = () => {
                         {/* Mobile Oil Life Card */}
                         <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-between">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shrink-0">
+                                <div className={`w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 ${
+                                    engineStatus === 'critical' ? 'bg-rose-500/15 border-rose-500/30 text-rose-400' :
+                                    engineStatus === 'warning' ? 'bg-amber-500/15 border-amber-500/30 text-amber-400' :
+                                    !hasEngineHistory ? 'bg-slate-800 border-slate-700 text-slate-400' :
+                                    'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+                                }`}>
                                     <Droplet size={16} />
                                 </div>
                                 <div>
@@ -643,12 +707,14 @@ const Dashboard = () => {
                                         {t('oil_life')}
                                     </span>
                                     <span className="text-xs text-slate-400">
-                                        ~{kmUntilService.toLocaleString()} km
+                                        {hasEngineHistory
+                                            ? `~${kmUntilService.toLocaleString()} km`
+                                            : (isAr ? 'يوصى بالفحص' : t('inspection_recommended'))}
                                     </span>
                                 </div>
                             </div>
                             <span className="text-xl font-extrabold text-white tabular-nums font-mono">
-                                {oilLifePercent}%
+                                {hasEngineHistory ? `${oilLifePercent}%` : '—%'}
                             </span>
                         </div>
 
@@ -675,20 +741,31 @@ const Dashboard = () => {
                         {/* Mobile Transmission Card */}
                         <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-between">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-lg bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center shrink-0">
+                                <div className={`w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 ${
+                                    transStatus === 'critical' ? 'bg-rose-500/15 border-rose-500/30 text-rose-400' :
+                                    transStatus === 'warning' ? 'bg-amber-500/15 border-amber-500/30 text-amber-400' :
+                                    !hasTransHistory ? 'bg-slate-800 border-slate-700 text-slate-400' :
+                                    'bg-cyan-500/15 border-cyan-500/30 text-cyan-400'
+                                }`}>
                                     <Cog size={16} />
                                 </div>
                                 <div>
                                     <span className="text-xs font-bold text-slate-300 uppercase block leading-tight font-sans">
                                         {t('transmission_oil')}
                                     </span>
-                                    <span className="text-xs text-cyan-400 font-semibold">
-                                        {isAr ? 'تم الفحص' : 'Verified'}
+                                    <span className={`text-xs font-semibold ${
+                                        transStatus === 'critical' ? 'text-rose-400' :
+                                        transStatus === 'warning' ? 'text-amber-400' :
+                                        !hasTransHistory ? 'text-slate-400' : 'text-cyan-400'
+                                    }`}>
+                                        {hasTransHistory
+                                            ? (transKmUntil !== null ? `~${transKmUntil.toLocaleString()} km` : (isAr ? 'تم التحقق' : 'Verified'))
+                                            : (isAr ? 'يوصى بالفحص' : t('inspection_recommended'))}
                                     </span>
                                 </div>
                             </div>
                             <span className="text-xl font-extrabold text-white tabular-nums font-mono">
-                                {transmissionLifePercent}%
+                                {hasTransHistory ? `${transmissionLifePercent}%` : '—%'}
                             </span>
                         </div>
                     </div>

@@ -56,7 +56,7 @@ const ArchiveVehicleModal = ({ vehicle, isOpen, onClose, onArchived }) => {
 
         setLoading(true);
         try {
-            const res = await api.post(`/vehicles/${vehicle.id}/archive`, {
+            await api.post(`/vehicles/${vehicle.id}/archive`, {
                 reason: finalReason,
                 notes: notes.trim() || undefined
             });

@@ -1,5 +1,67 @@
 import bcrypt from 'bcrypt';
 import database from '../database/db.js';
+import { calculateVehicleTelemetry } from '../utils/vehicleTelemetry.js';
+
+/**
+ * Enriches vehicle records with real-time fluid telemetry (Engine & Transmission Oil)
+ * computed from workshop service records and pending reminders.
+ */
+async function enrichVehiclesWithTelemetry(vehicles) {
+    if (!Array.isArray(vehicles) || vehicles.length === 0) return vehicles || [];
+
+    const vehicleIds = vehicles.map(v => v.id).filter(Boolean);
+    if (vehicleIds.length === 0) return vehicles;
+
+    const placeholders = vehicleIds.map(() => '?').join(',');
+
+    try {
+        const [records, reminders] = await Promise.all([
+            database.query(`
+                SELECT sr.id, sr.service_date, sr.created_at,
+                       COALESCE(sr.mileage, sreq.mileage, 0) as mileage,
+                       sreq.vehicle_id, sreq.service_type,
+                       si.tracking_point, si.item_name, si.item_name_ar,
+                       si.km_interval, si.month_interval
+                FROM service_records sr
+                JOIN service_requests sreq ON sr.request_id = sreq.id
+                LEFT JOIN service_items si ON sr.item_id = si.id
+                WHERE sreq.vehicle_id IN (${placeholders})
+                ORDER BY sr.service_date DESC, sr.id DESC
+            `, vehicleIds),
+            database.query(`
+                SELECT * FROM service_reminders
+                WHERE vehicle_id IN (${placeholders}) AND status = 'Pending'
+            `, vehicleIds)
+        ]);
+
+        const recordsByVehicle = {};
+        for (const r of (records || [])) {
+            if (!recordsByVehicle[r.vehicle_id]) recordsByVehicle[r.vehicle_id] = [];
+            recordsByVehicle[r.vehicle_id].push(r);
+        }
+
+        const remindersByVehicle = {};
+        for (const rem of (reminders || [])) {
+            if (!remindersByVehicle[rem.vehicle_id]) remindersByVehicle[rem.vehicle_id] = [];
+            remindersByVehicle[rem.vehicle_id].push(rem);
+        }
+
+        return vehicles.map(v => ({
+            ...v,
+            telemetry: calculateVehicleTelemetry(
+                v,
+                recordsByVehicle[v.id] || [],
+                remindersByVehicle[v.id] || []
+            )
+        }));
+    } catch (err) {
+        console.error('Failed to enrich vehicles with telemetry:', err);
+        return vehicles.map(v => ({
+            ...v,
+            telemetry: calculateVehicleTelemetry(v, [], [])
+        }));
+    }
+}
 
 /**
  * Customer Portal Controller
@@ -32,11 +94,13 @@ const customerPortalController = {
                 [customerId]
             );
 
+            const enrichedUpcoming = await enrichVehiclesWithTelemetry(upcomingService || []);
+
             res.json({
                 success: true,
                 data: {
                     stats: stats || { totalVehicles: 0, totalServices: 0, totalSpent: 0 },
-                    upcomingService
+                    upcomingService: enrichedUpcoming
                 }
             });
         } catch (error) {
@@ -202,7 +266,8 @@ const customerPortalController = {
                 'SELECT * FROM vehicles WHERE client_id = ? AND COALESCE(is_archived, 0) = 0 ORDER BY last_service_date DESC',
                 [customerId]
             );
-            res.json({ success: true, data: vehicles });
+            const enrichedVehicles = await enrichVehiclesWithTelemetry(vehicles || []);
+            res.json({ success: true, data: enrichedVehicles });
         } catch (error) {
             console.error('SERVER_PORTAL_ERROR:', error);
             res.status(500).json({ error: 'Failed to synchronize garage data' });

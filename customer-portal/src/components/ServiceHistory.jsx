@@ -74,7 +74,9 @@ const ServiceHistory = () => {
                     setTotalInvested(invested);
                     try {
                         sessionStorage.setItem('gocar_history_invested', String(invested));
-                    } catch {}
+                    } catch {
+                        // ignore quota errors
+                    }
                 }
                 try {
                     sessionStorage.setItem('gocar_history_cache', JSON.stringify(list));

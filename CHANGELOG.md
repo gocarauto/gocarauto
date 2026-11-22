@@ -2,7 +2,26 @@
 
 All notable changes to the GoCar Auto platform are documented in this file.
 
-## [Unreleased] - 2026-11-21
+## [Unreleased] - 2026-11-22
+
+### Real Vehicle Telemetry Integration for Customer Portal Dashboard (CR-030)
+- **Dynamic Automotive Fluid Telemetry Engine (`utils/vehicleTelemetry.js`):**
+  - Replaced synthetic placeholder math (`10000 - (mileage % 10000)`) and hardcoded percentages (`activeVehicle.services_count > 0 ? 92 : 100`) with real automotive calculations based on actual vehicle service history, odometer records, and scheduled maintenance reminders.
+  - Multi-factor degradation: tracks both **distance decay** (`(current_mileage - last_mileage) / interval_km`) and **temporal decay** (`months_elapsed / interval_months`), adopting the automotive industry standard `Min(Mileage Life, Time Life)` with a 15-day / 50 km grace window for fresh services.
+  - Handles custom oil grade intervals (5,000 km, 7,000 km, 10,000 km) and transmission fluid intervals (30,000 km – 50,000 km / 24–30 months).
+  - Categorizes fluid health into `good` (>30%), `warning` (<=30%), `critical` (<=10% or overdue), and `untracked` (for vehicles without workshop service history).
+  - Robust parser for ISO dates, Date instances, Unix timestamps, and legacy Excel serial numbers (e.g. 45489).
+- **Customer Portal Backend Telemetry Enrichment (`controllers/customerPortalController.js`):**
+  - Added batch telemetry enrichment (`enrichVehiclesWithTelemetry`) to `/api/customer-portal/vehicles` and `/api/customer-portal/dashboard` with $O(1)$ database queries.
+  - Injects `vehicle.telemetry` containing `engine_oil` and `transmission_oil` metrics while retaining 100% backward compatibility for all existing vehicle fields.
+- **Cockpit HUD & Mobile Vitals Synchronized UI (`customer-portal/src/components/Dashboard.jsx`):**
+  - **Desktop HUD:** Bound Point A (Engine Oil Life Capsule) and Point C (Transmission Oil Life Capsule) directly to real vehicle telemetry with dynamic health dots, progress bars, and contextual subtitles (`Next due in ~X km` or `Inspection recommended`).
+  - **Dynamic Laser SVG Leader Lines:** HUD laser lines dynamically adapt stroke color to fluid health (Rose for critical, Amber for warning, Emerald/Cyan for good, Slate for untracked).
+  - **Mobile Vitals Tray:** Synchronized mobile cards with real vehicle metrics, colors, and bilingual labels.
+- **Bilingual Localization (`customer-portal/src/utils/translations.json`):**
+  - Added English and Arabic translations for `inspection_recommended` and `scheduled_verified`.
+- **Automated Verification:**
+  - Added 11 automated unit & integration tests (`tests/telemetry.test.js`). Full suite `npm run verify` passed cleanly (60/60 tests pass, 0 ESLint errors in staff-interface & customer-portal, clean Vite builds).
 
 ### Vehicle Blueprint Native RGBA Alpha Transparency & Cache-Buster Invalidation (CR-029)
 - **Native RGBA Alpha Transparency Across All 246 Sketches:**

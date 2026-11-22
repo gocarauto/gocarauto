@@ -57,7 +57,7 @@ const CustomerDossier = () => {
         setTimeout(() => setCopyStatus('COPY'), 2000);
     };
 
-    const handleDeleteVehicle = async (vehicleId, make, model) => {
+    const _handleDeleteVehicle = async (vehicleId, make, model) => {
         if (!window.confirm(`Are you sure you want to remove the ${make} ${model} from the fleet? This action cannot be undone.`)) {
             return;
         }

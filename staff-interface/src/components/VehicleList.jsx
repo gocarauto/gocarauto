@@ -388,7 +388,7 @@ const VehicleList = () => {
                 vehicle={vehicleToArchive}
                 isOpen={Boolean(vehicleToArchive)}
                 onClose={() => setVehicleToArchive(null)}
-                onArchived={(archivedId, reason) => {
+                onArchived={(archivedId) => {
                     setVehicles(prev => prev.filter(v => v.id !== archivedId));
                 }}
             />
