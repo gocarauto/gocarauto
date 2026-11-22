@@ -14,10 +14,11 @@ All notable changes to the GoCar Auto platform are documented in this file.
 - **Customer Portal Backend Telemetry Enrichment (`controllers/customerPortalController.js`):**
   - Added batch telemetry enrichment (`enrichVehiclesWithTelemetry`) to `/api/customer-portal/vehicles` and `/api/customer-portal/dashboard` with $O(1)$ database queries.
   - Injects `vehicle.telemetry` containing `engine_oil` and `transmission_oil` metrics while retaining 100% backward compatibility for all existing vehicle fields.
-- **Cockpit HUD & Mobile Vitals Synchronized UI (`customer-portal/src/components/Dashboard.jsx`):**
+- **Cockpit HUD, Mobile Vitals & Garage Fleet Synchronized UI (`Dashboard.jsx` & `VehicleFleet.jsx`):**
   - **Desktop HUD:** Bound Point A (Engine Oil Life Capsule) and Point C (Transmission Oil Life Capsule) directly to real vehicle telemetry with dynamic health dots, progress bars, and contextual subtitles (`Next due in ~X km` or `Inspection recommended`).
   - **Dynamic Laser SVG Leader Lines:** HUD laser lines dynamically adapt stroke color to fluid health (Rose for critical, Amber for warning, Emerald/Cyan for good, Slate for untracked).
   - **Mobile Vitals Tray:** Synchronized mobile cards with real vehicle metrics, colors, and bilingual labels.
+  - **My Vehicles / Garage Fleet Page (`VehicleFleet.jsx`):** Updated Dual Health Capsules (Box 4) across all vehicle cards to bind directly to `v.telemetry.engine_oil` and `v.telemetry.transmission_oil`, eliminating the old synthetic modulo math and hardcoded 92% across the fleet list.
 - **Bilingual Localization (`customer-portal/src/utils/translations.json`):**
   - Added English and Arabic translations for `inspection_recommended` and `scheduled_verified`.
 - **Automated Verification:**

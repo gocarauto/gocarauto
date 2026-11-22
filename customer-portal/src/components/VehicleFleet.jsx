@@ -181,9 +181,27 @@ const VehicleFleet = () => {
                     {filteredVehicles.map((v, i) => {
                         const sketch = getVehicleSketch(v.make, v.model, v.year);
                         const mileage = v.current_mileage || v.mileage || 0;
-                        const kmUntilService = Math.max(0, 10000 - (mileage % 10000));
-                        const oilLifePercent = Math.min(100, Math.max(0, Math.round((kmUntilService / 10000) * 100)));
-                        const transmissionLifePercent = v.services_count > 0 ? 92 : 100;
+
+                        // Real Vehicle Telemetry from GoCar Auto service records & reminders
+                        const telemetry = v.telemetry || {};
+                        const engineTelemetry = telemetry.engine_oil || {};
+                        const transTelemetry = telemetry.transmission_oil || {};
+
+                        const hasEngineHistory = Boolean(engineTelemetry.has_history);
+                        const hasTransHistory = Boolean(transTelemetry.has_history);
+
+                        const oilLifePercent = typeof engineTelemetry.life_percent === 'number'
+                            ? engineTelemetry.life_percent
+                            : (hasEngineHistory ? 0 : 100);
+
+                        const transmissionLifePercent = typeof transTelemetry.life_percent === 'number'
+                            ? transTelemetry.life_percent
+                            : (hasTransHistory ? 0 : 100);
+
+                        // Status classifications: 'good' (>30%), 'warning' (<=30%), 'critical' (<=10%), 'untracked'
+                        const engineStatus = engineTelemetry.status || (oilLifePercent <= 10 ? 'critical' : oilLifePercent <= 30 ? 'warning' : 'good');
+                        const transStatus = transTelemetry.status || (transmissionLifePercent <= 10 ? 'critical' : transmissionLifePercent <= 30 ? 'warning' : 'good');
+
                         const isActive = v.id === effectiveActiveId;
 
                         return (
@@ -301,15 +319,28 @@ const VehicleFleet = () => {
                                                     {isAr ? 'زيت المحرك' : 'ENGINE OIL'}
                                                 </span>
                                                 <div className="flex items-center gap-1.5 my-1.5">
-                                                    <div className="w-6 h-6 rounded-full bg-emerald-500/15 text-emerald-500 flex items-center justify-center shrink-0">
+                                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
+                                                        engineStatus === 'critical' ? 'bg-rose-500/15 text-rose-500' :
+                                                        engineStatus === 'warning' ? 'bg-amber-500/15 text-amber-500' :
+                                                        !hasEngineHistory ? 'bg-slate-500/15 text-slate-400' :
+                                                        'bg-emerald-500/15 text-emerald-500'
+                                                    }`}>
                                                         <Droplet size={13} />
                                                     </div>
                                                     <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tabular-nums">
-                                                        {oilLifePercent}%
+                                                        {hasEngineHistory ? `${oilLifePercent}%` : '—%'}
                                                     </span>
                                                 </div>
                                                 <div className="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
-                                                    <div className="h-full bg-emerald-500 rounded-full transition-all duration-500" style={{ width: `${oilLifePercent}%` }} />
+                                                    <div
+                                                        className={`h-full rounded-full transition-all duration-500 ${
+                                                            engineStatus === 'critical' ? 'bg-rose-500' :
+                                                            engineStatus === 'warning' ? 'bg-amber-400' :
+                                                            !hasEngineHistory ? 'bg-slate-500' :
+                                                            'bg-emerald-500'
+                                                        }`}
+                                                        style={{ width: `${hasEngineHistory ? oilLifePercent : 100}%` }}
+                                                    />
                                                 </div>
                                             </div>
 
@@ -319,15 +350,28 @@ const VehicleFleet = () => {
                                                     {isAr ? 'ناقل الحركة' : 'TRANS OIL'}
                                                 </span>
                                                 <div className="flex items-center gap-1.5 my-1.5">
-                                                    <div className="w-6 h-6 rounded-full bg-cyan-500/15 text-cyan-500 flex items-center justify-center shrink-0">
+                                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
+                                                        transStatus === 'critical' ? 'bg-rose-500/15 text-rose-500' :
+                                                        transStatus === 'warning' ? 'bg-amber-500/15 text-amber-500' :
+                                                        !hasTransHistory ? 'bg-slate-500/15 text-slate-400' :
+                                                        'bg-cyan-500/15 text-cyan-500'
+                                                    }`}>
                                                         <Cog size={13} />
                                                     </div>
                                                     <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tabular-nums">
-                                                        {transmissionLifePercent}%
+                                                        {hasTransHistory ? `${transmissionLifePercent}%` : '—%'}
                                                     </span>
                                                 </div>
                                                 <div className="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
-                                                    <div className="h-full bg-cyan-500 rounded-full transition-all duration-500" style={{ width: `${transmissionLifePercent}%` }} />
+                                                    <div
+                                                        className={`h-full rounded-full transition-all duration-500 ${
+                                                            transStatus === 'critical' ? 'bg-rose-500' :
+                                                            transStatus === 'warning' ? 'bg-amber-400' :
+                                                            !hasTransHistory ? 'bg-slate-500' :
+                                                            'bg-cyan-500'
+                                                        }`}
+                                                        style={{ width: `${hasTransHistory ? transmissionLifePercent : 100}%` }}
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
