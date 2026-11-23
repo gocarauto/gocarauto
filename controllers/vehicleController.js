@@ -206,7 +206,7 @@ const vehicleController = {
                 return res.status(404).json({ error: 'Vehicle not found' });
             }
 
-            const archivedBy = req.user?.id || null;
+            const archivedBy = req.user?.id ? parseInt(req.user.id, 10) || null : null;
             const finalNotes = notes && notes.trim() ? notes.trim() : null;
 
             // 1. Soft-delete/Archive vehicle
@@ -222,12 +222,20 @@ const vehicleController = {
             );
 
             // 2. Immediately cancel and dismiss all pending reminders for this vehicle
+            // Cross-dialect safe string concatenation: MySQL uses CONCAT, SQLite uses ||
+            const isMySQL = process.env.DB_TYPE === 'mysql';
+            const appendNoteExpr = isMySQL
+                ? "CASE WHEN notes IS NULL OR notes = '' THEN ? ELSE CONCAT(notes, ' [Vehicle Decommissioned: ', ?, ']') END"
+                : "CASE WHEN notes IS NULL OR notes = '' THEN ? ELSE (notes || ' [Vehicle Decommissioned: ' || ? || ']') END";
+
+            const decommissionTag = `Vehicle Decommissioned: ${reason.trim()}`;
+
             await database.run(
                 `UPDATE service_reminders 
                  SET status = 'Dismissed', 
-                     notes = COALESCE(notes || ' [Vehicle Decommissioned: ' || ? || ']', 'Vehicle Decommissioned: ' || ?) 
+                     notes = ${appendNoteExpr} 
                  WHERE vehicle_id = ? AND status = 'Pending'`,
-                [reason.trim(), reason.trim(), id]
+                [decommissionTag, reason.trim(), id]
             );
 
             res.json({
@@ -236,7 +244,9 @@ const vehicleController = {
             });
         } catch (error) {
             console.error('SERVER_VEHICLE_ARCHIVE_ERROR:', error);
-            res.status(500).json({ error: 'Failed to archive vehicle' });
+            res.status(500).json({ 
+                error: error.sqlMessage || error.message ? `Failed to archive vehicle: ${error.sqlMessage || error.message}` : 'Failed to archive vehicle' 
+            });
         }
     },
 

@@ -9,6 +9,7 @@ describe('Slice 10.6: Vehicle Archival, Decommissioning Reasons & Reminder Disco
     let testClientId;
     let testVehicleId;
     let testReminderId;
+    let testReminderWithNotesId;
 
     before(async () => {
         await database.connect();
@@ -28,17 +29,25 @@ describe('Slice 10.6: Vehicle Archival, Decommissioning Reasons & Reminder Disco
         );
         testVehicleId = vehRes.id;
 
-        // 3. Create a pending reminder for this vehicle
+        // 3. Create pending reminders for this vehicle (one with null notes, one with pre-existing notes)
         const remRes = await database.run(
             `INSERT INTO service_reminders (client_id, vehicle_id, service_type, due_date, status)
              VALUES (?, ?, ?, DATE('now', '+3 days'), 'Pending')`,
             [testClientId, testVehicleId, 'تغيير زيت الموتور']
         );
         testReminderId = remRes.id;
+
+        const remWithNotesRes = await database.run(
+            `INSERT INTO service_reminders (client_id, vehicle_id, service_type, due_date, notes, status)
+             VALUES (?, ?, ?, DATE('now', '+5 days'), 'Pre-existing reminder note', 'Pending')`,
+            [testClientId, testVehicleId, 'صيانة دورية']
+        );
+        testReminderWithNotesId = remWithNotesRes.id;
     });
 
     after(async () => {
         // Cleanup test data
+        if (testReminderWithNotesId) await database.run('DELETE FROM service_reminders WHERE id = ?', [testReminderWithNotesId]);
         if (testReminderId) await database.run('DELETE FROM service_reminders WHERE id = ?', [testReminderId]);
         if (testVehicleId) await database.run('DELETE FROM vehicles WHERE id = ?', [testVehicleId]);
         if (testClientId) await database.run('DELETE FROM clients WHERE id = ?', [testClientId]);
@@ -84,10 +93,16 @@ describe('Slice 10.6: Vehicle Archival, Decommissioning Reasons & Reminder Disco
         assert.equal(vehicle.archive_notes, 'Sold to private owner on Nov 2026');
         assert.ok(vehicle.archived_at);
 
-        // Verify reminder was cancelled/dismissed
+        // Verify reminder with null original notes was cancelled/dismissed
         const reminder = await database.get('SELECT * FROM service_reminders WHERE id = ?', [testReminderId]);
         assert.equal(reminder.status, 'Dismissed');
-        assert.ok(reminder.notes.includes('Vehicle Decommissioned: Sold / Ownership Transferred'));
+        assert.equal(reminder.notes, 'Vehicle Decommissioned: Sold / Ownership Transferred');
+
+        // Verify reminder with pre-existing notes preserves prior text and appends decommission tag
+        const reminderWithNotes = await database.get('SELECT * FROM service_reminders WHERE id = ?', [testReminderWithNotesId]);
+        assert.equal(reminderWithNotes.status, 'Dismissed');
+        assert.ok(reminderWithNotes.notes.includes('Pre-existing reminder note'));
+        assert.ok(reminderWithNotes.notes.includes('[Vehicle Decommissioned: Sold / Ownership Transferred]'));
     });
 
     test('getAllVehicles excludes archived vehicles by default and includes them when requested', async () => {

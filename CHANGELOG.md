@@ -2,6 +2,15 @@
 
 All notable changes to the GoCar Auto platform are documented in this file.
 
+## [Unreleased] - 2026-11-23
+
+### Cross-Dialect Vehicle Archival SQL Concat & Reminder Dismissal Fix (CR-031)
+- **Eliminated "Failed to archive vehicle" 500 Error on MySQL / TiDB Cloud:**
+  - **Root Cause:** When decommissioning an asset, `vehicleController.archiveVehicle` updated pending reminders with `notes = COALESCE(notes || ' [Vehicle Decommissioned: ' || ? || ']', 'Vehicle Decommissioned: ' || ?)`. In SQLite, `||` represents string concatenation, but in MySQL and TiDB Cloud, `||` defaults to logical OR unless `PIPES_AS_CONCAT` is set. Under strict SQL mode (`STRICT_TRANS_TABLES`), string casting triggered `ERROR 1292 (22007): Truncated incorrect DOUBLE value`, causing HTTP 500 and displaying "Failed to archive vehicle" in the staff decommissioning modal.
+  - **Cross-Dialect SQL Concatenation:** Implemented dialect-aware `appendNoteExpr` using `CONCAT()` for MySQL and `||` for SQLite with explicit `CASE WHEN notes IS NULL OR notes = ''` guards.
+  - **Input Sanitization & Error Transparency:** Sanitized `archivedBy` parameter parsing to ensure integer or `null` values, and surfaced descriptive database error messaging in staff response payloads.
+  - **Automated Verification:** Added test coverage in `tests/vehicle-archival.test.js` validating reminder dismissal for both NULL original notes and pre-existing notes with appended tags. Full suite passed (60/60 tests pass, zero regressions).
+
 ## [Unreleased] - 2026-11-22
 
 ### Real Vehicle Telemetry Integration for Customer Portal Dashboard (CR-030)
